@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.anequimplus.anequimdroid.ActiveLogin">
+    <item
+        android:id="@+id/action_login_autentic"
+        android:title="@string/action_autentic"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_login_ok"
+        android:title="@string/ok"
+        app:showAsAction="ifRoom" />
+
+</menu>

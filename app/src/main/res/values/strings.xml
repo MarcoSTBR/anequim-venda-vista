@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Anequim Droid Plus</string>
+    <string name="action_conf">Configuração</string>
+    <string name="action_autentic">Autenticação</string>
+    <string name="action_logout">Login</string>
+    <string name="title_activity_login">Login</string>
+
+    <string name="conf_vendavistaimpressaor">Pergurar se Imprimi Venda a Vista:</string>
+    <string name="conf_vendavistaNFCe">Pergurar se Emite NFCe na Venda a Vista:</string>
+
+    <string name="title_activity_produto_add">Inclusão de Produto</string>
+    <string name="label_pedido">Pedido/Mesa</string>
+    <string name="title_activity_envio_pedido">Envio de Pedidos</string>
+    <string name="title_activity_pedido">Pedidos</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_conta">Conta</string>
+
+    <string name="activity_conta_consulta">Consultar</string>
+    <string name="activity_conta_imprimir">Imprimir</string>
+    <string name="activity_conta_pag">Pagamento</string>
+    <string name="activity_conta_fechamento">Fechar</string>
+
+    <string name="title_activity_pagamento">Pagamento</string>
+    <string name="title_activity_grupo">Grupo de Produto</string>
+    <string name="title_activity_atualizar">Atualizar</string>
+    <string name="title_activity_grupo_produto">Grupo de Produto</string>
+    <string name="title_activity_fechamento_caixa">Fechamento</string>
+    <string name="activity_fechamento_caixa">Fechar</string>
+    <string name="title_activity_impressao">Impressao</string>
+    <string name="scan">QRCode</string>
+    <string name="title_activity_autenticacao_antigo">Autenticação</string>
+    <string name="title_activity_nfce">ActivityNFCe</string>
+
+    <string name="activity_venda_vista_produto">Produto</string>
+    <string name="activity_venda_vista_botao_pagamento">Parcial</string>
+    <string name="title_activity_list_venda">Lista</string>
+    <string name="title_activity_venda_vista_lista">ActivityVendaVistaLista</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_venda_vista">Enviar Venda Vista</string>
+
+
+</resources>

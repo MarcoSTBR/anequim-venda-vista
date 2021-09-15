@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.anequimplus.anequimdroid"
+    android:targetSandboxVersion="1">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_logotipo_foreground"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_logotipo_foreground"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:ignore="UnusedAttribute"
+        tools:replace="android:icon,android:theme">
+        <activity
+            android:name=".ActivityVendaVistaLista"
+            android:label="@string/title_activity_venda_vista_lista"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ActivityVendaVistaPagamento" />
+        <activity android:name=".ActivityVendaVista" />
+        <activity
+            android:name=".ActivityNFCe"
+            android:label="@string/title_activity_nfce"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityAutenticacaoAntigo"
+            android:label="@string/title_activity_autenticacao_antigo"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/network_security_config" />
+
+        <activity android:name=".ActivityValor" />
+        <activity
+            android:name=".ActivityImpressao"
+            android:label="@string/title_activity_impressao"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityFechamentoCaixa"
+            android:label="@string/title_activity_fechamento_caixa"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityGrupoProduto"
+            android:label="@string/title_activity_grupo_produto"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityGrupo"
+            android:label="@string/title_activity_grupo"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityPagamento"
+            android:label="@string/title_activity_pagamento"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityConta"
+            android:label="@string/title_activity_conta"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityPedido"
+            android:label="@string/title_activity_pedido"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityEnvioPedido"
+            android:label="@string/title_activity_envio_pedido"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityProdutoAdd"
+            android:label="@string/title_activity_produto_add"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ActivityConfiguracao" />
+        <activity
+            android:name=".ActivityLogin"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivePrincipal"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
