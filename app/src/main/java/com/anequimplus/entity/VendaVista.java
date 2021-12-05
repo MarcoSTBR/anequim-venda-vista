@@ -38,7 +38,7 @@ public class VendaVista {
         status = j.getInt("STATUS") ;
         vendaVistaItems = new ArrayList<VendaVistaItem>() ;
         for (int i=0 ; i < j.getJSONArray("ITENS").length() ; i++ ) {
-            Produto produto = Dao.getProdutoADO(ctx).getProdtoId(
+            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(
                     j.getJSONArray("ITENS").getJSONObject(i).getInt("PRODUTO_ID"));
             vendaVistaItems.add(new VendaVistaItem(this, produto, j.getJSONArray("ITENS").getJSONObject(i)));
         }

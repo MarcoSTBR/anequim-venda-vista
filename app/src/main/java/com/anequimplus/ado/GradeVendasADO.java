@@ -1,102 +1,97 @@
 package com.anequimplus.ado;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
-import com.anequimplus.entity.Grupo;
-import com.anequimplus.entity.Produto;
+import com.anequimplus.entity.GradeVendas;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GradeVendasADO {
+
     private Context ctx ;
-    private List<Grupo> lsGrupo = null ;
-    private List<Produto> lsProduto = null ;
+    private SQLiteDatabase db = null ;
 
     public GradeVendasADO(Context ctx) {
-        this.ctx = ctx;
+        this.ctx = ctx ;
+        db = DBHelper.getDB(ctx).getWritableDatabase() ;
     }
 
-    public void setJSON(JSONArray jr) throws JSONException {
-        lsGrupo = Dao.getGrupoDAO(ctx).getList();
-        lsProduto = Dao.getProdutoADO(ctx).getList() ;
-        for (int i = 0 ; i < jr.length() ; i++){
-            JSONObject j = jr.getJSONObject(i) ;
-            Grupo g = new Grupo(j) ;
-            if (getGrupoList(g) == null) {
-                Dao.getGrupoDAO(ctx).inserir(g);
-                lsGrupo.add(g) ;
-            } else Dao.getGrupoDAO(ctx).alterar(g);
-            Produto p = new Produto(g, j) ;
-            if (getProdutoList(p) == null) {
-                Dao.getProdutoADO(ctx).inserir(p) ;
-                lsProduto.add(p) ;
-            } else Dao.getProdutoADO(ctx).alterar(p);
-        }
-    }
-
-    public void setGrupoProduto(JSONObject j) throws JSONException {
-
-        Dao.getGrupoDAO(ctx).setJSON(j.getJSONArray("GRUPOS")) ;
-        Dao.getProdutoADO(ctx).setJSON(j.getJSONArray("PRODUTOS")) ;
-
-        Dao.getGrupoDAO(ctx).delete() ;
-
-
-        lsGrupo = Dao.getGrupoDAO(ctx).getList();
-        lsProduto = Dao.getProdutoADO(ctx).getList() ;
-        JSONArray jrGrupo = j.getJSONArray("GRUPOS") ;
-        for (int i = 0 ; i < jrGrupo.length() ; i++){
-            Log.i("setGrupos", jrGrupo.getJSONObject(i).toString()) ;
-            Grupo grupo = new Grupo(jrGrupo.getJSONObject(i)) ;
-            if (getGrupoList(grupo) == null) {
-                Dao.getGrupoDAO(ctx).inserir(grupo);
-                lsGrupo.add(grupo) ;
-            } else {
-                Dao.getGrupoDAO(ctx).alterar(grupo);
+    public void setGradeVendas(JSONArray jarr) throws JSONException {
+        List<GradeVendas>  ll = getGradeVendas() ;
+        GradeVendas g = null ;
+        GradeVendas resp = null ;
+        for (int i = 0 ; i < jarr.length() ; i++) {
+            g = new GradeVendas(jarr.getJSONObject(i));
+            resp = getGradeNaList(ll, g.getId()) ;
+            if (resp == null) {
+                    inserir(g);
+                } else {
+                    alterar(g);
             }
-        }
-
-        JSONArray jrProduto = j.getJSONArray("PRODUTOS") ;
-        for (int i = 0 ; i < jrProduto.length() ; i++){
-            Log.i("setProdutos", jrProduto.getJSONObject(i).toString()) ;
-            Grupo grupo = getGrupoList(new Grupo(jrProduto.getJSONObject(i).getInt("GRUPO_ID"),"", 1)) ;
-            Produto produto = new Produto(jrProduto.getJSONObject(i).getInt("ID"),
-                    grupo,
-                    jrProduto.getJSONObject(i).getString("CODBARRA"),
-                    jrProduto.getJSONObject(i).getString("DESCRICAO"),
-                    jrProduto.getJSONObject(i).getString("UNIDADE"),
-                    jrProduto.getJSONObject(i).getDouble("PRECO"),
-                    jrProduto.getJSONObject(i).getInt("STATUS")) ;
-            if (getProdutoList(produto) == null) {
-                Dao.getProdutoADO(ctx).inserir(produto) ;
-                lsProduto.add(produto) ;
-            } else Dao.getProdutoADO(ctx).alterar(produto);
+            Dao.getGradeVendasItemADO(ctx).setGradeVendasItem(jarr.getJSONObject(i).getJSONArray("ITENS")) ;
         }
     }
 
-    private Grupo getGrupoList(Grupo tmp){
-        Grupo g = null ;
-        for (Grupo gr : lsGrupo){
-            if (gr.getId() == tmp.getId()){
-                g = gr ;
-            }
+    private GradeVendas getGradeNaList(List<GradeVendas>  l, int i){
+        GradeVendas resp = null ;
+        for (GradeVendas g : l) {
+            if (g.getId() == i) resp = g ;
         }
-        return g ;
+        return resp ;
     }
 
-    private Produto getProdutoList(Produto tmp){
-        Produto p = null ;
-        for (Produto pd : lsProduto){
-            if (pd.getId() == tmp.getId()){
-                p = pd ;
-            }
+    public List<GradeVendas> getGradeVendas(){
+        List<GradeVendas> list = new ArrayList<GradeVendas>() ;
+        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS ORDER BY ID ", null);
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            list.add(new GradeVendas(res.getInt(res.getColumnIndex("ID")),
+                    res.getString(res.getColumnIndex("DESCRICAO")),
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    res.getString(res.getColumnIndex("IMAGEM"))));
+            res.moveToNext();
         }
-        return p ;
+        return list ;
+    }
+
+    public List<GradeVendas> getGradeVendas(int status){
+        List<GradeVendas> list = new ArrayList<GradeVendas>() ;
+        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS WHERE STATUS = ? ", new String[]{String.valueOf(status)});
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            list.add(new GradeVendas(res.getInt(res.getColumnIndex("ID")),
+                    res.getString(res.getColumnIndex("DESCRICAO")),
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    res.getString(res.getColumnIndex("IMAGEM")))
+            );
+            res.moveToNext();
+        }
+        return list ;
+    }
+
+    public void inserir(GradeVendas g){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", g.getId());
+        contentValues.put("DESCRICAO", g.getDescricao());
+        contentValues.put("STATUS", g.getStatus());
+        contentValues.put("IMAGEM", g.getImagem());
+        db.insert("GRADE_VENDAS", null, contentValues) ;
+    }
+
+    public void alterar(GradeVendas g){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", g.getId());
+        contentValues.put("DESCRICAO", g.getDescricao());
+        contentValues.put("STATUS", g.getStatus());
+        contentValues.put("IMAGEM", g.getImagem());
+        db.update("GRADE_VENDAS", contentValues, "ID = ?", new String[] {String.valueOf(g.getId())});
     }
 
 }

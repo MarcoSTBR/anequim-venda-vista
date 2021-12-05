@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
-
-import com.anequimplus.entity.Loja;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.NetworkInterface;
 import java.security.MessageDigest;
@@ -20,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class UtilSet {
 
@@ -32,6 +31,16 @@ public class UtilSet {
         j.put("AUTENTICACAO", getId_Usuario(ctx)) ;
         j.put("CHAVE", getChave(ctx)) ;
     }
+
+
+    public static void setToken(Context ctx, String token){
+        gravaParamString(ctx, "TOKEN",token) ;
+    }
+
+    public static String getToken(Context ctx){
+        return lerParamString(ctx, "TOKEN") ;
+    }
+
 
     public static void setAutenticacao(Context ctx , String autentic, String nome_usuario) {
         gravaParamString(ctx,"AUTENTICACAO",autentic);
@@ -58,8 +67,16 @@ public class UtilSet {
         return lerParamString(ctx,"CNPJ") ;
     }
 
-    public static void setCnpj(Context ctx , String aut) {
-        gravaParamString(ctx,"CNPJ",aut);
+    public static void setCnpj(Context ctx , String cnpj) {
+        gravaParamString(ctx,"CNPJ",cnpj);
+    }
+
+    public static String getPassword(Context ctx) {
+        return lerParamString(ctx,"PASSWORD") ;
+    }
+
+    public static void setPassword(Context ctx , String aut) {
+        gravaParamString(ctx,"PASSWORD",aut);
     }
 
 
@@ -118,12 +135,14 @@ public class UtilSet {
 
     }
     public static String getMAC(Context ctx){
+
         /*
         WifiManager manager = (WifiManager) ctx.getSystemService(ctx.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         return info.getMacAddress();
 
          */
+
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {
@@ -147,6 +166,8 @@ public class UtilSet {
         } catch (Exception ex) {
         }
         return "02:00:00:00:00:00";
+
+
     }
 
 
@@ -193,19 +214,84 @@ public class UtilSet {
         return d ;
     }
 
-    public static void setLojaId(Context ctx, Loja l) {
-        if (l == null) gravaParamString(ctx, "LOJA_ID", "0") ;
-        else
-        gravaParamString(ctx, "LOJA_ID", Integer.toString(l.getId())) ;
+    public static void setLojaId(Context ctx, int l) {
+        gravaParamString(ctx, "LOJA_ID", Integer.toString(l)) ;
     }
 
     public static int getLojaId(Context ctx) {
-        String valor = lerParamString(ctx, "LOJA_ID") ;
-        int r = 0 ;
-        Log.i("valor",valor) ;
-        if ((valor.equals("") )|| (valor == null)) r = 0 ;
-          else  r =  Integer.parseInt(valor) ;
-        return r ;
+        return Integer.parseInt(lerParamString(ctx, "LOJA_ID")) ;
     }
+    public static void setLojaNome(Context ctx, String nome) {
+        gravaParamString(ctx, "LOJA_NOME", nome) ;
+    }
+
+    public static String getLojaNome(Context ctx) {
+        return lerParamString(ctx, "LOJA_NOME") ;
+    }
+
+    public static void setLogin(Context ctx, String login) {
+        gravaParamString(ctx, "LOGIN", login) ;
+
+    }
+    public static String getLogin(Context ctx) {
+      return lerParamString(ctx, "LOGIN") ;
+
+    }
+
+    public static void setUsuarioId(Context ctx, int usuario_id) {
+        gravaParamString(ctx, "USUARIO_ID", Integer.toString(usuario_id)) ;
+    }
+    public static int getUsuarioId(Context ctx) {
+      return Integer.parseInt(lerParamString(ctx, "USUARIO_ID")) ;
+    }
+
+    public static void setUsuarioNome(Context ctx, String usuario_nome) {
+        gravaParamString(ctx, "USUARIO_NOME", usuario_nome) ;
+
+    }
+
+    public static String getUsuarioNome(Context ctx) {
+        return lerParamString(ctx, "USUARIO_NOME") ;
+
+    }
+
+    public static String md5(Context ctx, String st) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(st.getBytes("UTF-8"));
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+        } catch(UnsupportedEncodingException ex){
+        }
+        return null;
+    }
+
+    public static String getUUID(){
+        String uuid = UUID.randomUUID().toString() ;
+        return uuid ;
+
+    }
+
+    public static void setServidorMaster(Context ctx, String url_mobile) {
+        gravaParamString(ctx, "SERVIDOR_MASTER", url_mobile) ;
+    }
+
+    public static String getServidorMaster(Context ctx) {
+        return lerParamString(ctx, "SERVIDOR_MASTER") ;
+
+    }
+
+    public static void setTerminalId(Context ctx, int id){
+        gravaParamString(ctx, "TERMINAL_ID", Integer.toString(id)) ;
+    }
+
+    public static int getTerminalId(Context ctx){
+        return Integer.valueOf(lerParamString(ctx, "TERMINAL_ID")) ;
+    }
+
 
 }

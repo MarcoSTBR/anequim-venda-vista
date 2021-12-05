@@ -46,7 +46,7 @@ public class VendaVistaItemADO {
                 "WHERE (VENDA_VISTA_ID = ?)  AND (STATUS = 1) ", new String[] {String.valueOf(vendaVista.getId())} );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            Produto produto = Dao.getProdutoADO(ctx).getProdtoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
+            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
             ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
                     produto,
                     res.getDouble(res.getColumnIndex("QUANTIDADE")),
@@ -74,7 +74,7 @@ public class VendaVistaItemADO {
         res.moveToFirst();
         while(res.isAfterLast() == false){
             //if (vendaVista == null) vendaVista = new VendaVista() ;
-            Produto produto = Dao.getProdutoADO(ctx).getProdtoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
+            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
             ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
                     produto,
                     res.getDouble(res.getColumnIndex("QUANTIDADE")),

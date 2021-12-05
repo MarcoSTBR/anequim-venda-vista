@@ -22,14 +22,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoCaixa;
 import com.anequimplus.conexoes.ConexaoVendaVista;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.VendaVista;
 import com.anequimplus.entity.VendaVistaItem;
 import com.anequimplus.entity.VendaVistaLista;
 import com.anequimplus.entity.VendaVistaPagamento;
-import com.anequimplus.tipos.Link;
 import com.anequimplus.utilitarios.UtilSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -133,32 +131,11 @@ public class ActivityVendaVistaLista extends AppCompatActivity {
      //   getListaLocal() ;
     }
     private void setCaixa() {
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa,  0) {
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c ;
-                    SimpleDateFormat d = new SimpleDateFormat("dd/MM/yy HH:mm");
-                    toolbar.setSubtitle(UtilSet.getNome_Usuario(getBaseContext())+" "+d.format(c.getData()));
-                    setEnviar();
-
-                }
-
-                @Override
-                public void caixaFechado(String msg) {
-                    erroSair(msg) ;
-                }
-
-                @Override
-                public void erro(String msg) {
-                    erroSair(msg) ;
-
-                }
-            }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            erroSair(e.getMessage()) ;
-        }
+        if (caixa != null){
+            SimpleDateFormat d = new SimpleDateFormat("dd/MM/yy HH:mm");
+            toolbar.setSubtitle(UtilSet.getNome_Usuario(getBaseContext())+" "+d.format(caixa.getData()));
+            setEnviar();
+        } else erroSair("Caixa Fechado!") ;
     }
 
     private void erroSair(String msg) {

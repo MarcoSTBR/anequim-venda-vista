@@ -59,7 +59,7 @@
                     android:layout_width="80dp"
                     android:layout_height="32dp"
                     android:background="@color/colorBranco"
-                    app:srcCompat="@android:drawable/ic_delete" />
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
 
             </LinearLayout>
 

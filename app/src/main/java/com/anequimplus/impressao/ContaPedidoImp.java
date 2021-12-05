@@ -27,7 +27,7 @@ public class ContaPedidoImp {
         list.add(new RowImpressao(linha, TipoAlinhamento.ptLeft, 4)) ;
         list.add(new RowImpressao(getLinha(tam, "="), TipoAlinhamento.ptLeft, 0)) ;
         for (ContaPedidoItem it : contaPedido.getListContaPedidoItem()){
-
+/*
             String litd = it.getProduto().getDescricao() ;
             String litp = frmQ.format(it.getQuantidade())+"x "+frmV.format(it.getProduto().getPreco())+" = "+frmV.format(it.getValor()) ;
             if ((litd.length()+litp.length()) < tam){
@@ -35,6 +35,8 @@ public class ContaPedidoImp {
             } else {
 
             }
+
+ */
         }
         return list ;
     }

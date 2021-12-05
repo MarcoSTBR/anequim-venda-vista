@@ -16,32 +16,38 @@ import java.net.MalformedURLException;
 public abstract class ConexaoGradeVendas extends ConexaoServer {
 
 
-    public ConexaoGradeVendas(Context ctx) throws LinkAcessoADO.ExceptionLinkNaoEncontrado, MalformedURLException {
+    public ConexaoGradeVendas(Context ctx)  {
         super(ctx);
-        msg = "Grade de Vendas" ;
-        maps.put("class", "AfoodGradeVendas");
-        maps.put("method", "consultar");
-        maps.put("chave", UtilSet.getChave(ctx));
-        maps.put("loja_id", UtilSet.getLojaId(ctx));
-        maps.put("MAC", UtilSet.getMAC(ctx));
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fGradeVendas).getUrl();
+        try {
+          msg = "Grade de Vendas..." ;
+          maps.put("class", "AfoodGradeVendas");
+          maps.put("method", "consultar");
+          maps.put("MAC", UtilSet.getMAC(ctx));
+          url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fGradeVendas).getUrl();
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            erro(e.getMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            erro(e.getMessage());
+        }
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Log.i("ConexaoGradeVendas", s) ;
+        Log.i("ConexaoGradeVendas", codInt+" "+s) ;
         try {
             JSONObject j = new JSONObject(s) ;
             if (j.getString("status").equals("success")){
-                Dao.getGradeVendasADO(this.ctx).setJSON(j.getJSONArray("data"));
+                Dao.getGradeVendasADO(ctx).setGradeVendas(j.getJSONArray("data"));
                 oK() ;
             } else {
                 erro(j.getString("data")) ;
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            erro(e.getMessage());
+            erro(s);
         }
 
     }

@@ -1,6 +1,7 @@
 package com.anequimplus.anequimdroid;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import com.anequimplus.adapter.ContaPedidoAdapter;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoCaixa;
 import com.anequimplus.conexoes.ConexaoConfiguracaoLio;
 import com.anequimplus.conexoes.ConexaoContaPedido;
 import com.anequimplus.conexoes.ConexaoImpressaoContaPedido;
@@ -34,7 +34,6 @@ import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.impressao.ListenerImpressao;
-import com.anequimplus.tipos.Link;
 import com.anequimplus.tipos.PagamentoStatus;
 import com.anequimplus.tipos.TipoModalidade;
 import com.anequimplus.utilitarios.UtilSet;
@@ -64,6 +63,7 @@ public class ActivityConta extends AppCompatActivity {
     private String clientID ;
     private String accessToken ;
     private ListenerImpressao listenerImpressao ;
+    private int orientation ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public class ActivityConta extends AppCompatActivity {
         gradeConta = findViewById(R.id.gradeConta);
         spinnerImp     = (Spinner) findViewById(R.id.spinnerImpConta) ;
         listImpressora = null ;
-        setSubtitleTotal() ;
+        orientation = 2 ;
     }
 
     private void fechamentoPedido() {
@@ -144,7 +144,10 @@ public class ActivityConta extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        carregaImp() ;
+        if (Dao.getContaPedidoADO(getBaseContext()).getList().size() == 0) {
+            carregaImp();
+            consultarConta();
+        }
 //        getCaixa() ;
 //        consultarConta() ;
     }
@@ -172,7 +175,7 @@ public class ActivityConta extends AppCompatActivity {
                         }
                     });
                     setImpressoraPadrao();
-                    consultarConta() ;
+
                    // carregaRelatorio() ;
                 }
 
@@ -188,12 +191,9 @@ public class ActivityConta extends AppCompatActivity {
             e.printStackTrace();
             alert(e.getMessage());
         }
-
     }
 
-
     private void setImpressoraPadrao() {
-
         String descImp = UtilSet.getImpPadraoContaPedido(this);
         for (int i = 0 ; i<spinnerImp.getCount() ; i++){
             spinnerImp.getItemAtPosition(i);
@@ -206,7 +206,6 @@ public class ActivityConta extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_conta, menu);
@@ -214,31 +213,11 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void getCaixa(){
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa,  0.0) {
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c ;
-                }
+        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
+        if (caixa != null) {
 
-                @Override
-                public void caixaFechado(String msg) {
-                    Toast.makeText(getBaseContext(), msg ,Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void erro(String msg) {
-                    alert(msg);
-
-                }
-            }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            alert(e.getMessage());
-
-        }
+        } else Toast.makeText(getBaseContext(), "Caixa Fchado!" ,Toast.LENGTH_SHORT).show();
     }
-
 
     private void setSubtitleTotal() {
         double v = 0 ;
@@ -291,14 +270,7 @@ public class ActivityConta extends AppCompatActivity {
             new ConexaoContaPedido(this) {
                 @Override
                 public void oK() {
-                    gradeConta.setAdapter(new ContaPedidoAdapter(getBaseContext(), Dao.getContaPedidoADO(getBaseContext()).getList(),
-                            listContaPedidoSelect) {
-                        @Override
-                        protected void chagoCheckBox() {
-                            setSubtitleTotal();
-                        }
-                    });
-                    setSubtitleTotal();
+                  preencherGrade();
                 }
 
                 @Override
@@ -329,6 +301,30 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void receberValor(){
+        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
+        if (caixa != null){
+            if ((listContaPedidoSelect.size() == 1) && (caixa != null)) {
+                contaPedido = Dao.getContaPedidoADO(getBaseContext()).getContaPedido(listContaPedidoSelect.get(0)) ;
+                if (contaPedido.getTotalaPagar() > 0) {
+                    DecimalFormat frmV = new DecimalFormat("R$  #0.00");
+                    double valor = contaPedido.getTotalaPagar();
+                    Intent intent = new Intent(getBaseContext(), ActivityValor.class);
+                    Bundle params = new Bundle();
+                    params.putString("TITULO", "Pagamento da Conta: " + contaPedido.getPedido());
+                    params.putString("SUBTITULO", frmV.format(valor));
+                    params.putDouble("VALOR", valor);
+                    intent.putExtras(params);
+                    startActivityForResult(intent, CONTA_VALOR);
+                } else alert("Não há saldo devedor!") ;
+            } else {
+                if (listContaPedidoSelect.size() != 1)
+                    alert("Selecione uma conta somente!") ;
+                if (caixa == null)
+                    alert("Abra o Caixa!") ;
+            }
+        } else
+            alert("Caixa Fechado!") ;
+/*
         try {
             new ConexaoCaixa(this, Link.fConsultaCaixa,  0.0){
 
@@ -353,9 +349,7 @@ public class ActivityConta extends AppCompatActivity {
                             alert("Selecione uma conta somente!") ;
                         if (caixa == null)
                             alert("Abra o Caixa!") ;
-
                     }
-
                 }
 
                 @Override
@@ -372,7 +366,7 @@ public class ActivityConta extends AppCompatActivity {
             e.printStackTrace();
             alert(e.getMessage()) ;
         }
-
+*/
     }
 
     @Override
@@ -419,7 +413,6 @@ public class ActivityConta extends AppCompatActivity {
                             } else {
                                 alert(msg);
                             }
-
                         }
                     };
                     lio.execute(modalidade, v);
@@ -436,7 +429,6 @@ public class ActivityConta extends AppCompatActivity {
             e.printStackTrace();
             alert(e.getMessage());
         }
-
     }
 
     private void setPagamentoConta(double valor){
@@ -460,7 +452,6 @@ public class ActivityConta extends AppCompatActivity {
                 alert(e.getMessage());
             }
         } else alert("Valor incorreto!");
-
     }
 
 
@@ -519,5 +510,33 @@ public class ActivityConta extends AppCompatActivity {
                 .setPositiveButton("Ok", null).show();
 
     }
+
+    public void preencherGrade() {
+        gradeConta.setAdapter(new ContaPedidoAdapter(getBaseContext(), Dao.getContaPedidoADO(getBaseContext()).getList(),
+                listContaPedidoSelect, orientation) {
+            @Override
+            protected void chagoCheckBox() {
+                setSubtitleTotal();
+            }
+        });
+        setSubtitleTotal();
+
+      }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        orientation = newConfig.orientation ;
+        int r = orientation ;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "Landscape Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this, "Portrait Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
+        }
+        preencherGrade() ;
+    }
+
+
+
 
 }

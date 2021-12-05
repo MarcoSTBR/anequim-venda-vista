@@ -4,13 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.anequimplus.entity.Grupo;
 import com.anequimplus.entity.Produto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,29 +23,56 @@ public class ProdutoADO {
     public ProdutoADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase();
+        /*
+        db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
+        db.execSQL("CREATE TABLE IF NOT EXISTS PRODUTO ( "
+                + "ID INTEGER , "
+                + "CODIGO TEXT , "
+                + "UNIDADE TEXT , "
+                + "DESCRICAO TEXT , "
+                + "STATUS INTEGER,"
+                + "IMAGEM TEXT)");
+
+         */
     }
 
     public void setJSON(JSONArray jr) throws JSONException {
         List<Produto> ls = getTodos() ;
+        Produto p = null ;
+        Produto resp = null ;
         for (int i = 0 ; i < jr.length() ; i++) {
-            JSONObject j = jr.getJSONObject(i);
-
+            p = new Produto(jr.getJSONObject(i)) ;
+            resp = seekProduto(ls, p) ;
+            if (resp == null){
+                Log.i("ProdutosI", p.toString()) ;
+               inserir(p);
+            } else {
+                Log.i("ProdutosA", p.toString()) ;
+                if (!p.toString().equals(resp.toString()))
+                  alterar(p) ;
+            }
         }
+    }
 
+    public Produto seekProduto(List<Produto> ll, Produto p){
+        Produto resp = null ;
+        for (Produto pp : ll){
+            if (pp.getId() == p.getId()) resp = pp ;
+        }
+        return resp ;
     }
 
     public List<Produto> getTodos() {
         List<Produto> l = new ArrayList<Produto>();
-        Cursor res = db.rawQuery("SELECT ID, GRUPO_ID, CODIGO, UNIDADE, DESCRICAO, PRECO, STATUS " +
-                "FROM PRODUTO P ", null);
+        Cursor res = db.rawQuery("SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM " +
+                "FROM PRODUTO ORDER BY ID ", null);
         res.moveToFirst();
         while(res.isAfterLast()==false) {
                 l.add(new Produto(res.getInt(res.getColumnIndex("ID")),
-                        Dao.getGrupoDAO(ctx).getGrupoID(res.getInt(res.getColumnIndex("GRUPO_ID"))),
                         res.getString(res.getColumnIndex("CODIGO")),
-                        res.getString(res.getColumnIndex("DESCRICAO")),
                         res.getString(res.getColumnIndex("UNIDADE")),
-                        res.getDouble(res.getColumnIndex("PRECO")),
+                        res.getString(res.getColumnIndex("DESCRICAO")),
+                        res.getString(res.getColumnIndex("IMAGEM")),
                         res.getInt(res.getColumnIndex("STATUS"))));
                 res.moveToNext();
         }
@@ -71,46 +98,21 @@ public class ProdutoADO {
        return b ;
      }
 
-    public Produto getProdtoId(int nId){
+    public Produto getProdutoId(int nId){
         Produto produto = null ;
-        Cursor res =  db.rawQuery( "SELECT ID, GRUPO_ID, CODIGO, UNIDADE, DESCRICAO, PRECO, " +
-                "STATUS FROM PRODUTO WHERE ID = ?", new String[]{String.valueOf(nId)});
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM " +
+                "FROM PRODUTO WHERE ID = ?", new String[]{String.valueOf(nId)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            Grupo grupo = Dao.getGrupoDAO(ctx).getGrupoID(res.getInt(res.getColumnIndex("GRUPO_ID"))) ;
-            if (grupo == null) grupo = new Grupo(0,"Temp", 1) ;
             produto = new Produto(res.getInt(res.getColumnIndex("ID")),
-                      grupo,
-                      res.getString(res.getColumnIndex("CODIGO")),
-                      res.getString(res.getColumnIndex("DESCRICAO")),
-                      res.getString(res.getColumnIndex("UNIDADE")),
-                      res.getDouble(res.getColumnIndex("PRECO")),
-                      res.getInt(res.getColumnIndex("STATUS"))) ;
+                    res.getString(res.getColumnIndex("CODIGO")),
+                    res.getString(res.getColumnIndex("UNIDADE")),
+                    res.getString(res.getColumnIndex("DESCRICAO")),
+                    res.getString(res.getColumnIndex("IMAGEM")),
+                    res.getInt(res.getColumnIndex("STATUS")));
             res.moveToNext();
         }
         return produto ;
-    }
-
-    public List<Produto> getList(){
-        List<Produto> list = new ArrayList<Produto>();
-        List<Grupo> lsGrupo = new ArrayList<Grupo>();
-        Cursor res =  db.rawQuery( "SELECT P.ID, P.GRUPO_ID, P.CODIGO, P.UNIDADE, P.DESCRICAO, P.PRECO, P.STATUS, " +
-                "G.DESCRICAO DESC_GRUPO, G.STATUS GRUPO_STATUS FROM PRODUTO P INNER JOIN GRUPO G ", null);
-        res.moveToFirst();
-        while(res.isAfterLast() == false){
-            Grupo grupo = getGrupoList(lsGrupo, new Grupo(res.getInt(res.getColumnIndex("GRUPO_ID")),
-                    res.getString(res.getColumnIndex("DESC_GRUPO")),
-                    res.getInt(res.getColumnIndex("GRUPO_STATUS")))) ;
-            list.add(new Produto(res.getInt(res.getColumnIndex("ID")),
-                    grupo,
-                    res.getString(res.getColumnIndex("CODIGO")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getString(res.getColumnIndex("UNIDADE")),
-                    res.getDouble(res.getColumnIndex("PRECO")),
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
-            res.moveToNext();
-        }
-        return list ;
     }
 
     private Grupo getGrupoList(List<Grupo> list, Grupo tmp){
@@ -127,34 +129,13 @@ public class ProdutoADO {
         return resp ;
     }
 
-    public List<Produto> getList(Grupo grupo){
-        List<Produto> list = new ArrayList<Produto>();
-        Cursor res =  db.rawQuery( "SELECT ID, GRUPO_ID, CODIGO, UNIDADE, DESCRICAO, PRECO, STATUS " +
-                " FROM PRODUTO WHERE (GRUPO_ID = ?) AND (STATUS = 1)  " +
-                "ORDER BY ID ", new String[]{String.valueOf(grupo.getId())});
-        res.moveToFirst();
-        while(res.isAfterLast() == false){
-            list.add(
-                    new Produto(res.getInt(res.getColumnIndex("ID")),
-                    grupo,
-                    res.getString(res.getColumnIndex("CODIGO")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getString(res.getColumnIndex("UNIDADE")),
-                    res.getDouble(res.getColumnIndex("PRECO")),
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
-            res.moveToNext();
-        }
-        return list ;
-    }
-
     public void inserir(Produto produto){
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", produto.getId());
-        contentValues.put("GRUPO_ID", produto.getGrupo().getId());
         contentValues.put("CODIGO", produto.getCodBarra());
         contentValues.put("UNIDADE", produto.getUnidade());
         contentValues.put("DESCRICAO", produto.getDescricao());
-        contentValues.put("PRECO", produto.getPreco());
+        contentValues.put("IMAGEM", produto.getImagem());
         contentValues.put("STATUS", produto.getStatus());
         db.insert(DB_TABLE, null, contentValues) ;
     }
@@ -162,11 +143,9 @@ public class ProdutoADO {
     public void alterar(Produto produto){
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", produto.getId());
-        contentValues.put("GRUPO_ID", produto.getGrupo().getId());
         contentValues.put("CODIGO", produto.getCodBarra());
         contentValues.put("UNIDADE", produto.getUnidade());
         contentValues.put("DESCRICAO", produto.getDescricao());
-        contentValues.put("PRECO", produto.getPreco());
         contentValues.put("STATUS", produto.getStatus());
         db.update(DB_TABLE, contentValues, " ID = ? ", new String[] {String.valueOf(produto.getId())});
     }

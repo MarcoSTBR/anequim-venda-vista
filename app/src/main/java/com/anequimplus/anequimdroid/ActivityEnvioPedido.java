@@ -135,7 +135,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     }
 
     private void addProduto() {
-        Intent intent = new Intent(getBaseContext(), ActivityGrupo.class) ;
+        Intent intent = new Intent(getBaseContext(), ActivityGradeVendas.class) ;
         Bundle params = new Bundle() ;
         params.putString("SUBTITULO", "Pedido "+pedido.getPedido());
         intent.putExtras(params) ;
@@ -174,9 +174,9 @@ public class ActivityEnvioPedido extends AppCompatActivity {
         if (pedido != null) {
             listaPrdPedido.setAdapter(new getAdapterPedidoItem(this, pedido.getListPedidoItem()));
             diplayQuantidade();
-            if (pedido.getListPedidoItem().size() == 0) {
-                perguntar();
-            }
+//            if (pedido.getListPedidoItem().size() == 0) {
+//                perguntar();
+//            }
         }
     }
 
@@ -300,7 +300,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 excluirItem(pit) ;
             } else {
                 pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade() - 1);
-                pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade() * pit.getItenSelect().getProduto().getPreco());
+             //   pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade() * pit.getItenSelect().getProduto().getPreco());
                 Dao.getPedidoItemADO(ctx).alterar(pit) ;
             }
         }
@@ -315,14 +315,14 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 obs.setVisibility(View.GONE); else obs.setVisibility(View.VISIBLE);
             DecimalFormat frm = new DecimalFormat("R$ #0.00");
             DecimalFormat qrm = new DecimalFormat("#0.###");
-            qPreco.setText(qrm.format(pit.getItenSelect().getQuantidade())+" x "+
-                    frm.format(pit.getItenSelect().getProduto().getPreco())+" = "+frm.format(pit.getItenSelect().getValor()));
+        //    qPreco.setText(qrm.format(pit.getItenSelect().getQuantidade())+" x "+
+        //            frm.format(pit.getItenSelect().getProduto().getPreco())+" = "+frm.format(pit.getItenSelect().getValor()));
             diplayQuantidade() ;
         }
 
         private void setMais(PedidoItem pit) {
             pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade()+1);
-            pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade()*pit.getItenSelect().getProduto().getPreco());
+//            pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade()*pit.getItenSelect().getProduto().getPreco());
             Dao.getPedidoItemADO(ctx).alterar(pit) ;
         }
     }

@@ -23,18 +23,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoCaixa;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.VendaVista;
 import com.anequimplus.entity.VendaVistaItem;
 import com.anequimplus.entity.VendaVistaPagamento;
-import com.anequimplus.tipos.Link;
 import com.anequimplus.utilitarios.UtilSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -64,7 +60,7 @@ public class ActivityVendaVista extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         listViewVendas = (ListView) findViewById(R.id.listGradeVenda);
         textViewCabecalho = (TextView) findViewById(R.id.textViewCabecalho);
-        caixa = null;
+
         BottomNavigationView menubottomAppBarConta = findViewById(R.id.navigation_venda_vista);
 
         menubottomAppBarConta.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -128,7 +124,7 @@ public class ActivityVendaVista extends AppCompatActivity {
                 Dao.getVendaVistaADO(getBaseContext()).inserir(vendaVista);
           }
           Dao.getItemSelectADO(this).getList().clear();
-          Intent intent = new Intent(getBaseContext(), ActivityGrupo.class) ;
+          Intent intent = new Intent(getBaseContext(), ActivityGradeVendas.class) ;
           Bundle params = new Bundle() ;
           params.putString("SUBTITULO", "VENDA VISTA "+vendaVista.getId());
           intent.putExtras(params) ;
@@ -137,28 +133,9 @@ public class ActivityVendaVista extends AppCompatActivity {
     }
 
     private void verificarCaixa() {
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa, 0) {
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c;
-                    addProduto() ;
-                }
-
-                @Override
-                public void caixaFechado(String msg) {
-                    erroSair(msg);
-                }
-
-                @Override
-                public void erro(String msg) {
-                    erroSair(msg);
-
-                }
-            }.execute();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            erroSair(e.getMessage());
+        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
+        if (caixa != null) {
+            addProduto();
         }
     }
 
@@ -166,6 +143,7 @@ public class ActivityVendaVista extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         carregaList() ;
+        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
         //if (caixa == null) setCaixa() ;
     }
 
@@ -242,37 +220,9 @@ public class ActivityVendaVista extends AppCompatActivity {
 
             return true;
         }
-
-
         return true ; //super.onOptionsItemSelected(item);
     }
 
-
-    private void setCaixa() {
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa,  0) {
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c ;
-                    toolbar.setTitle(UtilSet.getNome_Usuario(getBaseContext()));
-                }
-
-                @Override
-                public void caixaFechado(String msg) {
-                    erroSair(msg) ;
-                }
-
-                @Override
-                public void erro(String msg) {
-                    erroSair(msg) ;
-
-                }
-            }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            erroSair(e.getMessage()) ;
-        }
-    }
 
     private void erroSair(String msg){
         new AlertDialog.Builder(this)
@@ -389,8 +339,8 @@ public class ActivityVendaVista extends AppCompatActivity {
                 excluirItem(pit) ;
             } else {
                 pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade() - 1);
-                pit.getItenSelect().setPreco(pit.getItenSelect().getProduto().getPreco());
-                pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade() * pit.getItenSelect().getProduto().getPreco());
+                //pit.getItenSelect().setPreco(pit.getItenSelect().getProduto().getPreco());
+//                pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade() * pit.getItenSelect().getProduto().getPreco());
                 Dao.getVendaVistaItemADO(ctx).alterar(pit) ;
 
             }
@@ -415,8 +365,8 @@ public class ActivityVendaVista extends AppCompatActivity {
 
         private void setMais(VendaVistaItem pit) {
             pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade()+1);
-            pit.getItenSelect().setPreco(pit.getItenSelect().getProduto().getPreco());
-            pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade()*pit.getItenSelect().getProduto().getPreco());
+ //           pit.getItenSelect().setPreco(pit.getItenSelect().getProduto().getPreco());
+ //           pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade()*pit.getItenSelect().getProduto().getPreco());
             Dao.getVendaVistaItemADO(ctx).alterar(pit) ;
         }
     }

@@ -5,10 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
 import com.anequimplus.entity.Grupo;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.anequimplus.entity.Produto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +27,14 @@ public class GrupoADO{
 
     public List<Grupo> getList(){
         List<Grupo> ls = new ArrayList<Grupo>();
+        List<Produto> produtos = null ;
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
             ls.add(new Grupo(res.getInt(res.getColumnIndex("ID")),
                     res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    produtos)) ;
             res.moveToNext();
         }
         return ls ;
@@ -41,13 +42,15 @@ public class GrupoADO{
 
     public List<Grupo> getList(int status){
         List<Grupo> ls = new ArrayList<Grupo>();
+        List<Produto> produtos = null ;
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO WHERE STATUS = "+status, null );
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
             ls.add(new Grupo(res.getInt(res.getColumnIndex("ID")),
                     res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    produtos)) ;
             res.moveToNext();
         }
         return ls ;
@@ -56,32 +59,21 @@ public class GrupoADO{
 
     public Grupo getGrupoID(int nid){
         Grupo grupo = null ;
+        List<Produto> produtos = null ;
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO WHERE ID = ? ", new String[]{String.valueOf(nid)});
 //        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO WHERE ID = "+nid, null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
             grupo = new Grupo(res.getInt(res.getColumnIndex("ID")),
                     res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS"))) ;
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    produtos) ;
             res.moveToNext();
         }
         return grupo;
     }
 
-    public void setJSON(JSONArray jr) throws JSONException {
-        //list = getList() ;
-        Grupo g = null ;
-        for (int i = 0 ; i < jr.length() ; i++){
-            JSONObject j = jr.getJSONObject(i) ;
-            g = getGrupoID(j.getInt("ID")) ;
-            if (g == null){
-                g = new Grupo(j) ;
-                inserir(g);
-            }  else {
-                alterar(new Grupo(j.getInt("ID"),j.getString("DESCRICAO"),j.getInt("STATUS"))) ;
-            }
-        }
-    }
+
 
     public void inserir(Grupo grupo){
         ContentValues contentValues = new ContentValues();

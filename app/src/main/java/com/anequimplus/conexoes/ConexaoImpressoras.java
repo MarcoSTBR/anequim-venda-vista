@@ -20,7 +20,7 @@ public abstract class ConexaoImpressoras extends ConexaoServer {
         msg = "Impressoras" ;
         maps.put("class", "AfoodImpressoras") ;
         maps.put("method", "consultar") ;
-        maps.put("chave", UtilSet.getChave(ctx)) ;
+//        maps.put("chave", UtilSet.getChave(ctx)) ;
         maps.put("loja_id", UtilSet.getLojaId(ctx)) ;
         maps.put("MAC", UtilSet.getMAC(ctx)) ;
         url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImpressoras).getUrl() ;

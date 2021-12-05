@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.anequimplus.entity.LinkAcesso;
 import com.anequimplus.tipos.Link;
+import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,45 +38,52 @@ public class LinkAcessoADO {
     private void iniciarPadrao()  {
         try {
             //URL serv = new URL("http://10.0.0.103/design/rest.php") ;
-            URL serv = new URL("https://pampofood.com.br/anequimfood/rest.php") ;
+           // URL serv = new URL("https://pampofood.com.br/anequimfood/rest.php") ;
             //URL serv = new URL("https://anequim.gerezimbi.com.br/template/rest.php") ;
             //URL serv = new URL("http://192.168.0.17/design/rest.php") ;
             //URL serv = new URL("http://127.0.0.1/design/rest.php") ;
+            //https://www.pampofood.com.br/gerezim/
+
+            //String serv = "http://10.0.0.105/design/rest.php" ;
+            //String serv = "http://45.232.4.238/design/rest.php";
+            String serv = UtilSet.getServidorMaster(ctx);
+
+            String link = "" ;
+            URL url = new URL(serv + link) ;
+            int i = 0 ;
             if (getList().size() == 0) {
                 delete();
-                inserir(new LinkAcesso(1,Link.fAutenticacao,serv));
-                inserir(new LinkAcesso(2,Link.fLinkAcesso,serv));
-                inserir(new LinkAcesso(3,Link.fLojas,serv));
-                inserir(new LinkAcesso(4,Link.fLogar,serv));
-                inserir(new LinkAcesso(5,Link.fConsultaProduto,serv));
-                inserir(new LinkAcesso(6,Link.fIncluirPedido,serv));
-                inserir(new LinkAcesso(7,Link.fConsultaPedido,serv));
-                inserir(new LinkAcesso(8,Link.fPagamentoPedido,serv));
-                inserir(new LinkAcesso(9,Link.fTesteConexao,serv));
-                inserir(new LinkAcesso(10,Link.fConsultaModalidade,serv));
-                inserir(new LinkAcesso(11,Link.fImagem,serv));
-                inserir(new LinkAcesso(12,Link.fpdf,serv));
-                inserir(new LinkAcesso(13,Link.fAberturaCaixa,serv));
-                inserir(new LinkAcesso(14,Link.fConsultaCaixa,serv));
-                inserir(new LinkAcesso(15,Link.fConsultaOpFechamento,serv));
-                inserir(new LinkAcesso(16,Link.fExecutaOpFechamento,serv));
-                inserir(new LinkAcesso(17,Link.fImprimirOpFechamento,serv));
-                inserir(new LinkAcesso(18,Link.fFechamentoCaixa,serv));
-                inserir(new LinkAcesso(19,Link.fImpressoras,serv));
-                inserir(new LinkAcesso(20,Link.fConfiguracaoLIO,serv));
-                inserir(new LinkAcesso(21,Link.fImprimirConta,serv));
-                inserir(new LinkAcesso(22,Link.fNFCeGetContaPedido,serv));
-                inserir(new LinkAcesso(23,Link.fNFCeSetContaPedido,serv));
-                inserir(new LinkAcesso(24,Link.fConsultaProduto,serv));
-                inserir(new LinkAcesso(25,Link.fGrupos,serv));
-                inserir(new LinkAcesso(26,Link.fGradeVendas,serv));
-                inserir(new LinkAcesso(27,Link.fMenuPrincipal,serv));
-                inserir(new LinkAcesso(28,Link.fImpressoraRemotaPedido,serv));
-                inserir(new LinkAcesso(29,Link.fImpressoraRemotaVenda,serv));
-                inserir(new LinkAcesso(30,Link.fGetVendaVista,serv));
-                inserir(new LinkAcesso(31,Link.fSetVendaVista,serv));
-                inserir(new LinkAcesso(32,Link.fGetTerminal,serv));
-                inserir(new LinkAcesso(33,Link.fSetTerminal,serv));
+                inserir(new LinkAcesso(i++,Link.fAutenticacao,url));
+                inserir(new LinkAcesso(i++,Link.fLogar,url));
+                inserir(new LinkAcesso(i++,Link.fAtualizarCaixa,url));
+                inserir(new LinkAcesso(i++,Link.fLinkAcesso,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaProduto,url));
+                inserir(new LinkAcesso(i++,Link.fIncluirPedido,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaPedido,url));
+                inserir(new LinkAcesso(i++,Link.fPagamentoPedido,url));
+                inserir(new LinkAcesso(i++,Link.fTesteConexao,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaModalidade,url));
+                inserir(new LinkAcesso(i++,Link.fImagem,url));
+                inserir(new LinkAcesso(i++,Link.fpdf,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaOpFechamento,url));
+                inserir(new LinkAcesso(i++,Link.fExecutaOpFechamento,url));
+                inserir(new LinkAcesso(i++,Link.fImprimirOpFechamento,url));
+                inserir(new LinkAcesso(i++,Link.fFechamentoCaixa,url));
+                inserir(new LinkAcesso(i++,Link.fImpressoras,url));
+                inserir(new LinkAcesso(i++,Link.fConfiguracaoLIO,url));
+                inserir(new LinkAcesso(i++,Link.fImprimirConta,url));
+                inserir(new LinkAcesso(i++,Link.fNFCeGetContaPedido,url));
+                inserir(new LinkAcesso(i++,Link.fNFCeSetContaPedido,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaProduto,url));
+                inserir(new LinkAcesso(i++,Link.fGrupos,url));
+                inserir(new LinkAcesso(i++,Link.fGradeVendas,url));
+                inserir(new LinkAcesso(i++,Link.fMenuPrincipal,url));
+                inserir(new LinkAcesso(i++,Link.fImpressoraRemotaPedido,url));
+                inserir(new LinkAcesso(i++,Link.fImpressoraRemotaVenda,url));
+                inserir(new LinkAcesso(i++,Link.fGetVendaVista,url));
+                inserir(new LinkAcesso(i++,Link.fSetVendaVista,url));
+                inserir(new LinkAcesso(i++,Link.fAtualizaTerminal,url));
+                inserir(new LinkAcesso(i++,Link.fConsultaTerminal,url));
 
             }
         } catch (MalformedURLException e) {

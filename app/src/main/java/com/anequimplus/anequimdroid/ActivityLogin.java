@@ -7,21 +7,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoLogin;
 import com.anequimplus.utilitarios.UtilSet;
-
-import java.net.MalformedURLException;
 
 public class ActivityLogin extends AppCompatActivity {
 
     private EditText editTextUsuario ;
     private EditText editTextSenha ;
+    private TextView TextViewLoja ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class ActivityLogin extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = findViewById(R.id.toolbarLogin);
         setSupportActionBar(toolbar);
-
+        TextViewLoja = (TextView) findViewById(R.id.TextViewLoja) ;
         editTextUsuario = findViewById(R.id.editTextUsuario);
         editTextSenha = findViewById(R.id.editTextSenha);
         editTextSenha.setOnKeyListener(new View.OnKeyListener() {
@@ -52,30 +51,26 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        editTextUsuario.setText(UtilSet.lerParamString(getBaseContext(),"USUARIO_TEMP"));
+        editTextUsuario.setText(UtilSet.lerParamString(getBaseContext(), "USUARIO_TEMP"));
         editTextSenha.setText("");
+        TextViewLoja.setText(UtilSet.getLojaNome(getBaseContext()));
     }
 
     private void logar() {
       if (editTextUsuario.getText().equals("") || editTextSenha.equals("")){
           alert("Preencha os Campos Corretamente");
       } else {
-              try {
                  new ConexaoLogin(this, editTextUsuario.getText().toString(), UtilSet.Md5(editTextSenha.getText().toString())) {
                       @Override
-                      public void Ok() {
+                      public void Ok(int code) {
                           finish() ;
                       }
 
                       @Override
-                      public void erro(String msg) {
+                      public void erro(int code, String msg) {
                           alert(msg) ;
                       }
                   }.execute();
-              } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-                  e.printStackTrace();
-                  alert(e.getMessage());
-              }
       }
     }
 
@@ -102,7 +97,7 @@ public class ActivityLogin extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         //noinspection SimplifiableIfStatement
         if (item.getItemId() == R.id.action_login_autentic) {
-            startActivity(new Intent(getBaseContext(), ActivityAutenticacaoAntigo.class));
+            startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
             return true;
         }
         if (item.getItemId() == R.id.action_login_ok) {

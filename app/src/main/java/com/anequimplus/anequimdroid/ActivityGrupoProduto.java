@@ -42,7 +42,7 @@ public class ActivityGrupoProduto extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grupo_produto);
-        grupo =  Dao.getGrupoDAO(getBaseContext()).getGrupoID(getIntent().getIntExtra("GRUPO_ID",0)) ;
+        grupo =  Dao.getGrupoDAO(getBaseContext()).getGrupoID(getIntent().getIntExtra("GRADE_ID",0)) ;
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(grupo.getDescricao());
         toolbar.setSubtitle("Selecione o Produto");
@@ -91,7 +91,7 @@ public class ActivityGrupoProduto extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        produtoList = Dao.getProdutoADO(this).getList(grupo) ;
+//        produtoList = Dao.getProdutoADO(this).getList(grupo) ;
        // Toast.makeText(this, "Grupo "+grupo.getDescricao()+ " n "+produtoList.size(), Toast.LENGTH_LONG ).show();
         editTextFiltroProduto.setText("");
         filtrar() ;
@@ -120,7 +120,7 @@ public class ActivityGrupoProduto extends AppCompatActivity {
     private double valorPedidos(){
         double v = 0 ;
         for (ItenSelect it : Dao.getItemSelectADO(this).getList()){
-            v = v + it.getQuantidade() * it.getProduto().getPreco();
+//            v = v + it.getQuantidade() * it.getProduto().getPreco();
         }
         return v ;
 
@@ -210,7 +210,7 @@ public class ActivityGrupoProduto extends AppCompatActivity {
             TextView descricao = row.findViewById(R.id.textViewPedidoItemS);
             TextView qPreco = row.findViewById(R.id.textQPrPedidoItemS);
             //TextView obs  = row.findViewById(R.id.textIemPrdObsS);
-            descricao.setText(prd.getDescricao()+" ( "+frm.format(prd.getPreco())+" )");
+//            descricao.setText(prd.getDescricao()+" ( "+frm.format(prd.getPreco())+" )");
             qPreco.setText(qrm.format(pit.getQuantidade()));
             setValor() ;
 
@@ -224,7 +224,7 @@ public class ActivityGrupoProduto extends AppCompatActivity {
                     it = pp ;
             }
             if (it == null) {
-                it = new ItenSelect(Dao.getItemSelectADO(ctx).getList().size() ,prd,0,prd.getPreco(),0,0,"") ;
+//                it = new ItenSelect(Dao.getItemSelectADO(ctx).getList().size() ,prd,0,prd.getPreco(),0,0,"") ;
                 Dao.getItemSelectADO(ctx).getList().add(it) ;
             }
             return it ;

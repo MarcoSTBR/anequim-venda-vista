@@ -4,17 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
 import com.anequimplus.entity.Produto;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PedidoItemADO {
@@ -56,7 +52,7 @@ public class PedidoItemADO {
         res.moveToFirst();
         while(res.isAfterLast() == false){
             Pedido pedido   = Dao.getPedidoADO(ctx).getId(res.getInt(res.getColumnIndex("PEDIDO_ID"))) ;
-            Produto produto = Dao.getProdutoADO(ctx).getProdtoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
+            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
             ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
                     produto,
                     res.getDouble(res.getColumnIndex("QUANTIDADE")),
@@ -79,7 +75,7 @@ public class PedidoItemADO {
                 "QUANTIDADE, PRECO, DESCONTO, VALOR, OBS FROM PEDIDO_ITEM WHERE PEDIDO_ID = ?", new String[] {String.valueOf(pedido.getId())} );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            Produto produto = Dao.getProdutoADO(ctx).getProdtoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
+            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
             ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
                     produto,
                     res.getDouble(res.getColumnIndex("QUANTIDADE")),

@@ -21,8 +21,10 @@ public abstract class ContaPedidoAdapter extends BaseAdapter {
     private Context ctx ;
     private List<ContaPedido> list ;
     private List<String> listSelect ;
+    private int orientation ;
 
-    public ContaPedidoAdapter(Context ctx, List<ContaPedido> list, List<String> listSelect) {
+    public ContaPedidoAdapter(Context ctx, List<ContaPedido> list, List<String> listSelect, int orientation) {
+        this.orientation = orientation ;
         this.ctx = ctx;
         this.list = list;
         this.listSelect = listSelect ;
@@ -49,7 +51,7 @@ public abstract class ContaPedidoAdapter extends BaseAdapter {
         View row  = inflater.inflate(R.layout.layout_grade_conta, null) ;
         final ContaPedido cp = list.get(i);
         TextView ped = row.findViewById(R.id.TextViewConta);
-        ped.setText("Pedido "+cp.getPedido()) ;
+        ped.setText("Pedido "+cp.getPedido()+" orientation "+ orientation) ;
 
         DecimalFormat frmQ = new DecimalFormat("#0.###");
         DecimalFormat frmV = new DecimalFormat("#0.00");
@@ -98,12 +100,21 @@ public abstract class ContaPedidoAdapter extends BaseAdapter {
         String desconto = frmV.format(cp.getDesconto());
         String total = frmV.format(cp.getTotal()) ;
         String pagamento = frmV.format(cp.getTotalPagamentos());
+        String tot = "" ;
+        if (orientation == 1) {
+              tot = "SUBTOTAL  : R$ " + stringOfChar(" ", 10 - subtotal.length()) + subtotal + "\n" +
+                    "COMISSAO  : R$ " + stringOfChar(" ", 10 - comissao.length()) + comissao + "\n" +
+                    "DESCONTO  : R$ " + stringOfChar(" ", 10 - desconto.length()) + desconto + "\n" +
+                    "TOTAL     : R$ " + stringOfChar(" ", 10 - total.length()) + total + "\n" +
+                    "PAGAMENTO : R$ " + stringOfChar(" ", 10 - pagamento.length()) + pagamento;
+        } else {
+              tot = "SUBTOTAL  : R$ " + stringOfChar(" ", 10 - subtotal.length()) + subtotal + " " +
+                    "COMISSAO  : R$ " + stringOfChar(" ", 10 - comissao.length()) + comissao + "\n" +
+                    "DESCONTO  : R$ " + stringOfChar(" ", 10 - desconto.length()) + desconto + " " +
+                    "TOTAL     : R$ " + stringOfChar(" ", 10 - total.length()) + total + "\n" +
+                    "PAGAMENTO : R$ " + stringOfChar(" ", 10 - pagamento.length()) + pagamento;
 
-        String tot = "SUBTOTAL  : R$ "+stringOfChar(" ",10 - subtotal.length())+subtotal+"\n"+
-                     "COMISSAO  : R$ "+stringOfChar(" ",10 - comissao.length())+comissao+"\n"+
-                     "DESCONTO  : R$ "+stringOfChar(" ",10 - desconto.length())+desconto+"\n"+
-                     "TOTAL     : R$ "+stringOfChar(" ",10 - total.length())+total+"\n"+
-                     "PAGAMENTO : R$ "+stringOfChar(" ",10 - pagamento.length())+pagamento;
+        }
         TextView totais = row.findViewById(R.id.textViewContaTotais);
         totais.setText(tot);
 

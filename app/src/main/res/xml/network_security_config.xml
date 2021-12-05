@@ -19,11 +19,14 @@
         <domain includeSubdomains="true">10.0.0.102</domain>
         <domain includeSubdomains="true">10.0.0.103</domain>
         <domain includeSubdomains="true">10.0.0.104</domain>
+        <domain includeSubdomains="true">10.0.0.105</domain>
         <domain includeSubdomains="true">201.39.71.94</domain>
         <domain includeSubdomains="true">169.254.33.91</domain>
+        <domain includeSubdomains="true">45.232.4.238</domain>
         <domain includeSubdomains="true">anequim.com</domain>
         <domain includeSubdomains="true">anequim.com.br</domain>
         <domain includeSubdomains="true">gerezim.com.br</domain>
+        <domain includeSubdomains="true">pampofood.com.br</domain>
 
     </domain-config>
     <base-config>

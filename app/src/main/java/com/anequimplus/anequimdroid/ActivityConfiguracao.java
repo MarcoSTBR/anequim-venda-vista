@@ -98,7 +98,7 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
         }
 
         if (item.getItemId() == R.id.action_conf_autenticacao) {
-            startActivity(new Intent(getBaseContext(), ActivityAutenticacaoAntigo.class));
+            startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
 
             return true ;
         }

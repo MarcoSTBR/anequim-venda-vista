@@ -24,7 +24,7 @@ public abstract class ConexaoTeste extends ConexaoServer {
             UtilSet.getAutenticacao(ctx, j);
             j.put("TESTE","Teste Conexao") ;
             j.put("MAC", UtilSet.getMAC(ctx)) ;
-            nParm = j.toString() ;
+            //nParm = j.toString() ;
             url = new URL(UtilSet.getServidor(ctx)+"/testeconexao/") ;
         } catch (JSONException | MalformedURLException e) {
             e.printStackTrace();

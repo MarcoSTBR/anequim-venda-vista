@@ -116,6 +116,15 @@ public class Dao {
         } else return gradeVendasADO ;
     }
 
+    private static GradeVendasItemDAO gradeVendasItemADO = null ;
+    public static GradeVendasItemDAO getGradeVendasItemADO(Context ctx){
+        if (gradeVendasItemADO == null){
+            gradeVendasItemADO = new GradeVendasItemDAO(ctx) ;
+            return gradeVendasItemADO ;
+        } else return gradeVendasItemADO ;
+    }
+
+
     private static OpcoesPrincipalADO opcoesPrincipalADO = null ;
     public static OpcoesPrincipalADO getOpcoesPrincipalADO(Context ctx){
         if (opcoesPrincipalADO == null){
@@ -148,12 +157,5 @@ public class Dao {
         } else return vendaVistaPagamentoADO ;
     }
 
-    private static LojaADO lojaADO = null ;
-    public static LojaADO getLojaADO(Context ctx){
-        if (lojaADO == null){
-            lojaADO = new LojaADO(ctx) ;
-            return lojaADO ;
-        } else return lojaADO ;
-    }
 
 }

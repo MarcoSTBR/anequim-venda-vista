@@ -5,7 +5,7 @@
     <string name="action_logout">Login</string>
     <string name="title_activity_login">Login</string>
 
-    <string name="conf_vendavistaimpressaor">Pergurar se Imprimi Venda a Vista:</string>
+    <string name="conf_vendavistaimpressaor">Pergurar se Imprime Venda a Vista:</string>
     <string name="conf_vendavistaNFCe">Pergurar se Emite NFCe na Venda a Vista:</string>
 
     <string name="title_activity_produto_add">Inclusão de Produto</string>
@@ -36,14 +36,10 @@
     <string name="title_activity_list_venda">Lista</string>
     <string name="title_activity_venda_vista_lista">ActivityVendaVistaLista</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_venda_vista">Enviar Venda Vista</string>
 
+    <string name="terminal_descricao">Descrição deste Terminal</string>
+    <string name="terminal_tipo_emissao">Tipo de Emissão de NF</string>
 
 </resources>

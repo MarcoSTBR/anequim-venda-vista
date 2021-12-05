@@ -7,28 +7,35 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     private Context ctx ;
-    private static DBHelper DB = null ;
+    private static DBHelper dbhelper = null ;
 
     public DBHelper(Context ctx) {
-        super(ctx, "BbAnequimP", null, 6);
+        super(ctx, "BbAnequimP", null, 8);
         this.ctx = ctx ;
     }
 
     public static DBHelper getDB(Context ctx){
-        if (DB == null) {
-            DB = new DBHelper(ctx) ;
+        if (dbhelper == null) {
+            dbhelper = new DBHelper(ctx) ;
         }
-        return  DB;
+
+        return  dbhelper;
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+       // excluirTabelas(db) ;
         criarTabelas(db) ;
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        if ((i < 8) && (i1 == 8)) {
+            excluirTabelas(db) ;
+            criarTabelas(db) ;
+        }
+        /*
         if (i == 3) {
             if (i1 == 4){
                 excluirTabelas(db) ;
@@ -47,9 +54,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 criarTabelas(db) ;
             }
         }
+        if (i < 7) {
+            if (i1 == 7){
+                excluirTabelas(db) ;
+                criarTabelas(db) ;
+            }
+        }
+
+         */
     }
 
     public void excluirTabelas(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS CAIXA") ;
+        db.execSQL("DROP TABLE IF EXISTS GRADE_VENDAS") ;
+        db.execSQL("DROP TABLE IF EXISTS GRADE_VENDAS_ITEM") ;
+        db.execSQL("DROP TABLE IF EXISTS CAIXA") ;
         db.execSQL("DROP TABLE IF EXISTS LINKACESSO ") ;
         db.execSQL("DROP TABLE IF EXISTS GRUPO ") ;
         db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
@@ -69,26 +88,50 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public static void criarTabelas(SQLiteDatabase db){
+        //Datetime	TEXT	aaaa-MM-DD HH: mm: SS. FFFFFFF
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS CAIXA ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "USUARIO_ID INTEGER, "
+                + "DATA DATETIME, "
+                + "DATA_FINAL DATETIME, "
+                + "VALOR DOUBLE,"
+                + "STATUS INTEGER,"
+                + "GEREZIM_ID INTEGER)"
+                );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS GRADE_VENDAS ( "
+                + "ID INTEGER , "
+                + "DESCRICAO TEXT, "
+                + "IMAGEM TEXT, "
+                + "STATUS INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS GRADE_VENDAS_ITEM ( "
+                + "ID INTEGER , "
+                + "GRADE_VENDAS_ID INTEGER, "
+                + "PRODUTO_ID INTEGER, "
+                + "PRECO DOUBLE, "
+                + "COMISSAO DOUBLE, "
+                + "STATUS INTEGER)");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS LINKACESSO ( "
                 + "ID INTEGER , "
                 + "LINK TEXT, "
                 + "URL TEXT)");
-
+/*
         db.execSQL("CREATE TABLE IF NOT EXISTS GRUPO ( "
                 + "ID INTEGER , "
                 + "DESCRICAO TEXT,"
                 + "STATUS INTEGER)");
-
+*/
         db.execSQL("CREATE TABLE IF NOT EXISTS PRODUTO ( "
                 + "ID INTEGER , "
-                + "GRUPO_ID INTEGER , "
                 + "CODIGO TEXT , "
                 + "UNIDADE TEXT , "
                 + "DESCRICAO TEXT , "
-                + "PRECO DOUBLE , "
                 + "STATUS INTEGER,"
-                + "URL TEXT, "
-                + "PARAM TEXT)");
+                + "IMAGEM TEXT)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -112,7 +155,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "TIPO_ID INTEGER, "
                 + "NOME TEXT, "
                 + "STATUS INTEGER) ");
-
+/*
         db.execSQL("CREATE TABLE IF NOT EXISTS EMPRESA ( "
                 + "ID INTEGER, "
                 + "DESCRICAO TEXT)");
@@ -142,6 +185,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "DESCONTO DOUBLE, "
                 + "STATUS INTEGER, "
                 + "OBS TEXT) ");
+
+ */
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS VENDA_VISTA ( "
@@ -178,11 +223,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "URL TEXT, "
                 + "PARAM TEXT,"
                 + "STATUS INTEGER)") ;
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS LOJA ( "
-                + "ID INTEGER, "
-                + "NOME TEXT, "
-                + "STATUS TEXT) ") ;
     }
 
 }

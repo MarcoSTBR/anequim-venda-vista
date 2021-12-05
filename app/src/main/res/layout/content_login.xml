@@ -24,6 +24,14 @@
         app:layout_constraintVertical_bias="0.19999999">
 
         <TextView
+            android:id="@+id/TextViewLoja"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Usuário"
@@ -35,6 +43,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
+            android:minHeight="48dp"
             android:text="Name"
             android:textAlignment="center" />
 
@@ -50,7 +59,9 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:textAlignment="center" />
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </LinearLayout>
 

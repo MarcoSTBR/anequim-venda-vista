@@ -21,7 +21,7 @@ import com.anequimplus.conexoes.ConexaoCaixa;
 import com.anequimplus.conexoes.ConexaoOpFechamento;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.OpcoesFechamento;
-import com.anequimplus.tipos.Link;
+import com.anequimplus.utilitarios.UtilSet;
 
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
@@ -88,61 +88,28 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
 
     }
     public void setCaixa(){
-        try {
-            new ConexaoCaixa(this, Link.fFechamentoCaixa, 0) {
-                @Override
-                public void caixaAberto(Caixa caixa) {
-                    alertaErro("Erro no fechamento!");
 
-                }
+        new ConexaoCaixa(this, caixa){
 
-                @Override
-                public void caixaFechado(String msg) {
-                    finish();
+            @Override
+            public void Ok(Caixa caixa) {
+                Dao.getCaixaADO(getBaseContext()).caixa_fechamento(caixa);
 
-                }
+            }
 
-                @Override
-                public void erro(String msg) {
-                    alertaErro(msg);
+            @Override
+            public void erro(String msg) {
+                alertaErro(msg) ;
 
 
-                }
-            }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage());
-        }
+            }
+        }.execute();
 
     }
     private void getCaixa() {
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa, 0){
+        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this));
+       // setCaixa();
 
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c ;
-                    getFechamentos();
-                }
-
-                @Override
-                public void caixaFechado(String msg) {
-                    alertaErro(msg) ;
-
-                }
-
-                @Override
-                public void erro(String msg) {
-                    alertaErro(msg) ;
-
-                }
-            }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado exceptionLinkNaoEncontrado) {
-            exceptionLinkNaoEncontrado.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage()) ;
-        }
     }
 
     private void getFechamentos(){
