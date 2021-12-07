@@ -15,16 +15,24 @@ import java.net.MalformedURLException;
 
 public abstract class ConexaoModalidade extends ConexaoServer {
 
-    public ConexaoModalidade(Context ctx) throws LinkAcessoADO.ExceptionLinkNaoEncontrado, MalformedURLException {
+    public ConexaoModalidade(Context ctx) {
         super(ctx);
         msg = "Modalidades" ;
-        maps.put("class","AfoodModalidade") ;
-        maps.put("method","consultar") ;
-        maps.put("chave",UtilSet.getChave(ctx)) ;
-        maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
-        maps.put("MAC",UtilSet.getMAC(ctx)) ;
-        maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fConsultaModalidade).getUrl() ;
+        try {
+            maps.put("class","AfoodModalidade") ;
+            maps.put("method","consultar") ;
+            maps.put("chave",UtilSet.getChave(ctx)) ;
+            maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
+            maps.put("MAC",UtilSet.getMAC(ctx)) ;
+            maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
+            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fConsultaModalidade).getUrl() ;
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            erro(e.getMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            erro(e.getMessage());
+        }
 
     }
 

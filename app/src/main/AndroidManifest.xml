@@ -73,7 +73,7 @@
             android:label="@string/title_activity_fechamento_caixa"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ActivityGrupoProduto"
+            android:name=".ActivityGradeVendaItem"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_grupo_produto"
             android:theme="@style/AppTheme.NoActionBar" />

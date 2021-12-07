@@ -165,7 +165,6 @@ public class ActivityNFCe extends AppCompatActivity {
 
 
     private void carregaImp() {
-        try {
             new ConexaoImpressoras(this) {
                 @Override
                 public void Ok() {
@@ -196,12 +195,6 @@ public class ActivityNFCe extends AppCompatActivity {
 
                 }
             }.execute();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alert(e.getMessage());
-        }
 
     }
 

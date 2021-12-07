@@ -54,6 +54,14 @@ public class PedidoADO {
         return list ;
     }
 
+    public JSONArray getListJSON(List<Pedido> l) throws JSONException {
+        JSONArray jarr = new JSONArray();
+        for (Pedido pedido: l) {
+            jarr.put(pedido.getJSon()) ;
+        }
+        return jarr ;
+    }
+
     public Pedido getPedido(String p) {
         Pedido pd = filtrar(p) ;
         if (pd == null) {

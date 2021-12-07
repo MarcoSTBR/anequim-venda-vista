@@ -25,7 +25,6 @@ import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoConfiguracaoLio;
 import com.anequimplus.conexoes.ConexaoContaPedido;
 import com.anequimplus.conexoes.ConexaoImpressaoContaPedido;
-import com.anequimplus.conexoes.ConexaoImpressoras;
 import com.anequimplus.conexoes.ConexaoPagamentoConta;
 import com.anequimplus.conexoes.ConexaoPagamentoLio;
 import com.anequimplus.conexoes.ConexaoServidor;
@@ -58,17 +57,20 @@ public class ActivityConta extends AppCompatActivity {
     private static int CONTA_PAGAMENTO = 1 ;
     private static int CONTA_VALOR = 2 ;
     private Spinner spinnerImp ;
-    private List<Impressora> listImpressora = null;
+    //private List<Impressora> listImpressora = null;
     private Impressora impressoraPadrao ;
     private String clientID ;
     private String accessToken ;
     private ListenerImpressao listenerImpressao ;
     private int orientation ;
+    private int idContaSelecionada = -1 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conta);
+        idContaSelecionada =getIntent().getIntExtra("GRADE_ID",-1) ;
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -102,7 +104,7 @@ public class ActivityConta extends AppCompatActivity {
         listContaPedidoSelect = new ArrayList<String>() ;
         gradeConta = findViewById(R.id.gradeConta);
         spinnerImp     = (Spinner) findViewById(R.id.spinnerImpConta) ;
-        listImpressora = null ;
+       // listImpressora = null ;
         orientation = 2 ;
     }
 
@@ -144,14 +146,36 @@ public class ActivityConta extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Dao.getContaPedidoADO(getBaseContext()).getList().size() == 0) {
-            carregaImp();
-            consultarConta();
-        }
-//        getCaixa() ;
+        //carregaImp();
+        getImpressora();
+        consultarConta();
 //        consultarConta() ;
+
+
     }
 
+    public void getImpressora(){
+        ImpressoraAdapter impAdp = new ImpressoraAdapter(getBaseContext(),Dao.getImpressoraADO(getBaseContext()).getList()) ;
+        impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getImpressora(UtilSet.getImpPadraoContaPedido(this)) ;
+        spinnerImp.setAdapter(impAdp);
+        spinnerImp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(i) ;
+                UtilSet.setImpPadraoContaPedido(getBaseContext(), impressoraPadrao.getDescricao()) ;
+                setImpressoraPadrao() ;
+                //UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao()) ;
+                //carregaRelatorio() ;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        setImpressoraPadrao();
+    }
+/*
     private void carregaImp() {
         try {
             new ConexaoImpressoras(this) {
@@ -192,7 +216,7 @@ public class ActivityConta extends AppCompatActivity {
             alert(e.getMessage());
         }
     }
-
+*/
     private void setImpressoraPadrao() {
         String descImp = UtilSet.getImpPadraoContaPedido(this);
         for (int i = 0 ; i<spinnerImp.getCount() ; i++){
@@ -266,7 +290,6 @@ public class ActivityConta extends AppCompatActivity {
 
 
     private void consultarConta() {
-        try {
             new ConexaoContaPedido(this) {
                 @Override
                 public void oK() {
@@ -278,10 +301,6 @@ public class ActivityConta extends AppCompatActivity {
                     alert(msg);
                 }
             }.execute() ;
-        } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alert(e.getMessage());
-        }
     }
 
     private void pagamentoConta(double v) {
@@ -512,7 +531,8 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     public void preencherGrade() {
-        gradeConta.setAdapter(new ContaPedidoAdapter(getBaseContext(), Dao.getContaPedidoADO(getBaseContext()).getList(),
+       // Toast.makeText(this, "Itens "+Dao.getContaPedidoADO(this).getList().size(), Toast.LENGTH_LONG).show();
+        gradeConta.setAdapter(new ContaPedidoAdapter(this, Dao.getContaPedidoADO(this).getList(),
                 listContaPedidoSelect, orientation) {
             @Override
             protected void chagoCheckBox() {

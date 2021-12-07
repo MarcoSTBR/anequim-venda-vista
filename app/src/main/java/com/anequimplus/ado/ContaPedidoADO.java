@@ -1,20 +1,17 @@
 package com.anequimplus.ado;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.anequimplus.entity.ContaPedido;
-import com.anequimplus.entity.ContaPedidoItem;
-import com.anequimplus.entity.PagamentoConta;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.Produto;
-import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ContaPedidoADO {
@@ -31,6 +28,35 @@ public class ContaPedidoADO {
         return list ;
     }
 
+    public void contaPedidoInternoAdd(List<ContaPedido> l){
+        list.clear();
+        Log.i("listContasAdd", "inicio");
+        for (ContaPedido c: l) {
+            Log.i("listContasAdd", c.getPedido());
+            list.add(c);
+        }
+    }
+
+    public void contaPedidoAdd(JSONArray contas) throws JSONException {
+        list.clear();
+        for (int i = 0 ; i < contas.length() ; i++){
+            JSONObject j = contas.getJSONObject(i);
+            //ContaPedido c = new ContaPedido(id, uuid, ped, data, j.getDouble("COMISSAO"), j.getDouble("DESCONTO"), new ArrayList<ContaPedidoItem>(), new ArrayList<ContaPedidoPagamento>());
+            ContaPedido c = new ContaPedido(j);
+            for (int ii = 0 ; ii < j.getJSONArray("ITENS").length() ; ii++){
+                JSONObject jIt = j.getJSONArray("ITENS").getJSONObject(ii);
+                //Produto p = new Dao.getProdutoADO(ctx).getProdtoId(jIt.getInt("PRODUTO_ID")) ;
+                Produto p = new Produto(jIt.getJSONObject("PRODUTO")) ;
+                c.getListContaPedidoItem().add(Dao.getContaPedidoItemADO(ctx).contaPedidoItemAdd(c, p, jIt)) ;
+            }
+            for (int ii = 0 ; ii < j.getJSONArray("PAGAMENTOS").length() ; ii++) {
+                JSONObject jItp = j.getJSONArray("PAGAMENTOS").getJSONObject(ii);
+                c.getListPagamento().add(Dao.getPagamentoContaADO(ctx).pagamentoADD(c, jItp));
+            }
+            list.add(c);
+        }
+    }
+/*
     public void contaPedidoAdd(JSONArray contas) throws JSONException {
         list.clear();
         for (int i = 0 ; i < contas.length() ; i++){
@@ -38,8 +64,9 @@ public class ContaPedidoADO {
             ContaPedido c = null ;
             int id =  j.getInt("id");
             String ped = j.getString("PEDIDO");
+            String uuid = j.getString("UUID") ;
             Date data = UtilSet.getData(j.getString("DATA")) ;
-            c = new ContaPedido(id, ped, data, j.getDouble("COMISSAO"), j.getDouble("DESCONTO"), new ArrayList<ContaPedidoItem>(), new ArrayList<PagamentoConta>());
+            c = new ContaPedido(id, uuid, ped, data, j.getDouble("COMISSAO"), j.getDouble("DESCONTO"), new ArrayList<ContaPedidoItem>(), new ArrayList<ContaPedidoPagamento>());
             list.add(c);
             for (int ii = 0 ; ii < j.getJSONArray("ITENS").length() ; ii++){
                 JSONObject jIt = j.getJSONArray("ITENS").getJSONObject(ii);
@@ -53,6 +80,7 @@ public class ContaPedidoADO {
         }
     }
 
+ */
     public ContaPedido getContaPedido(String pedido) {
         ContaPedido c = null ;
         for (ContaPedido cp : getList()){

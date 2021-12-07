@@ -2,12 +2,12 @@ package com.anequimplus.tipos;
 
 public enum TipoImpressora {
 
-    tpILocal(0), tpIV7(1), tpILio(2),  tpIUSB(3), tpElginM10(4);
+    tpILocal("tpILocal"), tpIV7("tpIV7"), tpILio("tpILio"),  tpIUSB("tpIUSB"), tpElginM10("tpElginM10");
 
 
-    public int valor;
+    public String descricao;
 
-    TipoImpressora(int v) {
-        valor = v;
+    TipoImpressora(String d) {
+        descricao = d ;
     }
 }

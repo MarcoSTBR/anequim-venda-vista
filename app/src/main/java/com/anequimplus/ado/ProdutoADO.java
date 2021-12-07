@@ -23,7 +23,7 @@ public class ProdutoADO {
     public ProdutoADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase();
-        /*
+/*
         db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
         db.execSQL("CREATE TABLE IF NOT EXISTS PRODUTO ( "
                 + "ID INTEGER , "
@@ -31,9 +31,11 @@ public class ProdutoADO {
                 + "UNIDADE TEXT , "
                 + "DESCRICAO TEXT , "
                 + "STATUS INTEGER,"
-                + "IMAGEM TEXT)");
+                + "IMAGEM TEXT,"
+                + "COMISSAO DOUBLE,"
+                + "PRECO DOUBLE)");
 
-         */
+*/
     }
 
     public void setJSON(JSONArray jr) throws JSONException {
@@ -45,9 +47,11 @@ public class ProdutoADO {
             resp = seekProduto(ls, p) ;
             if (resp == null){
                 Log.i("ProdutosI", p.toString()) ;
+                Log.i("ProdutosI", jr.getJSONObject(i).toString()) ;
                inserir(p);
             } else {
                 Log.i("ProdutosA", p.toString()) ;
+                Log.i("ProdutosA", jr.getJSONObject(i).toString()) ;
                 if (!p.toString().equals(resp.toString()))
                   alterar(p) ;
             }
@@ -64,7 +68,7 @@ public class ProdutoADO {
 
     public List<Produto> getTodos() {
         List<Produto> l = new ArrayList<Produto>();
-        Cursor res = db.rawQuery("SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM " +
+        Cursor res = db.rawQuery("SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
                 "FROM PRODUTO ORDER BY ID ", null);
         res.moveToFirst();
         while(res.isAfterLast()==false) {
@@ -73,7 +77,9 @@ public class ProdutoADO {
                         res.getString(res.getColumnIndex("UNIDADE")),
                         res.getString(res.getColumnIndex("DESCRICAO")),
                         res.getString(res.getColumnIndex("IMAGEM")),
-                        res.getInt(res.getColumnIndex("STATUS"))));
+                        res.getInt(res.getColumnIndex("STATUS")),
+                        res.getDouble(res.getColumnIndex("PRECO")),
+                        res.getDouble(res.getColumnIndex("COMISSAO"))));
                 res.moveToNext();
         }
         return l;
@@ -100,7 +106,7 @@ public class ProdutoADO {
 
     public Produto getProdutoId(int nId){
         Produto produto = null ;
-        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM " +
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
                 "FROM PRODUTO WHERE ID = ?", new String[]{String.valueOf(nId)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
@@ -109,7 +115,9 @@ public class ProdutoADO {
                     res.getString(res.getColumnIndex("UNIDADE")),
                     res.getString(res.getColumnIndex("DESCRICAO")),
                     res.getString(res.getColumnIndex("IMAGEM")),
-                    res.getInt(res.getColumnIndex("STATUS")));
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    res.getDouble(res.getColumnIndex("PRECO")),
+                    res.getDouble(res.getColumnIndex("COMISSAO")));
             res.moveToNext();
         }
         return produto ;
@@ -137,16 +145,20 @@ public class ProdutoADO {
         contentValues.put("DESCRICAO", produto.getDescricao());
         contentValues.put("IMAGEM", produto.getImagem());
         contentValues.put("STATUS", produto.getStatus());
+        contentValues.put("PRECO", produto.getPreco());
+        contentValues.put("COMISSAO", produto.getComissao());
         db.insert(DB_TABLE, null, contentValues) ;
     }
 
     public void alterar(Produto produto){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ID", produto.getId());
+        //contentValues.put("ID", produto.getId());
         contentValues.put("CODIGO", produto.getCodBarra());
         contentValues.put("UNIDADE", produto.getUnidade());
         contentValues.put("DESCRICAO", produto.getDescricao());
         contentValues.put("STATUS", produto.getStatus());
+        contentValues.put("PRECO", produto.getPreco());
+        contentValues.put("COMISSAO", produto.getComissao());
         db.update(DB_TABLE, contentValues, " ID = ? ", new String[] {String.valueOf(produto.getId())});
     }
 

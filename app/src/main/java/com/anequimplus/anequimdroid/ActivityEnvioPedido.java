@@ -22,15 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.ado.Dao;
-import com.anequimplus.conexoes.ComexaoImpressoraRemota;
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
-import com.anequimplus.tipos.Link;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.json.JSONArray;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -75,33 +71,17 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     }
 
     private void enviarConexaoPedidos()  {
-            try {
                 new ConexaoEnvioPedido(this) {
                     @Override
-                    public void EnvioOK(JSONArray jr) throws Exception {
-                        carregaList() ;
-                        new ComexaoImpressoraRemota(getBaseContext(), Link.fImpressoraRemotaPedido, jr){
-
-                            @Override
-                            public void oK(JSONArray jrr) {
-                                Enviado() ;
-                            }
-
-                            @Override
-                            public void erro(String msg) {
-                                alert(msg);
-                            }
-                        }.execute() ;
+                    public void envioOK(int count) {
+                        Enviado() ;
+                        //carregaList() ;
                     }
                     @Override
-                    public void ErroEnvio(String msg) {
+                    public void erroEnvio(String msg) {
                         alert(msg);
                     }
                 }.execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-                alert(e.getMessage());
-            }
     }
 
     private void Enviado(){
@@ -307,7 +287,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
 
         private void setValores(View row, PedidoItem pit){
             TextView descricao = row.findViewById(R.id.textViewPedidoItem);
-            TextView qPreco = row.findViewById(R.id.textQPrPedidoItem);
+            TextView q_Preco = row.findViewById(R.id.textQPrPedidoItem);
             TextView obs  = row.findViewById(R.id.textIemPrdObs);
             descricao.setText(pit.getItenSelect().getProduto().getDescricao());
             obs.setText(pit.getItenSelect().getObs());
@@ -315,8 +295,8 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 obs.setVisibility(View.GONE); else obs.setVisibility(View.VISIBLE);
             DecimalFormat frm = new DecimalFormat("R$ #0.00");
             DecimalFormat qrm = new DecimalFormat("#0.###");
-        //    qPreco.setText(qrm.format(pit.getItenSelect().getQuantidade())+" x "+
-        //            frm.format(pit.getItenSelect().getProduto().getPreco())+" = "+frm.format(pit.getItenSelect().getValor()));
+            q_Preco.setText(qrm.format(pit.getItenSelect().getQuantidade())+" x "+
+              frm.format(pit.getItenSelect().getProduto().getPreco())+" = "+frm.format(pit.getItenSelect().getValor()));
             diplayQuantidade() ;
         }
 

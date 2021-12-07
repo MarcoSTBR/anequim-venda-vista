@@ -134,7 +134,6 @@ public class ActivityImpressao extends AppCompatActivity {
     }
 
     private void carregaImp() {
-        try {
             new ConexaoImpressoras(this) {
                 @Override
                 public void Ok() {
@@ -164,11 +163,6 @@ public class ActivityImpressao extends AppCompatActivity {
 
                 }
             }.execute();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage());
-        }
-
     }
 
     @Override

@@ -26,4 +26,14 @@ public class Configuracao {
 
     }
 
+    public static void setPedidoCompartilhado(Context ctx, boolean b){
+        if(b) UtilSet.gravaParamString(ctx, "pedidoCompartinhado","1") ;
+        else UtilSet.gravaParamString(ctx, "pedidoCompartinhado","0") ;
+    }
+
+    public static Boolean getPedidoCompartilhado(Context ctx){
+        if (UtilSet.lerParamString(ctx,"pedidoCompartinhado").equals("1")) return true ;
+        else  return false ;
+    }
+
 }

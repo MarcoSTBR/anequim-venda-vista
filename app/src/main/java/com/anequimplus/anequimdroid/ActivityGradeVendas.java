@@ -92,7 +92,7 @@ public class ActivityGradeVendas extends AppCompatActivity {
     }
 
     private void setGradeVendasItens(GradeVendas grade) {
-        Intent intent = new Intent(getBaseContext(), ActivityGrupoProduto.class) ;
+        Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
         Bundle params = new Bundle() ;
         params.putInt("GRADE_ID", grade.getId());
         intent.putExtras(params) ;

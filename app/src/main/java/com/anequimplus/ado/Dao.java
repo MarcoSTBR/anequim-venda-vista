@@ -52,12 +52,12 @@ public class Dao {
         } else return contaPedidoItemADO ;
     }
 
-    private static PagamentoContaADO pagamentoContaADO = null ;
-    public static PagamentoContaADO getPagamentoContaADO(Context ctx){
-        if (pagamentoContaADO == null){
-            pagamentoContaADO = new PagamentoContaADO(ctx) ;
-            return pagamentoContaADO ;
-        } else return pagamentoContaADO ;
+    private static ContaPedidoPagamentoADO contaPedidoPagamentoADO = null ;
+    public static ContaPedidoPagamentoADO getPagamentoContaADO(Context ctx){
+        if (contaPedidoPagamentoADO == null){
+            contaPedidoPagamentoADO = new ContaPedidoPagamentoADO(ctx) ;
+            return contaPedidoPagamentoADO;
+        } else return contaPedidoPagamentoADO;
     }
 
     private static ModalidadeADO modalidadeADO = null ;
@@ -157,5 +157,20 @@ public class Dao {
         } else return vendaVistaPagamentoADO ;
     }
 
+    private static ContaPedidoInternoDAO contaPedidoInternoDAO = null ;
+    public static ContaPedidoInternoDAO getContaPedidoInternoDAO(Context ctx){
+        if (contaPedidoInternoDAO == null){
+            contaPedidoInternoDAO = new ContaPedidoInternoDAO(ctx) ;
+            return contaPedidoInternoDAO ;
+        } else return contaPedidoInternoDAO ;
+    }
+
+    private static ContaPedidoItemInternoDAO contaPedidoItemInternoDAO = null ;
+    public static ContaPedidoItemInternoDAO getContaPedidoItemInternoDAO(Context ctx){
+        if (contaPedidoItemInternoDAO == null){
+            contaPedidoItemInternoDAO = new ContaPedidoItemInternoDAO(ctx) ;
+            return contaPedidoItemInternoDAO ;
+        } else return contaPedidoItemInternoDAO ;
+    }
 
 }

@@ -21,15 +21,6 @@ public class VendaVistaPagamentoADO {
     public VendaVistaPagamentoADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-/*
-        db.execSQL("DROP TABLE IF EXISTS VENDA_VISTA_PAGAMENTO") ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS VENDA_VISTA_PAGAMENTO ( "
-                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "VENDA_VISTA_ID INTEGER, "
-                + "MODALIDADE_ID INTEGER, "
-                + "STATUS INTEGER, "
-                + "VALOR DOUBLE)") ;
-*/
     }
 
     public List<VendaVistaPagamento> getList(VendaVista vendaVista){

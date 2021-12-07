@@ -94,4 +94,19 @@ public class GradeVendasADO {
         db.update("GRADE_VENDAS", contentValues, "ID = ?", new String[] {String.valueOf(g.getId())});
     }
 
+    public GradeVendas getId(int id) {
+        GradeVendas it = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS WHERE ID = ? ", new String[]{String.valueOf(id)});
+        res.moveToFirst();
+        if (res.isAfterLast() == false){
+            it = new GradeVendas(res.getInt(res.getColumnIndex("ID")),
+                    res.getString(res.getColumnIndex("DESCRICAO")),
+                    res.getInt(res.getColumnIndex("STATUS")),
+                    res.getString(res.getColumnIndex("IMAGEM"))
+            );
+            res.moveToNext();
+        }
+        return it ;
+
+    }
 }

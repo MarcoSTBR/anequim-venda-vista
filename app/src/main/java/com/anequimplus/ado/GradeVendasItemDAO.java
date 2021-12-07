@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.entity.GradeVendasItem;
+import com.anequimplus.entity.Produto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,6 +89,21 @@ public class GradeVendasItemDAO {
                     res.getInt(res.getColumnIndex("PRODUTO_ID")),
                     res.getInt(res.getColumnIndex("STATUS")),
                     Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))))
+            );
+            res.moveToNext();
+        }
+        return list ;
+    }
+
+    public List<Produto> getGradeVendasProdutos(GradeVendas g){
+        List<Produto> list = new ArrayList<Produto>() ;
+        Cursor res =  db.rawQuery( "SELECT ID, GRADE_VENDAS_ID, PRODUTO_ID, STATUS " +
+                "FROM GRADE_VENDAS_ITEM WHERE GRADE_VENDAS_ID = ? " +
+                "ORDER BY PRODUTO_ID  ",new String[]{String.valueOf(g.getId())});
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            list.add(
+                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID")))
             );
             res.moveToNext();
         }

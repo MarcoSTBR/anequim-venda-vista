@@ -4,45 +4,56 @@ import android.content.Context;
 import android.util.Log;
 
 import com.anequimplus.ado.Dao;
-import com.anequimplus.entity.Impressora;
-import com.anequimplus.impressao.ListenerImpressao;
-import com.anequimplus.impressao.RelatorioA7;
+import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.entity.Pedido;
 import com.anequimplus.tipos.Link;
-import com.anequimplus.tipos.TipoImpressora;
-import com.anequimplus.utilitarios.RowImpressao;
+import com.anequimplus.utilitarios.Configuracao;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.net.MalformedURLException;
 import java.util.List;
 
 public abstract class ConexaoEnvioPedido extends ConexaoServer {
 
     private ListerConexao listerConexao ;
+    private JSONArray jr ;
+    private List<Pedido> list ;
 
 
-    public ConexaoEnvioPedido(Context ctx) throws Exception {
+    public ConexaoEnvioPedido(Context ctx) {
         super(ctx);
         msg = "Enviando Pedido" ;
-        JSONArray jr = Dao.getContaPedidoADO(ctx).getListEnvio() ;
-        if (jr.length() == 0) throw new Exception("Nenhum Pedido Para Enviar");
-        maps.put("class","AfoodContaPedidoItem") ;
-        maps.put("method","incluir") ;
-        maps.put("chave",UtilSet.getChave(ctx)) ;
-        maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
-        maps.put("MAC",UtilSet.getMAC(ctx)) ;
-        maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
-        maps.put("pedidos", jr) ;
-        Log.e("pedidos", jr.toString());
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fIncluirPedido).getUrl();
+        //jr = Dao.getContaPedidoADO(ctx).getListEnvio() ;
+        list = Dao.getPedidoADO(ctx).getList() ;
 
-        //setParametros() ;
-        //setListeners();
+        try {
+            jr = Dao.getPedidoADO(ctx).getListJSON(list) ;
+            maps.put("class","AfoodContaPedidoItem") ;
+            maps.put("method","incluir") ;
+            maps.put("chave",UtilSet.getChave(ctx)) ;
+            maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
+            maps.put("MAC",UtilSet.getMAC(ctx)) ;
+            maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
+            maps.put("pedidos", jr) ;
+            Log.e("pedidos", jr.toString());
+            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fIncluirPedido).getUrl();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            erroEnvio(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            erroEnvio(e.getMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            erroEnvio(e.getMessage());
+        }
+
     }
-
+/*
     private void setListeners() {
        listerConexao = new ListerConexao() {
            @Override
@@ -111,6 +122,18 @@ public abstract class ConexaoEnvioPedido extends ConexaoServer {
         }
         return row ;
     }
+*/
+
+    public void execute(){
+        if (Configuracao.getPedidoCompartilhado(ctx)) {
+            this.execute() ;
+        } else {
+            Dao.getContaPedidoInternoDAO(ctx).atualizar(list) ;
+            Dao.getPedidoADO(ctx).delete();
+            envioOK(list.size());
+        }
+
+    }
 
     @Override
     protected void onPostExecute(String s) {
@@ -120,14 +143,14 @@ public abstract class ConexaoEnvioPedido extends ConexaoServer {
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")) {
                 Dao.getPedidoADO(ctx).delete();
-                EnvioOK(j.getJSONArray("data")) ;
-            } else ErroEnvio(j.getString("data")) ;
+                envioOK(jr.length()) ;
+            } else erroEnvio(j.getString("data")) ;
         } catch (Exception e) {
             e.printStackTrace();
-            ErroEnvio(e.getMessage()) ;
+            erroEnvio(e.getMessage()) ;
         }
     }
-    public abstract void EnvioOK(JSONArray jr) throws Exception;
-    public abstract void ErroEnvio(String msg) ;
+    public abstract void envioOK(int count);
+    public abstract void erroEnvio(String msg) ;
 //    public abstract void ErroImpressao(int status, String msg) ;
 }

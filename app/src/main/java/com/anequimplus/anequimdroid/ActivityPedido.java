@@ -17,14 +17,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.adapter.PedidoAdapter;
 import com.anequimplus.ado.Dao;
-import com.anequimplus.conexoes.ComexaoImpressoraRemota;
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
+import com.anequimplus.entity.ContaPedido;
+import com.anequimplus.entity.ContaPedidoItem;
+import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
-import com.anequimplus.tipos.Link;
+import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.utilitarios.Configuracao;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityPedido extends AppCompatActivity {
@@ -84,40 +86,48 @@ public class ActivityPedido extends AppCompatActivity {
 
     private void display(){
         pedidoList =  Dao.getPedidoADO(getBaseContext()).getList() ;
-        listPedido.setAdapter(new PedidoAdapter(getBaseContext(), pedidoList));
+        if (!Configuracao.getPedidoCompartilhado(this)){
+            for (ContaPedido cp: Dao.getContaPedidoInternoDAO(this).getListAbertos()) {
+                Pedido p = new Pedido(cp.getId(), cp.getPedido(), cp.getData(), new ArrayList<PedidoItem>()) ;
+                for (ContaPedidoItem it : cp.getListContaPedidoItem()) {
+                    ItenSelect i = new ItenSelect(0, null, it.getQuantidade(), 0,0,it.getValor(), "") ;
+                    p.getListPedidoItem().add(new PedidoItem(it.getId(), p, i)) ;
+                }
+                p.setStatus(2);
+                pedidoList.add(p) ;
+            }
+        }
+        listPedido.setAdapter(new PedidoAdapter(getBaseContext(), pedidoList) {
+            @Override
+            public void setConta(Pedido p) {
+                Intent intent = new Intent(getBaseContext(), ActivityConta.class) ;
+                Bundle params = new Bundle() ;
+                params.putInt("CONTA_ID", p.getId());
+                intent.putExtras(params) ;
+                startActivity(intent);
+            }
+
+            @Override
+            public void setContaAbrir(Pedido p) {
+                editPedido.setText(p.getPedido()) ;
+                addPedido();
+            }
+        });
     }
 
     private void enviarPedidos() {
-        try {
             new ConexaoEnvioPedido(this) {
                 @Override
-                public void EnvioOK(JSONArray jr) throws Exception {
-                    display() ;
-                    new ComexaoImpressoraRemota(getBaseContext(), Link.fImpressoraRemotaPedido, jr){
-
-                        @Override
-                        public void oK(JSONArray jrr) {
-                           // Toast.makeText(getBaseContext(),jrr.toString(), Toast.LENGTH_LONG).show();
-                            alert(jrr.toString());
-                        }
-
-                        @Override
-                        public void erro(String msg) {
-                            alert(msg);
-                        }
-                    }.execute() ;
+                public void envioOK(int count) {
+                    display();
                 }
 
                 @Override
-                public void ErroEnvio(String msg) {
-                    setAlert(msg) ;
+                public void erroEnvio(String msg) {
+                    setAlert(msg);
                 }
 
-            }.execute() ;
-        } catch (Exception e) {
-            e.printStackTrace();
-            setAlert(e.getMessage()) ;
-        }
+            }.execute();
     }
 
     private void alert(String txt){
@@ -141,6 +151,7 @@ public class ActivityPedido extends AppCompatActivity {
             setAlert("Pedido inválido!") ;
         } else  addPedido();
     }
+
 
     private void addPedido(){
         Dao.getItemSelectADO(getBaseContext()).getList().clear();

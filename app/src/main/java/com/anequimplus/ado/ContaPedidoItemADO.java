@@ -25,12 +25,15 @@ public class ContaPedidoItemADO {
 
     public ContaPedidoItem contaPedidoItemAdd(ContaPedido c, Produto p, JSONObject j) throws JSONException {
         ContaPedidoItem it = new ContaPedidoItem(j.getInt("id"),
+                j.getString("UUID"),
                 p,
                 j.getDouble("QUANTIDADE"),
                 j.getDouble("PRECO"),
                 j.getDouble("DESCONTO"),
+                j.getDouble("COMISSAO"),
                 j.getDouble("VALOR"),
-                j.getString("OBS"));
+                j.getString("OBS"),
+                j.getInt("STATUS"));
        return it ;
 
     }

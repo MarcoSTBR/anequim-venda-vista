@@ -24,6 +24,13 @@ public class Impressora {
         Log.i("tipoImpressora",this.tipoImpressora.name() );
     }
 
+    public Impressora(int id, String descricao, int tamColuna, TipoImpressora tipoImpressora, int status) {
+        this.id = id;
+        this.descricao = descricao;
+        this.tamColuna = tamColuna;
+        this.tipoImpressora = tipoImpressora;
+        this.status = status;
+    }
 
     public int getId() {
         return id;

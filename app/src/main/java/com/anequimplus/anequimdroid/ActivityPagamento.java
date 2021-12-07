@@ -15,10 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.adapter.ModalidadeAdapter;
 import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoModalidade;
 
-import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 
 public class ActivityPagamento extends AppCompatActivity {
@@ -53,7 +51,7 @@ public class ActivityPagamento extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         carregaModalidade() ;
-        getMod() ;
+       // getMod() ;
     }
 
     private void carregaModalidade() {
@@ -61,7 +59,6 @@ public class ActivityPagamento extends AppCompatActivity {
     }
 
     private void getMod(){
-        try {
             new ConexaoModalidade(this) {
                 @Override
                 public void oK() {
@@ -75,10 +72,6 @@ public class ActivityPagamento extends AppCompatActivity {
 
                 }
             }.execute();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-            e.printStackTrace();
-            alert(e.getMessage()) ;
-        }
 
     }
 

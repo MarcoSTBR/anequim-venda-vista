@@ -11,14 +11,18 @@ public class Produto {
     private String descricao ;
     private String imagem ;
     private int status ;
+    private double preco ;
+    private double comissao ;
 
-    public Produto(int id, String codBarra, String unidade, String descricao, String imagem, int status) {
+    public Produto(int id, String codBarra, String unidade, String descricao, String imagem, int status, double preco, double comissao) {
         this.id = id;
         this.codBarra = codBarra;
         this.unidade = unidade;
         this.descricao = descricao;
         this.imagem = imagem;
         this.status = status;
+        this.preco = preco ;
+        this.comissao = comissao ;
     }
 
     public JSONObject toJson() throws JSONException {
@@ -29,6 +33,8 @@ public class Produto {
         j.put("DESCRICAO", descricao) ;
         j.put("IMAGEM", imagem) ;
         j.put("STATUS", status) ;
+        j.put("PRECO", preco) ;
+        j.put("PRECO", comissao) ;
         return j ;
     }
 
@@ -40,6 +46,8 @@ public class Produto {
         this.descricao = j.getString("DESCRICAO");
         this.imagem = j.getString("IMAGEM") ;
         this.status = j.getInt("STATUS")  ;
+        this.preco = j.getDouble("PRECO") ;
+        this.comissao = j.getDouble("COMISSAO") ;
     }
 
     @Override
@@ -51,6 +59,8 @@ public class Produto {
                 ", descricao='" + descricao + '\'' +
                 ", imagem='" + imagem + '\'' +
                 ", status=" + status +
+                ", preco=" + preco +
+                ", comissao=" + comissao +
                 '}';
     }
 
@@ -100,5 +110,21 @@ public class Produto {
 
     public void setImagem(String imagem) {
         this.imagem = imagem;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(double preco) {
+        this.preco = preco;
+    }
+
+    public double getComissao() {
+        return comissao;
+    }
+
+    public void setComissao(double comissao) {
+        this.comissao = comissao;
     }
 }

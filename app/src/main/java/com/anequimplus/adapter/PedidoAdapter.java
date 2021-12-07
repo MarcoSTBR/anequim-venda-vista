@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.anequimplus.anequimdroid.R;
@@ -14,7 +15,7 @@ import com.anequimplus.entity.PedidoItem;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class PedidoAdapter extends BaseAdapter {
+public abstract class PedidoAdapter extends BaseAdapter {
 
     private Context ctx ;
     private List<Pedido> pedidos ;
@@ -43,18 +44,40 @@ public class PedidoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null){
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
-            view  = inflater.inflate(R.layout.layout_grade_pedido, null) ;
-        }
+        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
+        view  = inflater.inflate(R.layout.layout_grade_pedido, null) ;
 
         DecimalFormat frmV = new DecimalFormat("#0.00");
         DecimalFormat frmQ = new DecimalFormat("#0.###");
 
-        Pedido p = pedidos.get(i) ;
+        final Pedido p = pedidos.get(i) ;
         TextView txt = view.findViewById(R.id.textViewLabelPed);
         TextView obs = view.findViewById(R.id.textViewGradePedidoQ);
+        ImageButton bt = (ImageButton) view.findViewById(R.id.pedidoconta);
+        ImageButton Abrir = (ImageButton) view.findViewById(R.id.pedidocontaabrir);
         txt.setText(" Pedido: "+p.getPedido());
+        if (p.getStatus() == 2) {
+            bt.setVisibility(View.VISIBLE);
+            bt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setConta(p) ;
+                }
+            });
+            Abrir.setVisibility(View.VISIBLE);
+            Abrir.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setContaAbrir(p) ;
+                }
+            });
+
+
+        } else {
+            Abrir.setVisibility(View.GONE);
+            bt.setVisibility(View.GONE);
+
+        }
         double q = 0 ;
         double vl= 0 ;
         for (PedidoItem it : p.getListPedidoItem()){
@@ -64,4 +87,7 @@ public class PedidoAdapter extends BaseAdapter {
         obs.setText("Iten's ("+frmQ.format(q)+") no valor de R$ "+frmV.format(vl));
         return view;
     }
+
+    public abstract void setConta(Pedido p) ;
+    public abstract void setContaAbrir(Pedido p) ;
 }

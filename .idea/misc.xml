@@ -6,23 +6,38 @@
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_autenticacao.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_configuracao.xml" value="0.18931159420289856" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_conta.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_enviopedido.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_grade_vendas.xml" value="0.17708333333333334" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_venda_item.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_vendas.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grupo.xml" value="0.18854166666666666" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grupo_produto.xml" value="0.22" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_impressao.xml" value="0.22" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_inicial.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_login.xml" value="0.18" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_pagamento.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_principal.xml" value="0.14739583333333334" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_terminal.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_venda_vista.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_autenticacao.xml" value="0.25" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_conta.xml" value="0.18070652173913043" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_envio_pedido.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grade_venda_item.xml" value="0.33" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grade_vendas.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grupo.xml" value="0.18854166666666666" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grupo_produto.xml" value="0.13360507246376813" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grupo_produto.xml" value="0.22" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_venda_vista.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_venda_vista_lista.xml" value="0.17708333333333334" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_login.xml" value="0.18854166666666666" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_principal.xml" value="0.14739583333333334" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_conta.xml" value="0.18070652173913043" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_grade_venda_item.xml" value="0.17708333333333334" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_modalidade.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pagamento_venda.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pedido.xml" value="0.25" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pedidoitem.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_produto.xml" value="0.25" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_venda_vista_lista.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_autenticacao_antigo.xml" value="0.15416666666666667" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_grupo.xml" value="0.18854166666666666" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_principal.xml" value="0.18854166666666666" />
@@ -39,7 +54,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.1" />
+        <option name="scale" value="0.22" />
       </ProjectState>
     </option>
   </component>

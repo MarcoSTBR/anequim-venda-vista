@@ -14,12 +14,14 @@ public class Pedido {
     private String pedido ;
     private Date data  ;
     private List<PedidoItem> listPedidoItem ;
+    private int status ; // somente para seleção
 
     public Pedido(int id, String pedido, Date data, List<PedidoItem> listPedidoItem) {
         this.id = id;
         this.pedido = pedido;
         this.data = data;
         this.listPedidoItem = listPedidoItem;
+        status = 1 ;
     }
 
     public JSONObject getJSon() throws JSONException {
@@ -68,5 +70,11 @@ public class Pedido {
         this.listPedidoItem = listPedidoItem;
     }
 
+    public int getStatus() {
+        return status;
+    }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

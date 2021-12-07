@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.anequimplus.conexoes.ConexaoAutenticacao;
 import com.anequimplus.conexoes.ConexaoConfTerminal;
+import com.anequimplus.conexoes.ConexaoGradeVendas;
+import com.anequimplus.conexoes.ConexaoImpressoras;
+import com.anequimplus.conexoes.ConexaoModalidade;
 import com.anequimplus.conexoes.ConexaoProdutos;
 import com.anequimplus.entity.Terminal;
 import com.anequimplus.utilitarios.TokenSet;
@@ -20,7 +23,7 @@ public class ActivityInicial extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicial);
-
+       // new DBHelper(this).limparTudo(this) ;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class ActivityInicial extends AppCompatActivity {
        new ConexaoConfTerminal(this, mac) {
             @Override
             public void ok(Terminal t) {
-                startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+                setImpressoras() ;
             }
 
             @Override
@@ -98,6 +101,57 @@ public class ActivityInicial extends AppCompatActivity {
 
             }
         }.execute();
+    }
+
+    public void setImpressoras(){
+        new ConexaoImpressoras(this){
+
+            @Override
+            public void Ok() {
+                setGrade();
+
+            }
+
+            @Override
+            public void erroMensagem(String msg) {
+                alert(msg) ;
+            }
+        }.execute() ;
+
+    }
+    public void setGrade(){
+        new ConexaoGradeVendas(this){
+
+            @Override
+            public void oK() {
+                setModalidades() ;
+            }
+
+            @Override
+            public void erro(String msg) {
+                alert(msg) ;
+            }
+        }.execute() ;
+
+
+    }
+
+    public void setModalidades(){
+        new ConexaoModalidade(this){
+
+
+            @Override
+            public void oK() {
+                startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+
+            }
+
+            @Override
+            public void erro(String msg) {
+                alert(msg) ;
+            }
+        }.execute();
+
     }
 
     private void alert(String txt){

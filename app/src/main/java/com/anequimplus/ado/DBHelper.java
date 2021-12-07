@@ -74,6 +74,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_ITEM ") ;
+        db.execSQL("DROP TABLE IF EXISTS PEDIDO_I ") ;
+        db.execSQL("DROP TABLE IF EXISTS PEDIDO_ITEM_I ") ;
         db.execSQL("DROP TABLE IF EXISTS FUNCIONARIO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_FUNCIONARIO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_FUNC_ITEM ") ;
@@ -89,6 +91,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static void criarTabelas(SQLiteDatabase db){
         //Datetime	TEXT	aaaa-MM-DD HH: mm: SS. FFFFFFF
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS IMPRESSORA ( "
+                + "ID INTEGER PRIMARY KEY, "
+                + "DESCRICAO TEXT, "
+                + "TAMCOLUNA INTEGER, "
+                + "TIPOIMPRESSORA TEXT, "
+                + "STATUS INTEGER)"
+        );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS CAIXA ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -119,19 +129,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "ID INTEGER , "
                 + "LINK TEXT, "
                 + "URL TEXT)");
-/*
-        db.execSQL("CREATE TABLE IF NOT EXISTS GRUPO ( "
-                + "ID INTEGER , "
-                + "DESCRICAO TEXT,"
-                + "STATUS INTEGER)");
-*/
+
         db.execSQL("CREATE TABLE IF NOT EXISTS PRODUTO ( "
                 + "ID INTEGER , "
                 + "CODIGO TEXT , "
                 + "UNIDADE TEXT , "
                 + "DESCRICAO TEXT , "
                 + "STATUS INTEGER,"
-                + "IMAGEM TEXT)");
+                + "IMAGEM TEXT,"
+                + "COMISSAO DOUBLE,"
+                + "PRECO DOUBLE)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -148,46 +155,35 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "VALOR DOUBLE, "
                 + "OBS TEXT) ");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS FUNCIONARIO ( "
-                + "ID INTEGER, "
-                + "EMPRESA_ID INTEGER, "
-                + "CENTRO_CUSTO_ID INTEGER, "
-                + "TIPO_ID INTEGER, "
-                + "NOME TEXT, "
-                + "STATUS INTEGER) ");
-/*
-        db.execSQL("CREATE TABLE IF NOT EXISTS EMPRESA ( "
-                + "ID INTEGER, "
-                + "DESCRICAO TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_I ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "PEDIDO TEXT , "
+                + "UUID TEXT, "
+                + "STATUS INTEGER, "
+                + "DATA DATETIME) ");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS CENTROCUSTO ( "
-                + "ID INTEGER, "
-                + "DESCRICAO TEXT)");
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS FUNCIONARIO_TIPO ( "
-                + "ID INTEGER, "
-                + "DESCRICAO TEXT)");
-
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_FUNCIONARIO ( "
-                + "ID INTEGER, "
-                + "FUNCIONARIO_ID INTEGER, "
-                + "DATA DATETIME,"
-                + "STATUS INTEGER)");
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_FUNC_ITEM ( "
-                + "ID INTEGER, "
-                + "PEDIDO_FUNC_ID INTEGER, "
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_ITEM_I ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "DATA DATETIME, "
+                + "PEDIDO_ID INTEGER, "
                 + "PRODUTO_ID INTEGER, "
                 + "QUANTIDADE DOUBLE, "
                 + "PRECO DOUBLE, "
-                + "VALOR DOUBLE, "
                 + "DESCONTO DOUBLE, "
+                + "COMISSAO DOUBLE, "
+                + "VALOR DOUBLE, "
                 + "STATUS INTEGER, "
                 + "OBS TEXT) ");
 
- */
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_OPG_I ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "DATA DATETIME, "
+                + "MODALIDADE_ID INTEGER, "
+                + "PRODUTO_ID INTEGER, "
+                + "VALOR DOUBLE, "
+                + "STATUS INTEGER) ");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS VENDA_VISTA ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -223,6 +219,57 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "URL TEXT, "
                 + "PARAM TEXT,"
                 + "STATUS INTEGER)") ;
+/*
+        db.execSQL("CREATE TABLE IF NOT EXISTS GRUPO ( "
+                + "ID INTEGER , "
+                + "DESCRICAO TEXT,"
+                + "STATUS INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS FUNCIONARIO ( "
+                + "ID INTEGER, "
+                + "EMPRESA_ID INTEGER, "
+                + "CENTRO_CUSTO_ID INTEGER, "
+                + "TIPO_ID INTEGER, "
+                + "NOME TEXT, "
+                + "STATUS INTEGER) ");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS EMPRESA ( "
+                + "ID INTEGER, "
+                + "DESCRICAO TEXT)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS CENTROCUSTO ( "
+                + "ID INTEGER, "
+                + "DESCRICAO TEXT)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS FUNCIONARIO_TIPO ( "
+                + "ID INTEGER, "
+                + "DESCRICAO TEXT)");
+
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_FUNCIONARIO ( "
+                + "ID INTEGER, "
+                + "FUNCIONARIO_ID INTEGER, "
+                + "DATA DATETIME,"
+                + "STATUS INTEGER)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_FUNC_ITEM ( "
+                + "ID INTEGER, "
+                + "PEDIDO_FUNC_ID INTEGER, "
+                + "PRODUTO_ID INTEGER, "
+                + "QUANTIDADE DOUBLE, "
+                + "PRECO DOUBLE, "
+                + "VALOR DOUBLE, "
+                + "DESCONTO DOUBLE, "
+                + "STATUS INTEGER, "
+                + "OBS TEXT) ");
+
+ */
     }
 
+    public void limparTudo(Context ctx) {
+        SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
+        excluirTabelas(db);
+        criarTabelas(db);
+
+    }
 }
