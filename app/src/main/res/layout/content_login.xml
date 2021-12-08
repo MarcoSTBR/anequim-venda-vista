@@ -29,6 +29,7 @@
             android:layout_height="48dp"
             android:text="TextView"
             android:textAlignment="center"
+            android:background="@drawable/botao_customizado"
             android:textSize="16sp" />
 
         <TextView
@@ -45,6 +46,7 @@
             android:inputType="textPersonName"
             android:minHeight="48dp"
             android:text="Name"
+            android:background="@drawable/edit_customizado"
             android:textAlignment="center" />
 
         <TextView
@@ -61,6 +63,7 @@
             android:inputType="textPassword"
             android:minHeight="48dp"
             android:textAlignment="center"
+            android:background="@drawable/edit_customizado"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </LinearLayout>

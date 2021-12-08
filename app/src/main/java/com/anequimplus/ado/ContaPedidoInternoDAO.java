@@ -103,7 +103,7 @@ public class ContaPedidoInternoDAO {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = null ;
         Cursor res =  db.rawQuery( "SELECT ID, PEDIDO, UUID, DATA, STATUS " +
-                " FROM PEDIDO_I ORDER BY PEDIDO WHERE ID = ? ", new String[]{String.valueOf(id)});
+                " FROM PEDIDO_I  WHERE ID = ? ", new String[]{String.valueOf(id)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
             try {

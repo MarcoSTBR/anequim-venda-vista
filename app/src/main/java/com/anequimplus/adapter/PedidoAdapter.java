@@ -5,14 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.entity.Pedido;
-import com.anequimplus.entity.PedidoItem;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public abstract class PedidoAdapter extends BaseAdapter {
@@ -46,7 +42,7 @@ public abstract class PedidoAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
         view  = inflater.inflate(R.layout.layout_grade_pedido, null) ;
-
+/*
         DecimalFormat frmV = new DecimalFormat("#0.00");
         DecimalFormat frmQ = new DecimalFormat("#0.###");
 
@@ -85,6 +81,8 @@ public abstract class PedidoAdapter extends BaseAdapter {
             vl= vl + it.getItenSelect().getValor();
         }
         obs.setText("Iten's ("+frmQ.format(q)+") no valor de R$ "+frmV.format(vl));
+
+ */
         return view;
     }
 

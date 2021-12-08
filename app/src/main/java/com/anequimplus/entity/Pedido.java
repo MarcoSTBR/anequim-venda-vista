@@ -77,4 +77,20 @@ public class Pedido {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public double getQuantidadeTotalItens(){
+        double vl = 0 ;
+        for (PedidoItem it : listPedidoItem){
+            vl = vl + it.getItenSelect().getQuantidade() ;
+        }
+        return vl;
+    }
+
+    public double getValorTotalItens(){
+        double vl = 0 ;
+        for (PedidoItem it : listPedidoItem){
+            vl = vl + it.getItenSelect().getQuantidade() ;
+        }
+        return vl;
+    }
 }

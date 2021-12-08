@@ -69,7 +69,7 @@ public class ActivityConta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conta);
-        idContaSelecionada =getIntent().getIntExtra("GRADE_ID",-1) ;
+        idContaSelecionada = getIntent().getIntExtra("CONTA_ID",-1) ;
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -146,12 +146,8 @@ public class ActivityConta extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //carregaImp();
         getImpressora();
         consultarConta();
-//        consultarConta() ;
-
-
     }
 
     public void getImpressora(){
@@ -290,7 +286,8 @@ public class ActivityConta extends AppCompatActivity {
 
 
     private void consultarConta() {
-            new ConexaoContaPedido(this) {
+        Log.i("idContaSelecionada", "idContaSelecionada "+idContaSelecionada) ;
+            new ConexaoContaPedido(this, idContaSelecionada) {
                 @Override
                 public void oK() {
                   preencherGrade();
@@ -555,8 +552,5 @@ public class ActivityConta extends AppCompatActivity {
         }
         preencherGrade() ;
     }
-
-
-
 
 }

@@ -1,21 +1,24 @@
 package com.anequimplus.anequimdroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.PedidoAdapter;
+import com.anequimplus.adapter.PedidoAdapterView;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
 import com.anequimplus.entity.ContaPedido;
@@ -32,9 +35,10 @@ import java.util.List;
 public class ActivityPedido extends AppCompatActivity {
 
     private EditText editPedido ;
-    private ListView listPedido ;
+    private RecyclerView listPedido ;
     private List<Pedido> pedidoList ;
     private Pedido pedido = null ;
+    private int orientation ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,25 +70,21 @@ public class ActivityPedido extends AppCompatActivity {
                 return false;
             }
         });
-
-        listPedido = findViewById(R.id.listPedido);
-        listPedido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                editPedido.setText(pedidoList.get(i).getPedido()) ;
-                addPedido();
-            }
-        });
-    }
+   }
 
     @Override
     protected void onResume() {
         super.onResume();
         editPedido.setText("");
+        orientation = (getWindowManager().getDefaultDisplay().getRotation() > 2) ? 2 : 1 ;
         display() ;
     }
 
     private void display(){
+        Log.i("orientation", "orientation "+orientation) ;
+        GridLayoutManager layoutManager=new GridLayoutManager(this,orientation < 1 ? 1 : orientation);
+        // at last set adapter to recycler view.
+        listPedido.setLayoutManager(layoutManager);
         pedidoList =  Dao.getPedidoADO(getBaseContext()).getList() ;
         if (!Configuracao.getPedidoCompartilhado(this)){
             for (ContaPedido cp: Dao.getContaPedidoInternoDAO(this).getListAbertos()) {
@@ -97,14 +97,30 @@ public class ActivityPedido extends AppCompatActivity {
                 pedidoList.add(p) ;
             }
         }
-        listPedido.setAdapter(new PedidoAdapter(getBaseContext(), pedidoList) {
+        listPedido.setAdapter(new PedidoAdapterView(pedidoList) {
             @Override
             public void setConta(Pedido p) {
-                Intent intent = new Intent(getBaseContext(), ActivityConta.class) ;
-                Bundle params = new Bundle() ;
-                params.putInt("CONTA_ID", p.getId());
-                intent.putExtras(params) ;
-                startActivity(intent);
+                if (p.getStatus() == 2) {
+                    Intent intent = new Intent(getBaseContext(), ActivityConta.class);
+                    Bundle params = new Bundle();
+                    params.putInt("CONTA_ID", p.getId());
+                    intent.putExtras(params);
+                    startActivity(intent);
+                } else {
+                    new AlertDialog.Builder(ActivityPedido.this)
+                            .setIcon(R.drawable.ic_notifications_black_24dp)
+                            .setTitle("Pedido pendente")
+                            .setMessage("Deseja enviar?")
+                            .setCancelable(false)
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    enviarPedidos();
+                                }
+                            }).show();
+
+                }
+
             }
 
             @Override
@@ -113,6 +129,8 @@ public class ActivityPedido extends AppCompatActivity {
                 addPedido();
             }
         });
+
+
     }
 
     private void enviarPedidos() {
@@ -192,5 +210,21 @@ public class ActivityPedido extends AppCompatActivity {
         return true ; //super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        orientation = newConfig.orientation ;
+        display();
+        /*
+        int r = orientation ;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "Landscape Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this, "Portrait Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
+        }
+         */
+
+    }
 
 }

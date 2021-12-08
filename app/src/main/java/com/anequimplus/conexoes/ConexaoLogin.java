@@ -33,7 +33,7 @@ public abstract class ConexaoLogin extends ConexaoServer {
             maps.put("method", "logar");
             maps.put("cnpj", UtilSet.getCnpj(ctx));
             maps.put("login", this.login);
-            maps.put("password", UtilSet.md5(ctx, this.password));
+            maps.put("password", this.password);
             maps.put("mac", UtilSet.getMAC(ctx));
             url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fLogar).getUrl();
         } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado exceptionLinkNaoEncontrado) {
