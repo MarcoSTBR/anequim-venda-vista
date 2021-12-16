@@ -49,9 +49,9 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
         super.onPostExecute(s);
         Log.e("ConexaoAutenticacarest",s) ;
         try {
-            JSONObject dados = new JSONObject(s);
-            if (dados.getString("status").equals("success")) {
-                String token = dados.optJSONObject("data").getString("access_token") ;
+            JSONObject j = new JSONObject(s);
+            if (j.getString("status").equals("success")) {
+                String token = j.optJSONObject("data").getString("access_token") ;
                 UtilSet.setToken(ctx, token);
                 UtilSet.setLojaId(ctx, TokenSet.getLojaId(ctx));
                 UtilSet.setLojaNome(ctx, TokenSet.getLojaNome(ctx));
@@ -62,7 +62,7 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
                 UtilSet.setPassword(ctx, password);
                 oK(cnpj, login);
 
-                } else erro(codInt, dados.getString("data"));
+                } else erro(codInt, j.getString("data"));
             } catch (JSONException e) {
                 e.printStackTrace();
                 erro(codInt, e.getMessage());

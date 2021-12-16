@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.entity.GradeVendasItem;
 import com.anequimplus.entity.Produto;
@@ -125,5 +126,11 @@ public class GradeVendasItemDAO {
         contentValues.put("PRODUTO_ID", g.getProduto_id());
         contentValues.put("STATUS", g.getStatus());
         db.update("GRADE_VENDAS_ITEM", contentValues, "ID = ?", new String[] {String.valueOf(g.getId())});
+    }
+
+    public void cancelar(ContaPedidoItem item) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("STATUS", 0);
+        db.update("GRADE_VENDAS_ITEM", contentValues, "ID = ?", new String[] {String.valueOf(item.getId())});
     }
 }

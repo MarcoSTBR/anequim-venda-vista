@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.anequimplus.ado.DBHelper;
 import com.anequimplus.conexoes.ConexaoAutenticacao;
 import com.anequimplus.conexoes.ConexaoConfTerminal;
 import com.anequimplus.conexoes.ConexaoGradeVendas;
@@ -29,6 +30,7 @@ public class ActivityInicial extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        new DBHelper(this).listarTabelas(this) ;
         iniciar();
     }
 
@@ -175,16 +177,5 @@ public class ActivityInicial extends AppCompatActivity {
                 }
                 ).show();
     }
-    /*
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "Landscape Mode", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "Portrait Mode", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-     */
 }

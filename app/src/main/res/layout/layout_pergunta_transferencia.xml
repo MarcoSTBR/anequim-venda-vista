@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/botao_customizado">
+
+    <ImageView
+        android:id="@+id/image_transferencia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="10dp"
+        app:srcCompat="@android:drawable/ic_menu_set_as" />
+    <TextView
+        android:id="@+id/texto_transferencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/image_transferencia"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:text="Transferir Item:"
+        />
+    <TextView
+        android:id="@+id/item_para_transferencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/texto_transferencia"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="50dp"
+        android:textSize="10dp"
+        android:text="1 Coca Cola "
+        />
+    <TextView
+        android:id="@+id/item_para_conta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_para_transferencia"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="Para Conta "
+        />
+
+    <EditText
+        android:id="@+id/edit_para_conta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_para_conta"
+        android:background="@drawable/edit_customizado"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:hint="Digite a Conta Para Transferência"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:ems="10"
+        android:inputType="number"
+        android:textAlignment="center"
+        />
+
+    <Button
+        android:id="@+id/botao_trasnferencia_confirmar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_para_conta"
+        android:background="@drawable/botao_customizado"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:textSize="20dp"
+        android:text="SIM"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        />
+    <Button
+        android:id="@+id/botao_trasnferencia_cancela"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/botao_trasnferencia_confirmar"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/botao_customizado"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="NÂO"
+        android:layout_marginRight="20dp"
+        />
+
+</RelativeLayout>

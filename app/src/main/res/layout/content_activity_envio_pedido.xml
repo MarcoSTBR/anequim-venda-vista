@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,11 +9,46 @@
     tools:showIn="@layout/activity_enviopedido">
 
 
-    <ListView
-        android:id="@+id/listaPrdPedido"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textProdutoPesquisa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:textColor="@color/colorBranco"
+            android:text="Produto"
+            />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/editProdutoPesquisa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textProdutoPesquisa"
+            android:background="@drawable/edit_customizado"
+            android:gravity="center"
+            android:ems="10"
+            android:text="teste"
+            />
+
+         <ImageButton
+            android:id="@+id/imagelupaproduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/editProdutoPesquisa"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/edit_customizado"
+            android:src="@drawable/ic_lupa_search_24" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listaPrdPedido"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/imagelupaproduto"
+            tools:listitem="@layout/layout_grade_pedidoitem"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+
+</RelativeLayout>

@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/botao_customizado"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,6 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
             android:textSize="18sp"
             tools:text="COCA COLA 300ML" />
 
@@ -26,6 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="OBS"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
             android:textAlignment="textStart"
             android:textColor="@color/texto_sombriado"
             android:textSize="10sp" />
@@ -36,6 +44,7 @@
             android:layout_height="match_parent"
             android:textAlignment="center"
             android:textSize="18sp"
+            android:textColor="@color/colorPreto"
             tools:text="1 X R$ 12.00 = R$ 12.00" />
     </LinearLayout>
 
@@ -43,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -50,21 +60,21 @@
             android:id="@+id/ib_mais"
             android:layout_width="80dp"
             android:layout_height="32dp"
-            android:background="@color/colorBranco"
+            android:background="@drawable/botao_customizado"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <ImageButton
             android:id="@+id/ib_menos"
             android:layout_width="80dp"
             android:layout_height="32dp"
-            android:background="@color/colorBranco"
-            app:srcCompat="@android:drawable/ic_delete" />
+            android:background="@drawable/botao_customizado"
+            app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <ImageButton
             android:id="@+id/ib_editar"
             android:layout_width="80dp"
             android:layout_height="32dp"
-            android:background="@color/colorBranco"
+            android:background="@drawable/botao_customizado"
             app:srcCompat="@android:drawable/ic_menu_edit" />
     </LinearLayout>
 

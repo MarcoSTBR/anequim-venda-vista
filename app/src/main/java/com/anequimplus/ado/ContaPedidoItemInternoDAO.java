@@ -77,6 +77,41 @@ public class ContaPedidoItemInternoDAO {
         }
         return l ;
     }
+
+    public ContaPedidoItem get(int id){
+        ContaPedidoItem it = null;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, UUID, DATA, PEDIDO_ID, " +
+                " PRODUTO_ID, QUANTIDADE, PRECO, DESCONTO, COMISSAO, VALOR, " +
+                " STATUS, OBS FROM PEDIDO_ITEM_I WHERE  ID = ? ", new String[]{String.valueOf(id)});
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            try {
+                dt = (Date) df.parse(res.getString(res.getColumnIndex("DATA")));
+                Produto p = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
+                it = new ContaPedidoItem(res.getInt(res.getColumnIndex("ID")),
+                        res.getString(res.getColumnIndex("UUID")),
+                        p,
+                        res.getDouble(res.getColumnIndex("QUANTIDADE")),
+                        res.getDouble(res.getColumnIndex("PRECO")),
+                        res.getDouble(res.getColumnIndex("DESCONTO")),
+                        res.getDouble(res.getColumnIndex("COMISSAO")),
+                        res.getDouble(res.getColumnIndex("VALOR")),
+                        res.getString(res.getColumnIndex("OBS")),
+                        res.getInt(res.getColumnIndex("STATUS"))
+                );
+                Log.i("listContasItens", it.getProduto().getDescricao()) ;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            res.moveToNext();
+        }
+        return it ;
+    }
+
+
     public List<ContaPedidoItem> listItensGroup(ContaPedido cp){
         List<ContaPedidoItem> l = new ArrayList<ContaPedidoItem>();
 
@@ -159,5 +194,14 @@ public class ContaPedidoItemInternoDAO {
     }
 
 
+    public void cancelar(int id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("STATUS", 0);
+        db.update(DB_TABLE, contentValues, "ID = ?", new String[]{String.valueOf(id)});
 
+        Log.i("contaPedidoItem", "id "+id)  ;
+        Log.i("contaPedidoItem", get(id).toString() ) ;
+
+
+    }
 }

@@ -33,7 +33,7 @@ public abstract class ConexaoLogin extends ConexaoServer {
             maps.put("method", "logar");
             maps.put("cnpj", UtilSet.getCnpj(ctx));
             maps.put("login", this.login);
-            maps.put("password", this.password);
+            maps.put("password", UtilSet.Md5(this.password));
             maps.put("mac", UtilSet.getMAC(ctx));
             url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fLogar).getUrl();
         } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado exceptionLinkNaoEncontrado) {
@@ -52,15 +52,14 @@ public abstract class ConexaoLogin extends ConexaoServer {
         try {
             Log.i("LOGADO", s) ;
             JSONObject j = new JSONObject(s);
-            if (j.getString("status").equals("success"))
-            {
+            if (j.getString("status").equals("success")){
                 String token = j.optJSONObject("data").getString("access_token") ;
                 UtilSet.setToken(ctx, token);
                 UtilSet.setLojaId(ctx, TokenSet.getLojaId(ctx));
                 UtilSet.setLojaNome(ctx, TokenSet.getLojaNome(ctx));
                 UtilSet.setUsuarioId(ctx, TokenSet.getUsuarioId(ctx));
                 UtilSet.setUsuarioNome(ctx, TokenSet.getUsuarioNome(ctx));
-                UtilSet.setCnpj(ctx, UtilSet.getCnpj(ctx));
+               // UtilSet.setCnpj(ctx, UtilSet.getCnpj(ctx));
                 UtilSet.setLogin(ctx,login);
                 UtilSet.setPassword(ctx, password);
                 Ok(codInt);

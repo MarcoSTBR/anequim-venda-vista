@@ -23,6 +23,11 @@ public class ItenSelectADO {
         return list ;
     }
 
+    public void setList(List<ItenSelect> l){
+        list = l ;
+    }
+
+
     public ItenSelect getItemSelectId(int id) {
         for (ItenSelect i : list){
             if (i.getId() == id){

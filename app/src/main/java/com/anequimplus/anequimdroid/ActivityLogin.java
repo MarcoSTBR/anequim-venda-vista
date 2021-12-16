@@ -60,9 +60,10 @@ public class ActivityLogin extends AppCompatActivity {
       if (editTextUsuario.getText().equals("") || editTextSenha.equals("")){
           alert("Preencha os Campos Corretamente");
       } else {
-                 new ConexaoLogin(this, editTextUsuario.getText().toString(), UtilSet.Md5(editTextSenha.getText().toString())) {
+                 new ConexaoLogin(this, editTextUsuario.getText().toString(), editTextSenha.getText().toString()) {
                       @Override
                       public void Ok(int code) {
+
                           finish() ;
                       }
 

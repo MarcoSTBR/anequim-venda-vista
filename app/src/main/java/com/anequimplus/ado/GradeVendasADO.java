@@ -104,7 +104,6 @@ public class GradeVendasADO {
                     res.getInt(res.getColumnIndex("STATUS")),
                     res.getString(res.getColumnIndex("IMAGEM"))
             );
-            res.moveToNext();
         }
         return it ;
 

@@ -57,6 +57,7 @@ public class LinkAcessoADO {
                 inserir(new LinkAcesso(i++,Link.fLogar,url));
                 inserir(new LinkAcesso(i++,Link.fAtualizarCaixa,url));
                 inserir(new LinkAcesso(i++,Link.fLinkAcesso,url));
+                inserir(new LinkAcesso(i++,Link.fCancelarPedidoItem,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaProduto,url));
                 inserir(new LinkAcesso(i++,Link.fIncluirPedido,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaPedido,url));

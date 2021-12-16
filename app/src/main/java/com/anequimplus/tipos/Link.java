@@ -6,6 +6,7 @@ public enum Link {
     fLogar("fLogar"),
     fAtualizarCaixa("fAtualizarCaixa"),
     fLinkAcesso("fLinkAcesso"),
+    fCancelarPedidoItem("fCancelarPedidoItem"),
     fConsultaProduto("fConsultaProduto"),
     fIncluirPedido("fIncluirPedido"),
     fConsultaPedido("fConsultaPedido"),

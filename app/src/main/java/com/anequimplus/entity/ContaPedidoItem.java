@@ -24,6 +24,9 @@ public class ContaPedidoItem {
         this.obs = obs;
         this.status = status;
     }
+    public ContaPedidoItem(int i){
+        this.id = id;
+    }
 
     public int getId() {
         return id;
@@ -103,5 +106,21 @@ public class ContaPedidoItem {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "ContaPedidoItem{" +
+                "id=" + id +
+                ", UUID='" + UUID + '\'' +
+                ", produto=" + produto +
+                ", quantidade=" + quantidade +
+                ", preco=" + preco +
+                ", desconto=" + desconto +
+                ", comissao=" + comissao +
+                ", valor=" + valor +
+                ", obs='" + obs + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

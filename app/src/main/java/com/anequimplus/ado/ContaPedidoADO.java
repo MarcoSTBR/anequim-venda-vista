@@ -37,7 +37,7 @@ public class ContaPedidoADO {
         }
     }
 
-    public void contaPedidoAdd(JSONArray contas) throws JSONException {
+    public List<ContaPedido> contaPedidoAdd(JSONArray contas) throws JSONException {
         list.clear();
         for (int i = 0 ; i < contas.length() ; i++){
             JSONObject j = contas.getJSONObject(i);
@@ -55,6 +55,7 @@ public class ContaPedidoADO {
             }
             list.add(c);
         }
+        return list;
     }
 /*
     public void contaPedidoAdd(JSONArray contas) throws JSONException {

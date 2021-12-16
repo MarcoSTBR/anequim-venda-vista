@@ -119,7 +119,6 @@ public class ContaPedidoInternoDAO {
                         res.getInt(res.getColumnIndex("STATUS"))) ;
 //                cp.setListContaPedidoItem(Dao.getContaPedidoItemInternoDAO(ctx).listItens(cp));
                 cp.setListContaPedidoItem(Dao.getContaPedidoItemInternoDAO(ctx).listItensGroup(cp));
-
                 cp.setListPagamento(new ArrayList<ContaPedidoPagamento>());
                 l.add(cp) ;
                 Log.i("listContas", cp.getPedido()) ;

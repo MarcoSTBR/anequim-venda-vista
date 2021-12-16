@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.adapter.PedidoAdapterView;
 import com.anequimplus.ado.Dao;
+import com.anequimplus.conexoes.ConexaoContaPedido;
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
-import com.anequimplus.utilitarios.Configuracao;
+import com.anequimplus.utilitarios.DisplaySet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -38,18 +37,17 @@ public class ActivityPedido extends AppCompatActivity {
     private RecyclerView listPedido ;
     private List<Pedido> pedidoList ;
     private Pedido pedido = null ;
-    private int orientation ;
+    private FloatingActionButton fab ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedido);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        //toolbar.setTitle("Faça o pedido");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,49 +61,59 @@ public class ActivityPedido extends AppCompatActivity {
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     if (i == KeyEvent.KEYCODE_DPAD_CENTER || i == KeyEvent.KEYCODE_ENTER) {
-                        setPedido(editPedido.getText());
+                        setPedido();
                         return true;
                     }
                 }
                 return false;
             }
         });
-   }
+        listPedido = (RecyclerView)findViewById(R.id.listPedidoGrade) ;
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         editPedido.setText("");
-        orientation = (getWindowManager().getDefaultDisplay().getRotation() > 2) ? 2 : 1 ;
         display() ;
     }
 
     private void display(){
-        Log.i("orientation", "orientation "+orientation) ;
-        GridLayoutManager layoutManager=new GridLayoutManager(this,orientation < 1 ? 1 : orientation);
-        // at last set adapter to recycler view.
-        listPedido.setLayoutManager(layoutManager);
+        // Lista de Pedidos pendentes ;
         pedidoList =  Dao.getPedidoADO(getBaseContext()).getList() ;
-        if (!Configuracao.getPedidoCompartilhado(this)){
-            for (ContaPedido cp: Dao.getContaPedidoInternoDAO(this).getListAbertos()) {
-                Pedido p = new Pedido(cp.getId(), cp.getPedido(), cp.getData(), new ArrayList<PedidoItem>()) ;
-                for (ContaPedidoItem it : cp.getListContaPedidoItem()) {
-                    ItenSelect i = new ItenSelect(0, null, it.getQuantidade(), 0,0,it.getValor(), "") ;
-                    p.getListPedidoItem().add(new PedidoItem(it.getId(), p, i)) ;
+        new ConexaoContaPedido(this) {
+            @Override
+            public void oK(List<ContaPedido> l) {
+                for (ContaPedido cp: l) {
+                    Pedido p = new Pedido(cp.getId(), cp.getPedido(), cp.getData(), new ArrayList<PedidoItem>()) ;
+                    for (ContaPedidoItem it : cp.getListContaPedidoItem()) {
+                        ItenSelect i = new ItenSelect(0, null, it.getQuantidade(), 0,0,it.getValor(), "") ;
+                        p.getListPedidoItem().add(new PedidoItem(it.getId(), p, i)) ;
+                    }
+                    p.setStatus(2);
+                    pedidoList.add(p) ;
                 }
-                p.setStatus(2);
-                pedidoList.add(p) ;
+                displayView(pedidoList);
             }
-        }
-        listPedido.setAdapter(new PedidoAdapterView(pedidoList) {
+
+            @Override
+            public void erro(String mgg) {
+                displayView(pedidoList);
+                alert(msg);
+
+            }
+        }.execute();
+    }
+
+    private void displayView(List<Pedido> l){
+        GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+        listPedido.setLayoutManager(layoutManager);
+        listPedido.setAdapter(new PedidoAdapterView(l) {
             @Override
             public void setConta(Pedido p) {
                 if (p.getStatus() == 2) {
-                    Intent intent = new Intent(getBaseContext(), ActivityConta.class);
-                    Bundle params = new Bundle();
-                    params.putInt("CONTA_ID", p.getId());
-                    intent.putExtras(params);
-                    startActivity(intent);
+                    viewConta(p) ;
                 } else {
                     new AlertDialog.Builder(ActivityPedido.this)
                             .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -129,8 +137,14 @@ public class ActivityPedido extends AppCompatActivity {
                 addPedido();
             }
         });
+    }
 
-
+    public void viewConta(Pedido p){
+        Intent intent = new Intent(getBaseContext(), ActivityConta.class);
+        Bundle params = new Bundle();
+        params.putInt("CONTA_ID", p.getId());
+        intent.putExtras(params);
+        startActivity(intent);
     }
 
     private void enviarPedidos() {
@@ -164,7 +178,7 @@ public class ActivityPedido extends AppCompatActivity {
                 .setPositiveButton("OK",null).show();
     }
 
-    public void setPedido(Editable p){
+    public void setPedido(){
         if (editPedido.getText().toString().equals("")){
             setAlert("Pedido inválido!") ;
         } else  addPedido();
@@ -172,8 +186,7 @@ public class ActivityPedido extends AppCompatActivity {
 
 
     private void addPedido(){
-        Dao.getItemSelectADO(getBaseContext()).getList().clear();
-        pedido = Dao.getPedidoADO(getBaseContext()).getPedido(editPedido.getText().toString()) ;
+        pedido = Dao.getPedidoADO(this).getPedido(editPedido.getText().toString()) ;
         Intent intent = new Intent(getBaseContext(), ActivityEnvioPedido.class) ;
         Bundle params = new Bundle() ;
         params.putInt("PEDIDO_ID", pedido.getId());
@@ -204,7 +217,7 @@ public class ActivityPedido extends AppCompatActivity {
             return true;
         }
         if (item.getItemId() == R.id.action_pedido_ok) {
-            setPedido(editPedido.getText());
+            setPedido();
             return true;
         }
         return true ; //super.onOptionsItemSelected(item);
@@ -213,18 +226,7 @@ public class ActivityPedido extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
-        orientation = newConfig.orientation ;
-        display();
-        /*
-        int r = orientation ;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "Landscape Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "Portrait Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
-        }
-         */
-
+        displayView(pedidoList);
     }
 
 }

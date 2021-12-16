@@ -2,29 +2,30 @@ package com.anequimplus.anequimdroid;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.adapter.GradeVendasAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.conexoes.ConexaoGradeVendas;
 import com.anequimplus.entity.GradeVendas;
+import com.anequimplus.utilitarios.DisplaySet;
 
 import java.util.List;
 
 public class ActivityGradeVendas extends AppCompatActivity {
 
-    private ListView GradeVendas;
+    private RecyclerView GradeVendas;
     private List<GradeVendas> listGradevendas;
     private static int RESULT_PRODUTO = 1 ;
 
@@ -36,22 +37,31 @@ public class ActivityGradeVendas extends AppCompatActivity {
         toolbar.setSubtitle(getIntent().getStringExtra("SUBTITULO"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        GradeVendas = findViewById(R.id.listGrupo);
-        GradeVendas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                setGradeVendasItens(listGradevendas.get(i)) ;
-            }
-        });
-        setResult(RESULT_CANCELED);
+        GradeVendas = (RecyclerView) findViewById(R.id.listGradeVendase);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        listGradevendas = Dao.getGradeVendasADO(this).getGradeVendas() ;
-        GradeVendas.setAdapter(new GradeVendasAdapter(this,listGradevendas));
+        grade();
     }
+
+    public void grade(){
+        GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+        GradeVendas.setLayoutManager(layoutManager);
+        listGradevendas = Dao.getGradeVendasADO(this).getGradeVendas() ;
+        GradeVendas.setAdapter(new GradeVendasAdapter(this, listGradevendas) {
+            @Override
+            public void selecionado(GradeVendas g) {
+                Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
+                Bundle params = new Bundle() ;
+                params.putInt("GRADE_ID", g.getId());
+                intent.putExtras(params) ;
+                startActivityForResult(intent, RESULT_PRODUTO);
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,11 +85,7 @@ public class ActivityGradeVendas extends AppCompatActivity {
        new ConexaoGradeVendas(this) {
                 @Override
                 public void oK() {
-                    //Toast.makeText(getBaseContext(), "ok", Toast.LENGTH_SHORT).show();
-                    // listViewGrupo.setAdapter(new GrupoAdapter(getBaseContext(), Dao.getGrupoDAO(getBaseContext()).getlistGrade()));
-                    listGradevendas = Dao.getGradeVendasADO(getBaseContext()).getGradeVendas() ;
-                    GradeVendas.setAdapter(new GradeVendasAdapter(getBaseContext(),listGradevendas));
-
+                    grade();
                 }
 
                 @Override
@@ -89,14 +95,6 @@ public class ActivityGradeVendas extends AppCompatActivity {
 
                 }
             }.execute() ;
-    }
-
-    private void setGradeVendasItens(GradeVendas grade) {
-        Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
-        Bundle params = new Bundle() ;
-        params.putInt("GRADE_ID", grade.getId());
-        intent.putExtras(params) ;
-        startActivityForResult(intent, RESULT_PRODUTO);
     }
 
     @Override
@@ -122,5 +120,13 @@ public class ActivityGradeVendas extends AppCompatActivity {
                     }
                 }).show();
     }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        grade();
+    }
+
 
 }

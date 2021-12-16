@@ -80,6 +80,7 @@ public class ProdutoADO {
                         res.getInt(res.getColumnIndex("STATUS")),
                         res.getDouble(res.getColumnIndex("PRECO")),
                         res.getDouble(res.getColumnIndex("COMISSAO"))));
+                Log.i("ProdutosC", l.get(l.size()-1).toString());
                 res.moveToNext();
         }
         return l;
@@ -156,6 +157,7 @@ public class ProdutoADO {
         contentValues.put("CODIGO", produto.getCodBarra());
         contentValues.put("UNIDADE", produto.getUnidade());
         contentValues.put("DESCRICAO", produto.getDescricao());
+        contentValues.put("IMAGEM", produto.getImagem());
         contentValues.put("STATUS", produto.getStatus());
         contentValues.put("PRECO", produto.getPreco());
         contentValues.put("COMISSAO", produto.getComissao());

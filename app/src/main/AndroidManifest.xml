@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.anequimplus.anequimdroid"
-    android:targetSandboxVersion="1">
+    android:targetSandboxVersion="1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -29,7 +29,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
-        tools:replace="android:icon,android:theme">
+        tools:replace="android:icon,android:theme" >
         <activity
             android:name=".ActivityTerminal"
             android:exported="false" />
@@ -117,10 +117,10 @@
             android:name=".ActivityPrincipal"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ActivityInicial"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,11 +5,18 @@
       <map>
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/botao_customizado.xml" value="0.2046875" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/botao_customizado_n.xml" value="0.14947916666666666" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/edit_customizado.xml" value="0.2203125" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/foto_customizado.xml" value="0.10104166666666667" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/ic_baseline_remove_24.xml" value="0.2203125" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/ic_lupa_search_24.xml" value="0.2203125" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.2203125" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_autenticacao.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_configuracao.xml" value="0.18931159420289856" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_conta.xml" value="0.33" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_conta.xml" value="0.3202247191011236" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_conta_cancelamento.xml" value="0.16614583333333333" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_conta_transferencia.xml" value="0.13405797101449277" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_enviopedido.xml" value="0.1" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_grade_vendas.xml" value="0.17708333333333334" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_grade_vendas.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_venda_item.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grade_vendas.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_grupo.xml" value="0.18854166666666666" />
@@ -23,8 +30,8 @@
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_terminal.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/activity_venda_vista.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_autenticacao.xml" value="0.25" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_conta.xml" value="0.1" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_envio_pedido.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_conta.xml" value="0.33" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_envio_pedido.xml" value="0.33" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grade_venda_item.xml" value="0.33" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grade_vendas.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_activity_grupo.xml" value="0.18854166666666666" />
@@ -35,13 +42,16 @@
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_login.xml" value="0.14201183431952663" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/content_principal.xml" value="0.14739583333333334" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_conta.xml" value="0.18070652173913043" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_grade_venda_item.xml" value="0.17708333333333334" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_conta_cancelamento.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_conta_view.xml" value="0.18" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_grade_venda_item.xml" value="0.67" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_modalidade.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pagamento_venda.xml" value="0.1" />
-        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pedido.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pedido.xml" value="0.33" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_pedidoitem.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_produto.xml" value="0.25" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_grade_venda_vista_lista.xml" value="0.1" />
+        <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/layout/layout_pergunta_transferencia.xml" value="0.1" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_autenticacao_antigo.xml" value="0.15416666666666667" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_grupo.xml" value="0.18854166666666666" />
         <entry key="..\:/ST/ProjetoAnequimPlus/ContaCliente/AnequimDroidPlus2/app/src/main/res/menu/menu_principal.xml" value="0.18854166666666666" />

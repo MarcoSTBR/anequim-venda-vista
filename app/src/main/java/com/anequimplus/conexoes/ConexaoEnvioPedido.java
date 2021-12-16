@@ -130,6 +130,7 @@ public abstract class ConexaoEnvioPedido extends ConexaoServer {
         } else {
             Dao.getContaPedidoInternoDAO(ctx).atualizar(list) ;
             Dao.getPedidoADO(ctx).delete();
+
             envioOK(list.size());
         }
 

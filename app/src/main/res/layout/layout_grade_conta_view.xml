@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/botao_customizado"
+    android:layout_marginBottom="5dp"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/botao_customizado"
+        >
+
+        <TextView
+            android:id="@+id/TextViewConta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="TextViewConta"
+            android:textSize="10sp" />
+
+        <ImageButton
+            android:id="@+id/cancelarItemConta"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_below="@id/TextViewConta"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/botao_customizado"
+            android:src="@android:drawable/ic_menu_delete" />
+
+        <TextView
+            android:id="@+id/textQuantidadeValorContaItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/cancelarItemConta"
+            android:gravity="center"
+            android:paddingTop="20dp"
+            android:text="2 x R$ 4,00 = R$ 25,00" />
+
+        <ImageButton
+            android:id="@+id/transferenciaItemConta"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/cancelarItemConta"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/botao_customizado"
+            android:src="@android:drawable/ic_menu_set_as" />
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

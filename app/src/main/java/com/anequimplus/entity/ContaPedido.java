@@ -140,4 +140,13 @@ public class ContaPedido implements Serializable {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public List<ContaPedidoItem> getListContaPedidoItemAtivos(){
+        List<ContaPedidoItem> l = new ArrayList<ContaPedidoItem>() ;
+        for (ContaPedidoItem it : listContaPedidoItem){
+            if (it.getStatus() == 1)
+                l.add(it) ;
+        }
+        return  l ;
+    }
 }

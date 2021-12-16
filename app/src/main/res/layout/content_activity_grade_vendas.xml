@@ -8,12 +8,12 @@
     tools:context=".ActivityGradeVendas"
     tools:showIn="@layout/activity_grade_vendas">
 
-    <ListView
-        android:id="@+id/listGrupo"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listGradeVendase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:listitem="@layout/activity_grade_grade_vendas"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

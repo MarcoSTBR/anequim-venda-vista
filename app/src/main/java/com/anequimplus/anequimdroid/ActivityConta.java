@@ -1,5 +1,6 @@
 package com.anequimplus.anequimdroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,8 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,38 +20,40 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.ContaPedidoAdapter;
+import com.anequimplus.adapter.ContaPedidoViewAdapter;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoConfiguracaoLio;
 import com.anequimplus.conexoes.ConexaoContaPedido;
-import com.anequimplus.conexoes.ConexaoImpressaoContaPedido;
+import com.anequimplus.conexoes.ConexaoContaPedidoItemCancelar;
 import com.anequimplus.conexoes.ConexaoPagamentoConta;
 import com.anequimplus.conexoes.ConexaoPagamentoLio;
 import com.anequimplus.conexoes.ConexaoServidor;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
+import com.anequimplus.entity.ContaPedidoItem;
+import com.anequimplus.entity.ContaPedidoItemCancelamento;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.impressao.ListenerImpressao;
 import com.anequimplus.tipos.PagamentoStatus;
 import com.anequimplus.tipos.TipoModalidade;
+import com.anequimplus.utilitarios.DisplaySet;
 import com.anequimplus.utilitarios.UtilSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.json.JSONException;
-
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityConta extends AppCompatActivity {
 
-    private List<String> listContaPedidoSelect ;
-    private ListView gradeConta ;
+    private RecyclerView gradeConta ;
     private ContaPedido contaPedido ;
     private Modalidade modalidade ;
     private Toolbar toolbar ;
@@ -62,7 +67,6 @@ public class ActivityConta extends AppCompatActivity {
     private String clientID ;
     private String accessToken ;
     private ListenerImpressao listenerImpressao ;
-    private int orientation ;
     private int idContaSelecionada = -1 ;
 
     @Override
@@ -70,7 +74,6 @@ public class ActivityConta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conta);
         idContaSelecionada = getIntent().getIntExtra("CONTA_ID",-1) ;
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,48 +103,10 @@ public class ActivityConta extends AppCompatActivity {
                 return true;
             }
         });
-
-        listContaPedidoSelect = new ArrayList<String>() ;
         gradeConta = findViewById(R.id.gradeConta);
         spinnerImp     = (Spinner) findViewById(R.id.spinnerImpConta) ;
-       // listImpressora = null ;
-        orientation = 2 ;
     }
 
-    private void fechamentoPedido() {
-        /*
-        if ((listContaPedidoSelect.size() > 0) && (impressoraPadrao != null)) {
-            //NFCeSetContaPedido
-            try {
-                new ConexaoNFCe(getBaseContext(), listContaPedidoSelect) {
-                    @Override
-                    public void setNFCE(NFCe nfce) {
-                        Intent intent = new Intent(getBaseContext(), ActivityNFCe.class);
-                        Bundle params = new Bundle();
-                        params.putString("CHAVE", nfce.getChave());
-                        intent.putExtras(params);
-                        startActivity(intent);
-
-                    }
-
-                    @Override
-                    public void erro(String msg) {
-                        alerta("Erro", msg) ;
-                    }
-                }.execute();
-            } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-                e.printStackTrace();
-                alerta("Erro", e.getMessage()) ;
-            }
-        } else {
-            if (listContaPedidoSelect.size() == 0)
-                alerta("Atenção", "Selecione uma Conta ou Mais Contas!");
-            if (impressoraPadrao == null)
-                alerta("Atenção", "Selecione uma Impressora!");
-        }
-     */
-
-    }
 
     @Override
     protected void onResume() {
@@ -238,7 +203,7 @@ public class ActivityConta extends AppCompatActivity {
 
         } else Toast.makeText(getBaseContext(), "Caixa Fchado!" ,Toast.LENGTH_SHORT).show();
     }
-
+/*
     private void setSubtitleTotal() {
         double v = 0 ;
         ContaPedido c  = null ;
@@ -253,6 +218,8 @@ public class ActivityConta extends AppCompatActivity {
         }
         toolbar.setSubtitle(txt);
     }
+
+ */
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -284,23 +251,49 @@ public class ActivityConta extends AppCompatActivity {
         return true;
     }
 
-
     private void consultarConta() {
-        Log.i("idContaSelecionada", "idContaSelecionada "+idContaSelecionada) ;
-            new ConexaoContaPedido(this, idContaSelecionada) {
-                @Override
-                public void oK() {
-                  preencherGrade();
-                }
+       Log.i("consultarConta", "idContaSelecionada "+idContaSelecionada) ;
+       new ConexaoContaPedido(this) {
+              @Override
+              public void oK(List<ContaPedido> l) {
+                 selecionanalista(l);
+              }
 
-                @Override
-                public void erro(String msg) {
-                    alert(msg);
-                }
-            }.execute() ;
+              @Override
+              public void erro(String msg) {
+                  alert(msg);
+              }
+          }.execute();
+    }
+
+    private void selecionanalista(List<ContaPedido> l) {
+        contaPedido = null ;
+        for (ContaPedido c : l){
+            Log.i("consultarConta", "ContaPedido "+c.getPedido()) ;
+            if (c.getId() == idContaSelecionada)
+                contaPedido = c ;
+        }
+        if (contaPedido == null){
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_notifications_black_24dp)
+                    .setTitle("Conta Pedido")
+                    .setMessage("Conta não encontrada!")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).show();
+
+        } else {
+            displayConta() ;
+        }
+
     }
 
     private void pagamentoConta(double v) {
+        /*
       if (listContaPedidoSelect.size() == 1){
          if (v > 0) {
              // contaPedido = listContaPedidoSelect.get(0) ;
@@ -314,9 +307,12 @@ public class ActivityConta extends AppCompatActivity {
       } else {
           alert("Selecione uma conta somente!") ;
       }
+
+         */
     }
 
     private void receberValor(){
+        /*
         caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
         if (caixa != null){
             if ((listContaPedidoSelect.size() == 1) && (caixa != null)) {
@@ -340,7 +336,7 @@ public class ActivityConta extends AppCompatActivity {
             }
         } else
             alert("Caixa Fechado!") ;
-/*
+
         try {
             new ConexaoCaixa(this, Link.fConsultaCaixa,  0.0){
 
@@ -470,7 +466,6 @@ public class ActivityConta extends AppCompatActivity {
         } else alert("Valor incorreto!");
     }
 
-
     private void alerta(String titulo, String txt){
          new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -481,6 +476,7 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void setImprimirPedido(){
+        /*
         if ((listContaPedidoSelect.size() > 0) && (impressoraPadrao != null)) {
             //contaPedido = Dao.getContaPedidoADO(getBaseContext()).getContaPedido(listContaPedidoSelect.get(0));
             try {
@@ -507,16 +503,21 @@ public class ActivityConta extends AppCompatActivity {
             if (impressoraPadrao == null)
                 alerta("Atenção", "Selecione uma Impressora!");
         }
-    }
 
+         */
+    }
+   /*
     private List<ContaPedido> getListPedidos(){
+
        List<ContaPedido> l = new ArrayList<ContaPedido>() ;
        for (String s : listContaPedidoSelect){
            l.add(Dao.getContaPedidoADO(getBaseContext()).getContaPedido(s)) ;
        }
       return l ;
-    }
 
+
+    }
+  */
     private void alert(String t){
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -527,30 +528,145 @@ public class ActivityConta extends AppCompatActivity {
 
     }
 
-    public void preencherGrade() {
-       // Toast.makeText(this, "Itens "+Dao.getContaPedidoADO(this).getList().size(), Toast.LENGTH_LONG).show();
-        gradeConta.setAdapter(new ContaPedidoAdapter(this, Dao.getContaPedidoADO(this).getList(),
-                listContaPedidoSelect, orientation) {
+    public void displayConta(){
+
+        TextView titulo = findViewById(R.id.tituloConta) ;
+        titulo.setText("Conta : "+contaPedido.getPedido());
+
+
+        ContaPedidoViewAdapter cpv = new ContaPedidoViewAdapter(contaPedido.getListContaPedidoItemAtivos()) {
             @Override
-            protected void chagoCheckBox() {
-                setSubtitleTotal();
+            public void cancelar(ContaPedidoItem item) {
+                perguntarCancelamento(item) ;
+            }
+
+            @Override
+            public void transferir(ContaPedidoItem item) {
+                setTransfere(item) ;
+                Toast.makeText(ActivityConta.this, "TRANSFERIR "+item.getProduto(), Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+        gradeConta.setLayoutManager(layoutManager);
+        gradeConta.setAdapter(cpv) ;
+
+    }
+
+    private void setTransfere(final ContaPedidoItem item) {
+        AlertDialog.Builder myBuiler = new AlertDialog.Builder(ActivityConta.this) ;
+        DecimalFormat qrm = new DecimalFormat("#0.###");
+        View mView = getLayoutInflater().inflate(R.layout.layout_pergunta_transferencia, null) ;
+        myBuiler.setView(mView) ;
+        AlertDialog alert = myBuiler.create() ;
+
+
+        TextView text_item = mView.findViewById(R.id.item_para_transferencia) ;
+        text_item.setText(qrm.format(item.getQuantidade())+" "+item.getProduto().getDescricao());
+        final EditText conta =  mView.findViewById(R.id.edit_para_conta) ;
+        Button confirmar = mView.findViewById(R.id.botao_trasnferencia_confirmar) ;
+        confirmar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!conta.getText().toString().isEmpty()){
+                    alert.dismiss();
+                    tranferirParaConta(conta.getText().toString(), item) ;;
+
+                } else Toast.makeText(ActivityConta.this, "Digite o número da conta corretamente!", Toast.LENGTH_SHORT).show();
             }
         });
-        setSubtitleTotal();
 
-      }
+        Button cancelar = mView.findViewById(R.id.botao_trasnferencia_cancela) ;
+        cancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    private void tranferirParaConta(String conta, ContaPedidoItem item) {
+        Toast.makeText(ActivityConta.this, "Tranferindo item item "+item.getProduto().getDescricao()+" para "+conta, Toast.LENGTH_LONG).show();
+    }
+
+
+    private void perguntarCancelamento(final ContaPedidoItem item){
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Cancelamento")
+                .setMessage("Cancelar "+item.getQuantidade()+" "+item.getProduto().getDescricao())
+                .setCancelable(false)
+                .setNegativeButton("Não", null)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancelarItem(item) ;
+                    }
+                })
+                .show();
+
+    }
+    private void cancelarItem(ContaPedidoItem item) {
+        Log.i("cancelarItem", item.getProduto().getDescricao()) ;
+        ContaPedidoItemCancelamento cancel = new ContaPedidoItemCancelamento(0, UtilSet.getUUID(), item.getId(), item.getUUID(), new Date(),
+                UtilSet.getUsuarioId(this), item.getQuantidade(), 1) ;
+
+        new ConexaoContaPedidoItemCancelar(this, cancel) {
+            @Override
+            public void Ok() {
+                consultarConta() ;
+
+            }
+
+            @Override
+            public void erro(int cod, String msg) {
+                alert(msg);
+
+            }
+        }.execute() ;
+
+    }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        orientation = newConfig.orientation ;
-        int r = orientation ;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "Landscape Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "Portrait Mode "+orientation+" "+r, Toast.LENGTH_SHORT).show();
+        displayConta() ;
+    }
+    private void fechamentoPedido() {
+        /*
+        if ((listContaPedidoSelect.size() > 0) && (impressoraPadrao != null)) {
+            //NFCeSetContaPedido
+            try {
+                new ConexaoNFCe(getBaseContext(), listContaPedidoSelect) {
+                    @Override
+                    public void setNFCE(NFCe nfce) {
+                        Intent intent = new Intent(getBaseContext(), ActivityNFCe.class);
+                        Bundle params = new Bundle();
+                        params.putString("CHAVE", nfce.getChave());
+                        intent.putExtras(params);
+                        startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void erro(String msg) {
+                        alerta("Erro", msg) ;
+                    }
+                }.execute();
+            } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+                e.printStackTrace();
+                alerta("Erro", e.getMessage()) ;
+            }
+        } else {
+            if (listContaPedidoSelect.size() == 0)
+                alerta("Atenção", "Selecione uma Conta ou Mais Contas!");
+            if (impressoraPadrao == null)
+                alerta("Atenção", "Selecione uma Impressora!");
         }
-        preencherGrade() ;
+     */
+
     }
 
 }

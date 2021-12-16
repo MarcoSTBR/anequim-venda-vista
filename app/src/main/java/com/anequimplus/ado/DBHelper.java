@@ -1,8 +1,10 @@
 package com.anequimplus.ado;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -88,6 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS MODALIDADE") ;
         db.execSQL("DROP TABLE IF EXISTS LOJA") ;
     }
+
 
     public static void criarTabelas(SQLiteDatabase db){
         //Datetime	TEXT	aaaa-MM-DD HH: mm: SS. FFFFFFF
@@ -175,6 +178,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "VALOR DOUBLE, "
                 + "STATUS INTEGER, "
                 + "OBS TEXT) ");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_ITEM_CANCEL ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "CONTA_PEDIDO_ITEM_ID INTEGER, "
+                + "CONTA_PEDIDO_ITEM_UUID TEXT, "
+                + "SYSTEM_USER_ID INTEGER, "
+                + "QUANTIDADE DOUBLE, "
+                + "STATUS INTEGER) ");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_OPG_I ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -271,5 +283,28 @@ public class DBHelper extends SQLiteOpenHelper {
         excluirTabelas(db);
         criarTabelas(db);
 
+    }
+
+    public void excluirTodasTabelas(Context ctx){
+        SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
+        Cursor res =  db.rawQuery( "SELECT name FROM sqlite_master", null );
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            String tabela = res.getString(res.getColumnIndex("name")) ;
+            Log.i("tabelas", tabela) ;
+            if ((!tabela.equals("android_metadata")) && (tabela.equals("sqlite_sequence")))
+              db.execSQL("DROP TABLE IF EXISTS "+tabela) ;
+            res.moveToNext();
+        }
+    }
+
+    public void listarTabelas(Context ctx){
+        SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
+        Cursor res =  db.rawQuery( "SELECT name FROM sqlite_master", null );
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            Log.i("tabelas", res.getString(res.getColumnIndex("name"))) ;
+            res.moveToNext();
+        }
     }
 }

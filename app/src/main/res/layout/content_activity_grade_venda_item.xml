@@ -28,13 +28,14 @@
             android:orientation="vertical"
             android:scrollbars="vertical">
 
-
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gradeProdutoSelct"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:listitem="@layout/layout_grade_grade_venda_item"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                />
 
-            </ListView>
 
         </LinearLayout>
     </LinearLayout>

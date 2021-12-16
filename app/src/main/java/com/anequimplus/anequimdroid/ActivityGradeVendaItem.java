@@ -1,73 +1,48 @@
 package com.anequimplus.anequimdroid;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.anequimplus.adapter.GradeVendasItensAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.entity.GradeVendas;
+import com.anequimplus.entity.GradeVendasItem;
 import com.anequimplus.entity.ItenSelect;
-import com.anequimplus.entity.Produto;
+import com.anequimplus.utilitarios.DisplaySet;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityGradeVendaItem extends AppCompatActivity {
 
-    private ListView gradeProduto ;
-    private GradeVendas gradeVendas;
+    private RecyclerView gradeProduto ;
     private EditText editTextFiltroProduto ;
     private Toolbar toolbar ;
-    private List<Produto> produtoList ;
+    private GradeVendas gradeVendas ;
+    private List<ItenSelect> itensList ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade_venda_item);
-
-//        gradeVendas =  Dao.getGrupoDAO(getBaseContext()).getGrupoID(getIntent().getIntExtra("GRADE_ID",0)) ;
-
         toolbar = findViewById(R.id.toolbar);
         toolbar.setSubtitle("Selecione o Produto");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextFiltroProduto = findViewById(R.id.editTextFiltroProduto );
-        editTextFiltroProduto.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filtrar() ;
-            }
-        });
         gradeProduto = findViewById(R.id.gradeProdutoSelct);
-        setResult(RESULT_CANCELED);
+        gradeVendas =  Dao.getGradeVendasADO(this).getId(getIntent().getIntExtra("GRADE_ID",0)) ;
     }
 
     @Override
@@ -83,6 +58,7 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.action_produto_ok){
             //Intent intent = getIntent().putExtra("",m.getId());
+            Dao.getItemSelectADO(this).setList(itensList) ;
             setResult(RESULT_OK, getIntent());
             finish();
         }
@@ -92,19 +68,58 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        gradeVendas =  Dao.getGradeVendasADO(getBaseContext()).getId(getIntent().getIntExtra("GRADE_ID",0)) ;
+        carregarInicial();
         toolbar.setTitle(gradeVendas.getDescricao());
-        produtoList = Dao.getGradeVendasItemADO(this).getGradeVendasProdutos(gradeVendas) ;
-       // Toast.makeText(this, "Grupo "+grupo.getDescricao()+ " n "+produtoList.size(), Toast.LENGTH_LONG ).show();
+        editTextFiltroProduto.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                display() ;
+            }
+        });
         editTextFiltroProduto.setText("");
-        filtrar() ;
     }
 
-    private void filtrar() {
-        gradeProduto.setAdapter(new getProdutoAdapter(getBaseContext(),
-                Dao.getProdutoADO(getBaseContext()).getFiltro(produtoList,
-                editTextFiltroProduto.getText().toString()))) ;
+    private void carregarInicial(){
+        itensList = new ArrayList<ItenSelect>() ;
+        for (GradeVendasItem it : Dao.getGradeVendasItemADO(this).getGradeVendasItem(gradeVendas)) {
+            if (it.getStatus() == 1){
+                itensList.add(new ItenSelect(it.getId(), it.getProduto(), 0,0,0,0,""));
+            }
+        }
     }
+
+    private void display(){
+        GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+        // at last set adapter to recycler view.
+        gradeProduto.setLayoutManager(layoutManager);
+        gradeProduto.setAdapter(new GradeVendasItensAdapter(this, getList()));
+    }
+
+    private List<ItenSelect> getList(){
+        List<ItenSelect> l = new ArrayList<ItenSelect>() ;
+        String filtro = editTextFiltroProduto.getText().toString().toUpperCase() ;
+        if (filtro.equals("")) {
+            l = itensList ;
+        } else {
+            for (ItenSelect it : itensList) {
+                if (it.getProduto().getDescricao().toUpperCase().indexOf(filtro) > -1)
+                    l.add(it);
+            }
+        }
+        return l ;
+    }
+/*
+
 
     private void setValor(){
         DecimalFormat frm = new DecimalFormat("R$ #0.00");
@@ -242,7 +257,14 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
 
     }
 
+*/
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        display();
+    }
 
 }
 

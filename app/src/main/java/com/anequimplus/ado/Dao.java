@@ -173,4 +173,14 @@ public class Dao {
         } else return contaPedidoItemInternoDAO ;
     }
 
+    private static ContaPedidoItemCancelamentoDAO contaPedidoItemCancelamentoDAO = null ;
+    public static ContaPedidoItemCancelamentoDAO getContaPedidoItemCancelamentoDAO(Context ctx){
+        if (contaPedidoItemCancelamentoDAO == null){
+            contaPedidoItemCancelamentoDAO = new ContaPedidoItemCancelamentoDAO(ctx) ;
+            return contaPedidoItemCancelamentoDAO ;
+        } else return contaPedidoItemCancelamentoDAO ;
+    }
+
+
+
 }
