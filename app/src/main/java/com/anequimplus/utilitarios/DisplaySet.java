@@ -19,6 +19,7 @@ public class DisplaySet {
             break;
             case Configuration.ORIENTATION_LANDSCAPE: v = 2 ;
             break;
+            default: v= 1 ;
         }
         Log.i("getNumeroDeColunasGrade", "ORIENTATION "+ctx.getResources().getConfiguration().orientation) ;
         Log.i("getNumeroDeColunasGrade", "v "+v) ;
@@ -31,8 +32,15 @@ public class DisplaySet {
         Log.i("getNumeroDeColunasGrade", " x "+ size.x) ;
         Log.i("getNumeroDeColunasGrade", " y "+ size.y) ;
 
+        int colunas = 1 ;
+        int divisor = 1080 ;
+        colunas = Math.abs(size.x / divisor) ;
+        Log.i("getNumeroDeColunasGrade", " "+ size.x+"/"+divisor+" = "+ colunas) ;
 
+        if (colunas < 1) colunas = 1 ;
 
-        return (int) size.x / 600  ;
+        Log.i("getNumeroDeColunasGrade", "  colunas "+  colunas) ;
+
+        return colunas  ;
     }
 }

@@ -1,10 +1,7 @@
 package com.anequimplus.conexoes;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
@@ -45,12 +42,12 @@ public abstract class ConexaoLogin extends ConexaoServer {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         try {
-            Log.i("LOGADO", s) ;
+            Log.i("LOGADO", "cod "+codInt+" "+s) ;
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")){
                 String token = j.optJSONObject("data").getString("access_token") ;
@@ -66,7 +63,7 @@ public abstract class ConexaoLogin extends ConexaoServer {
             } else erro(codInt, j.getString("data"));
         } catch (JSONException e) {
             e.printStackTrace();
-            erro(codInt, e.getMessage());
+            erro(codInt, s);
         }
 
     }

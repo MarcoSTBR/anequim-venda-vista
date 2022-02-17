@@ -1,6 +1,7 @@
 package com.anequimplus.conexoes;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
@@ -38,12 +39,13 @@ public abstract class ConexaoImpressoras extends ConexaoServer {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        Log.i("conexaoImpressora", "Cod "+codInt+" "+s) ;
         try {
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")) {
                 Dao.getImpressoraADO(ctx).ImpressoraADD(j.getJSONArray("data"));
                 Ok() ;
-            } else erroMensagem(j.getString("status"));
+            } else erroMensagem(j.getString("data"));
         } catch (JSONException e) {
             e.printStackTrace();
             erroMensagem(e.getMessage());

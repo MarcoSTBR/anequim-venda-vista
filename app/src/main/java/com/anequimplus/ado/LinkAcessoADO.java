@@ -31,11 +31,27 @@ public class LinkAcessoADO {
         this.ctx = ctx ;
         list = new ArrayList<LinkAcesso>() ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-        delete();
-        iniciarPadrao() ;
+
     }
 
-    private void iniciarPadrao()  {
+    public LinkAcesso getLinkAcesso(Link link) throws ExceptionLinkNaoEncontrado, MalformedURLException {
+        iniciarPadrao() ;
+        List<LinkAcesso> ls = getList() ;
+        for (LinkAcesso l : ls){
+            Log.i("LINKS", "link "+link.valor) ;
+            //  Log.i("LINKS", "l "+l.getLink().valor) ;
+            if (link.valor.equals(l.getLink().valor)){
+                if ((l.getUrl().toString() == "") || (l.getUrl() == null))
+                    throw new ExceptionLinkNaoEncontrado(link);
+
+                return  l ;
+            }
+        }
+        throw new ExceptionLinkNaoEncontrado(link);
+    }
+
+    public void iniciarPadrao()  {
+        delete();
         try {
             //URL serv = new URL("http://10.0.0.103/design/rest.php") ;
            // URL serv = new URL("https://pampofood.com.br/anequimfood/rest.php") ;
@@ -51,16 +67,16 @@ public class LinkAcessoADO {
             String link = "" ;
             URL url = new URL(serv + link) ;
             int i = 0 ;
-            if (getList().size() == 0) {
-                delete();
                 inserir(new LinkAcesso(i++,Link.fAutenticacao,url));
                 inserir(new LinkAcesso(i++,Link.fLogar,url));
                 inserir(new LinkAcesso(i++,Link.fAtualizarCaixa,url));
                 inserir(new LinkAcesso(i++,Link.fLinkAcesso,url));
                 inserir(new LinkAcesso(i++,Link.fCancelarPedidoItem,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaProduto,url));
+                inserir(new LinkAcesso(i++,Link.fTransferencia,url));
                 inserir(new LinkAcesso(i++,Link.fIncluirPedido,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaPedido,url));
+                inserir(new LinkAcesso(i++,Link.fAlterarPedido,url));
                 inserir(new LinkAcesso(i++,Link.fPagamentoPedido,url));
                 inserir(new LinkAcesso(i++,Link.fTesteConexao,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaModalidade,url));
@@ -85,25 +101,10 @@ public class LinkAcessoADO {
                 inserir(new LinkAcesso(i++,Link.fSetVendaVista,url));
                 inserir(new LinkAcesso(i++,Link.fAtualizaTerminal,url));
                 inserir(new LinkAcesso(i++,Link.fConsultaTerminal,url));
-
-            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-    }
-
-    public LinkAcesso getLinkAcesso(Link link) throws ExceptionLinkNaoEncontrado, MalformedURLException {
-       // atualizaList() ;
-        List<LinkAcesso> ls = getList() ;
-        for (LinkAcesso l : ls){
-            Log.i("LINKS", "link "+link.valor) ;
-            Log.i("LINKS", "l "+l.getLink().valor) ;
-            if (link.valor.equals(l.getLink().valor)){
-                return  l ;
-            }
-        }
-        throw new ExceptionLinkNaoEncontrado(link);
     }
 
     public static class ExceptionLinkNaoEncontrado extends Exception{
@@ -168,10 +169,10 @@ public class LinkAcessoADO {
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            Log.i("LINKS_res", res.getString(res.getColumnIndex("LINK")));
-            Link link= Link.valueOf(res.getString(res.getColumnIndex("LINK"))) ;
-            URL url = new URL(res.getString(res.getColumnIndex("URL"))) ;
-            list.add(new LinkAcesso(res.getInt(res.getColumnIndex("ID")),
+            Log.i("LINKS_res", res.getString(res.getColumnIndexOrThrow("LINK")));
+            Link link= Link.valueOf(res.getString(res.getColumnIndexOrThrow("LINK"))) ;
+            URL url = new URL(res.getString(res.getColumnIndexOrThrow("URL"))) ;
+            list.add(new LinkAcesso(res.getInt(res.getColumnIndexOrThrow("ID")),
                     link,
                     url)) ;
             res.moveToNext();

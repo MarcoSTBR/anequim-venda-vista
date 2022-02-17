@@ -2,6 +2,7 @@ package com.anequimplus.utilitarios;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -11,9 +12,6 @@ import com.auth0.android.jwt.JWT;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Base64;
-
 
 public class TokenSet {
 
@@ -45,9 +43,9 @@ public class TokenSet {
         return j.getString("loja") ;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public static String getPayload(Context ctx) {
-        Base64.Decoder base64 = Base64.getDecoder() ;
+        //Base64.Decoder base64 = Base64.getDecoder() ;
         String token = UtilSet.getToken(ctx) ;
 
         String[] arr = token.split("\\.");
@@ -56,7 +54,7 @@ public class TokenSet {
         for (String a : arr){
             Log.i("token",a) ;
             if (i == 2){
-                return new String(base64.decode(a));
+                return new String(Base64.decode(a, 0));
             }
             i++ ;
         }

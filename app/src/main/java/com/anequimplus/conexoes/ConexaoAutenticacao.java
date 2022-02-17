@@ -23,31 +23,26 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
     private String login ;
     private String password ;
 
-    public ConexaoAutenticacao(Context ctx ,String cnpj, String login, String password) {
+    public ConexaoAutenticacao(Context ctx ,String cnpj, String login, String password) throws MalformedURLException, LinkAcessoADO.ExceptionLinkNaoEncontrado {
         super(ctx);
+        msg = "Autenticação";
         token = "" ;
-        try {
-            this.cnpj = cnpj;
-            this.login = login;
-            this.password = password ;
-            maps.put("class", "AfoodAutenticacao");
-            maps.put("method", "autenticacao");
-            maps.put("cnpj", this.cnpj);
-            maps.put("login", this.login);
-            maps.put("password", UtilSet.md5(ctx, this.password));
-            msg = "Autenticação";
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAutenticacao).getUrl();
-        } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            erro(0, e.getMessage());
-        }
+        this.cnpj = cnpj;
+        this.login = login;
+        this.password = password ;
+        maps.put("class", "AfoodAutenticacao");
+        maps.put("method", "autenticacao");
+        maps.put("cnpj", this.cnpj);
+        maps.put("login", this.login);
+        maps.put("password", UtilSet.md5(ctx, this.password));
+        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAutenticacao).getUrl();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Log.e("ConexaoAutenticacarest",s) ;
+        Log.e("ConexaoAutenticacarest","Cod "+codInt+" "+s) ;
         try {
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")) {
@@ -65,7 +60,7 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
                 } else erro(codInt, j.getString("data"));
             } catch (JSONException e) {
                 e.printStackTrace();
-                erro(codInt, e.getMessage());
+                erro(codInt, s);
             }
     }
 

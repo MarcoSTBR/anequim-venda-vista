@@ -31,9 +31,9 @@ public class GrupoADO{
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            ls.add(new Grupo(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
+            ls.add(new Grupo(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
                     produtos)) ;
             res.moveToNext();
         }
@@ -47,9 +47,9 @@ public class GrupoADO{
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            ls.add(new Grupo(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
+            ls.add(new Grupo(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
                     produtos)) ;
             res.moveToNext();
         }
@@ -64,9 +64,9 @@ public class GrupoADO{
 //        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS FROM GRUPO WHERE ID = "+nid, null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            grupo = new Grupo(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
+            grupo = new Grupo(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
                     produtos) ;
             res.moveToNext();
         }

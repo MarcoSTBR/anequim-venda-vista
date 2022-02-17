@@ -52,10 +52,10 @@ public class GradeVendasADO {
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS ORDER BY ID ", null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            list.add(new GradeVendas(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    res.getString(res.getColumnIndex("IMAGEM"))));
+            list.add(new GradeVendas(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    res.getString(res.getColumnIndexOrThrow("IMAGEM"))));
             res.moveToNext();
         }
         return list ;
@@ -66,10 +66,10 @@ public class GradeVendasADO {
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS WHERE STATUS = ? ", new String[]{String.valueOf(status)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            list.add(new GradeVendas(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    res.getString(res.getColumnIndex("IMAGEM")))
+            list.add(new GradeVendas(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    res.getString(res.getColumnIndexOrThrow("IMAGEM")))
             );
             res.moveToNext();
         }
@@ -99,10 +99,10 @@ public class GradeVendasADO {
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, STATUS, IMAGEM FROM GRADE_VENDAS WHERE ID = ? ", new String[]{String.valueOf(id)});
         res.moveToFirst();
         if (res.isAfterLast() == false){
-            it = new GradeVendas(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    res.getString(res.getColumnIndex("IMAGEM"))
+            it = new GradeVendas(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    res.getString(res.getColumnIndexOrThrow("IMAGEM"))
             );
         }
         return it ;

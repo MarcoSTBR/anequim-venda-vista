@@ -3,179 +3,101 @@ package com.anequimplus.anequimdroid;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.anequimplus.ado.DBHelper;
-import com.anequimplus.conexoes.ConexaoAutenticacao;
-import com.anequimplus.conexoes.ConexaoConfTerminal;
-import com.anequimplus.conexoes.ConexaoGradeVendas;
-import com.anequimplus.conexoes.ConexaoImpressoras;
-import com.anequimplus.conexoes.ConexaoModalidade;
-import com.anequimplus.conexoes.ConexaoProdutos;
-import com.anequimplus.entity.Terminal;
-import com.anequimplus.utilitarios.TokenSet;
 import com.anequimplus.utilitarios.UtilSet;
 
 public class ActivityInicial extends AppCompatActivity {
+
+    private static Boolean flagEntrada = false;
+    private Button registrar  ;
+    private Button entrar ;
+    private static int LOGAR = 2 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicial);
-       // new DBHelper(this).limparTudo(this) ;
+        //new DBHelper(this).limparTudo(this) ;
+        registrar = findViewById(R.id.buttonRegistrar) ;
+        registrar.setText("Registrar CNPJ");
+        registrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                registrarCnpj() ;
+            }
+        });
+        entrar = findViewById(R.id.buttonEntrar) ;
+        entrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logar() ;
+            }
+        });
+    }
+
+    private void registrarCnpj() {
+        startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        new DBHelper(this).listarTabelas(this) ;
-        iniciar();
+        iniciar() ;
     }
 
-    public void iniciar(){
+    private void logar() {
+        startActivityForResult(new Intent(getBaseContext(), ActivityLogin.class), LOGAR);
+    }
 
-        if(UtilSet.getCnpj(getBaseContext()).equals("")){
-            startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
-
-        } else {
-            atualizarAutenticacao() ;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGAR) {
+            if (resultCode == RESULT_OK) {
+                flagEntrada = true ;
+                startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+            }
         }
     }
 
-    public void atualizarAutenticacao(){
-        new ConexaoAutenticacao(this, UtilSet.getCnpj(this), UtilSet.getLogin(this),
-                UtilSet.getPassword(this)) {
-            @Override
-            public void oK(String cnpj, String login) {
-                setProdutos() ;
-               // Toast.makeText(getBaseContext(), "Autenticação OK", Toast.LENGTH_LONG).show();
-            }
+    public void iniciar(){
+       if (UtilSet.getCnpj(this).equals("")) {
+           entrar.setVisibility(View.GONE);
+           registrar.setVisibility(View.VISIBLE);
+        } else {
+           entrar.setVisibility(View.VISIBLE);
+           registrar.setVisibility(View.GONE);
 
-            @Override
-            public void erro(int cod, String msg) {
-              try {
-                    TokenSet.validate(getBaseContext()) ;
-                    startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
-                } catch (TokenSet.ExceptionTokenExpirado exceptionTokenExpirado) {
-                    exceptionTokenExpirado.printStackTrace();
-                    startActivity(new Intent(getBaseContext(), ActivityLogin.class));
-                }
+        }
+       if (flagEntrada) {
 
-            }
-        }.execute();
+           new AlertDialog.Builder(this)
+                   .setIcon(R.drawable.ic_baseline_refresh_24)
+                   .setTitle("Sair")
+                   .setMessage("Deseja Sair do Aplicativo?")
+                   .setCancelable(false)
+                   .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                          finish();
+                       }
+                   }).
+                   setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                               @Override
+                               public void onClick(DialogInterface dialog, int which) {
+                                   startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+                               }
+                           }
+                   ).show();
+       }
     }
 
-    private void setProdutos() {
-        new ConexaoProdutos(this){
 
-            @Override
-            public void Ok() {
-                setTerminal() ;
-                //startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
-            }
-
-            @Override
-            public void erro(String msg) {
-                alert(msg) ;
-                //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
-            }
-        }.execute() ;
-    }
-
-    private void setTerminal(){
-
-       String mac = UtilSet.getMAC(this) ;
-       new ConexaoConfTerminal(this, mac) {
-            @Override
-            public void ok(Terminal t) {
-                setImpressoras() ;
-            }
-
-            @Override
-            public void erroMsg(int cod, String msg) {
-                if (cod == 202)
-                    startActivity(new Intent(getBaseContext(), ActivityTerminal.class));
-                 else
-                 //   setTerminal() ;
-                    alert(msg) ;
-
-            }
-        }.execute();
-    }
-
-    public void setImpressoras(){
-        new ConexaoImpressoras(this){
-
-            @Override
-            public void Ok() {
-                setGrade();
-
-            }
-
-            @Override
-            public void erroMensagem(String msg) {
-                alert(msg) ;
-            }
-        }.execute() ;
-
-    }
-    public void setGrade(){
-        new ConexaoGradeVendas(this){
-
-            @Override
-            public void oK() {
-                setModalidades() ;
-            }
-
-            @Override
-            public void erro(String msg) {
-                alert(msg) ;
-            }
-        }.execute() ;
-
-
-    }
-
-    public void setModalidades(){
-        new ConexaoModalidade(this){
-
-
-            @Override
-            public void oK() {
-                startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
-
-            }
-
-            @Override
-            public void erro(String msg) {
-                alert(msg) ;
-            }
-        }.execute();
-
-    }
-
-    private void alert(String txt){
-        new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("Retorno:")
-                .setMessage(txt)
-                .setCancelable(false)
-                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
-                    }
-                }).
-                setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-
-                    }
-                }
-                ).show();
-    }
 
 }

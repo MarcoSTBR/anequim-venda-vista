@@ -35,14 +35,7 @@ public class Dao {
             return pedidoItemADO ;
         } else return pedidoItemADO ;
     }
-
-    private static ContaPedidoADO contaPedidoADO = null ;
-    public static ContaPedidoADO getContaPedidoADO(Context ctx){
-        if (contaPedidoADO == null){
-            contaPedidoADO = new ContaPedidoADO(ctx) ;
-            return contaPedidoADO ;
-        } else return contaPedidoADO ;
-    }
+/*
 
     private static ContaPedidoItemADO contaPedidoItemADO = null ;
     public static ContaPedidoItemADO getContaPedidoItemADO(Context ctx){
@@ -51,9 +44,10 @@ public class Dao {
             return contaPedidoItemADO ;
         } else return contaPedidoItemADO ;
     }
+*/
 
     private static ContaPedidoPagamentoADO contaPedidoPagamentoADO = null ;
-    public static ContaPedidoPagamentoADO getPagamentoContaADO(Context ctx){
+    public static ContaPedidoPagamentoADO getContaPedidoPagamentoADO(Context ctx){
         if (contaPedidoPagamentoADO == null){
             contaPedidoPagamentoADO = new ContaPedidoPagamentoADO(ctx) ;
             return contaPedidoPagamentoADO;
@@ -66,14 +60,6 @@ public class Dao {
             modalidadeADO = new ModalidadeADO(ctx) ;
             return modalidadeADO ;
         } else return modalidadeADO ;
-    }
-
-    private static ItenSelectADO itemSelectADO = null ;
-    public static ItenSelectADO getItemSelectADO(Context ctx){
-        if (itemSelectADO == null){
-            itemSelectADO = new ItenSelectADO(ctx) ;
-            return itemSelectADO ;
-        } else return itemSelectADO ;
     }
 
     private static OpcoesFechamentoADO opcoesFechamentoADO = null ;
@@ -133,44 +119,20 @@ public class Dao {
         } else return opcoesPrincipalADO ;
     }
 
-    private static VendaVistaADO vendaVistaADO = null ;
-    public static VendaVistaADO getVendaVistaADO(Context ctx){
-        if (vendaVistaADO == null){
-            vendaVistaADO = new VendaVistaADO(ctx) ;
-            return vendaVistaADO ;
-        } else return vendaVistaADO ;
+    private static ContaPedidoDAO contaPedidoDAO = null ;
+    public static ContaPedidoDAO getContaPedidoInternoDAO(Context ctx){
+        if (contaPedidoDAO == null){
+            contaPedidoDAO = new ContaPedidoDAO(ctx) ;
+            return contaPedidoDAO;
+        } else return contaPedidoDAO;
     }
 
-    private static VendaVistaItemADO vendaVistaItemADO = null ;
-    public static VendaVistaItemADO getVendaVistaItemADO(Context ctx){
-        if (vendaVistaItemADO == null){
-            vendaVistaItemADO = new VendaVistaItemADO(ctx) ;
-            return vendaVistaItemADO ;
-        } else return vendaVistaItemADO ;
-    }
-
-    private static VendaVistaPagamentoADO vendaVistaPagamentoADO = null ;
-    public static VendaVistaPagamentoADO getVendaVistaPagamentoADO(Context ctx){
-        if (vendaVistaPagamentoADO == null){
-            vendaVistaPagamentoADO = new VendaVistaPagamentoADO(ctx) ;
-            return vendaVistaPagamentoADO ;
-        } else return vendaVistaPagamentoADO ;
-    }
-
-    private static ContaPedidoInternoDAO contaPedidoInternoDAO = null ;
-    public static ContaPedidoInternoDAO getContaPedidoInternoDAO(Context ctx){
-        if (contaPedidoInternoDAO == null){
-            contaPedidoInternoDAO = new ContaPedidoInternoDAO(ctx) ;
-            return contaPedidoInternoDAO ;
-        } else return contaPedidoInternoDAO ;
-    }
-
-    private static ContaPedidoItemInternoDAO contaPedidoItemInternoDAO = null ;
-    public static ContaPedidoItemInternoDAO getContaPedidoItemInternoDAO(Context ctx){
-        if (contaPedidoItemInternoDAO == null){
-            contaPedidoItemInternoDAO = new ContaPedidoItemInternoDAO(ctx) ;
-            return contaPedidoItemInternoDAO ;
-        } else return contaPedidoItemInternoDAO ;
+    private static ContaPedidoItemDAO contaPedidoItemDAO = null ;
+    public static ContaPedidoItemDAO getContaPedidoItemInternoDAO(Context ctx){
+        if (contaPedidoItemDAO == null){
+            contaPedidoItemDAO = new ContaPedidoItemDAO(ctx) ;
+            return contaPedidoItemDAO;
+        } else return contaPedidoItemDAO;
     }
 
     private static ContaPedidoItemCancelamentoDAO contaPedidoItemCancelamentoDAO = null ;
@@ -179,6 +141,14 @@ public class Dao {
             contaPedidoItemCancelamentoDAO = new ContaPedidoItemCancelamentoDAO(ctx) ;
             return contaPedidoItemCancelamentoDAO ;
         } else return contaPedidoItemCancelamentoDAO ;
+    }
+
+    private static ContaPedidoTransferenciaADO contaPedidoTransferenciaADO = null ;
+    public static ContaPedidoTransferenciaADO getTransferenciaDAO(Context ctx){
+        if (contaPedidoTransferenciaADO == null){
+            contaPedidoTransferenciaADO = new ContaPedidoTransferenciaADO(ctx) ;
+            return contaPedidoTransferenciaADO;
+        } else return contaPedidoTransferenciaADO;
     }
 
 

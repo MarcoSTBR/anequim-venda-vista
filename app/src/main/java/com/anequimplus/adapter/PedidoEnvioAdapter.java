@@ -20,10 +20,12 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
 
     private Context ctx ;
     private List<PedidoItem> list ;
+    private EdicaoItem edicaoItem ;
 
-    public PedidoEnvioAdapter(Context ctx, List<PedidoItem> list) {
+    public PedidoEnvioAdapter(Context ctx, List<PedidoItem> list, EdicaoItem edicaoItem) {
         this.ctx = ctx;
         this.list = list;
+        this.edicaoItem = edicaoItem ;
     }
 
     @NonNull
@@ -51,6 +53,7 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
         TextView textQPrPedidoItem ;
         ImageButton ib_mais ;
         ImageButton ib_menos ;
+        ImageButton ib_editar ;
 
         public PedidoEnvioHold(@NonNull View itemView) {
             super(itemView);
@@ -59,10 +62,38 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
             textQPrPedidoItem = itemView.findViewById(R.id.textQPrPedidoItem) ;
             ib_mais = itemView.findViewById(R.id.ib_mais) ;
             ib_menos = itemView.findViewById(R.id.ib_menos) ;
+            ib_editar = itemView.findViewById(R.id.ib_editar) ;
         }
 
 
-        public void bind(PedidoItem p){
+        public void bind(PedidoItem pit){
+            final PedidoItem item = pit;
+            setValores(item);
+            ib_mais.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Double q = item.getItenSelect().getQuantidade() + 1;
+                    edicaoItem.mais(item, q);
+                    setValores(item);
+                }
+            }); ;
+            ib_menos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Double q = item.getItenSelect().getQuantidade() - 1 ;
+                    edicaoItem.menos(item, q);
+                    setValores(item);
+                }
+            });
+            ib_editar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edicaoItem.editar(item);
+                }
+            });
+        }
+
+        private void setValores(PedidoItem p) {
             DecimalFormat frm = new DecimalFormat("R$ #0.00");
             DecimalFormat qrm = new DecimalFormat("#0.###");
             textViewPedidoItem.setText(p.getItenSelect().getProduto().getDescricao());

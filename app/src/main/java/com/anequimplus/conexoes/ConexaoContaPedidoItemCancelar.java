@@ -49,7 +49,7 @@ public abstract class ConexaoContaPedidoItemCancelar extends ConexaoServer {
         } else {
             Dao.getContaPedidoItemCancelamentoDAO(ctx).incluir(contaPedidoItemCancelamento);
             Log.i("execute", contaPedidoItemCancelamento.toString());
-            Dao.getContaPedidoItemInternoDAO(ctx).cancelar(contaPedidoItemCancelamento.getContaPedidoItem_id());
+            Dao.getContaPedidoItemInternoDAO(ctx).cancelar(contaPedidoItemCancelamento.getContaPedidoItem().getId());
             Ok();
         }
 

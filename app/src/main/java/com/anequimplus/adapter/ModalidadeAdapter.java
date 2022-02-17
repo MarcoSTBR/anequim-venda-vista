@@ -3,111 +3,84 @@ package com.anequimplus.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.util.Log;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.entity.Modalidade;
-import com.anequimplus.utilitarios.UtilSet;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-public class ModalidadeAdapter extends BaseAdapter {
+public abstract class ModalidadeAdapter extends RecyclerView.Adapter<ModalidadeAdapter.ModalidadeAdapterHolder>{
 
     private Context ctx ;
     private List<Modalidade> list ;
-    private Handler handler = new Handler() ;
 
     public ModalidadeAdapter(Context ctx, List<Modalidade> list) {
         this.ctx = ctx;
         this.list = list;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ModalidadeAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_grade_modalidade, null);
+     return new ModalidadeAdapterHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ModalidadeAdapterHolder holder, int position) {
+        holder.bind(list.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
         return list.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return list.get(i);
-    }
+    class ModalidadeAdapterHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    @Override
-    public long getItemId(int i) {
-        return list.get(i).getId() ;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
-        final View row  = inflater.inflate(R.layout.layout_grade_modalidade, null) ;
-        Modalidade m = list.get(i) ;
-        TextView txt = row.findViewById(R.id.textViewModalidade);
-        txt.setText(m.getDescricao());
-        ImageView imageViewModalidade = row.findViewById(R.id.imageViewModalidade);
-        imageViewModalidade.setImageResource(R.mipmap.menu_caixa);
-        final String nUrl = m.getFoto().getUrl();
-        final String nParam = m.getFoto().getParam() ;
-        if (!nUrl.equals("")) {
-
-            new Thread() {
-                @Override
-                public void run() {
-                    try{
-                        URL url2 = new URL(nUrl);
-                        HttpURLConnection conexao = (HttpURLConnection) url2.openConnection();
-                        conexao.setRequestMethod("POST"); //fala que quer um post
-                        if (!nParam.equals("")) {
-                            String parameters = "dados="+nParam ;
-                            OutputStreamWriter out = new OutputStreamWriter(
-                                    conexao.getOutputStream());
-                            out.write(parameters);
-                            out.flush();
-                        }
-                        /*
-                        String parameters = "dados="+j.toString() ;
-                        OutputStreamWriter out = new OutputStreamWriter(
-                                conexao.getOutputStream());
-                        out.write(parameters);
-                        out.flush();
-                         */
-                        InputStream input = conexao.getInputStream();
-                        final Bitmap img = BitmapFactory.decodeStream(input);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ImageView imageViewModalidade = row.findViewById(R.id.imageViewModalidade);
-                                imageViewModalidade.setImageBitmap(img);
-
-                            }
-                        });
-
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
+        private ImageView img ;
+        private TextView textModalidade ;
+        public ModalidadeAdapterHolder(@NonNull View itemView) {
+            super(itemView);
+            img = itemView.findViewById(R.id.imageViewModalidade) ;
+            textModalidade =  itemView.findViewById(R.id.textViewModalidade) ;
+            itemView.setOnClickListener(this);
         }
-        return row;
+
+        public void bind(Modalidade m){
+            textModalidade.setText(m.getDescricao());
+            String im = m.getFoto()  ;
+            byte[] bt = Base64.decode(im, 0);
+            Bitmap myBitmap = BitmapFactory.decodeByteArray(bt, 0, bt.length);
+            if (myBitmap != null) {
+                img.setImageDrawable(getBitmapArredondado(img, myBitmap, 4));
+            }
+        }
+
+        private RoundedBitmapDrawable getBitmapArredondado(ImageView img, Bitmap bmp, int cornerScale){
+            RoundedBitmapDrawable rdbd = RoundedBitmapDrawableFactory.create(img.getResources(), bmp) ;
+            rdbd.setCornerRadius((float)bmp.getWidth() / cornerScale);
+            return rdbd ;
+        }
+
+        @Override
+        public void onClick(View view) {
+           selecionado(list.get(getAdapterPosition())) ;
+        }
     }
 
+    public abstract void selecionado(Modalidade modalidade);
 
 }
+

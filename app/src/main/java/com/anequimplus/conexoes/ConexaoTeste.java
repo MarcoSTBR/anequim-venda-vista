@@ -2,22 +2,18 @@ package com.anequimplus.conexoes;
 
 import android.content.Context;
 
-import com.anequimplus.utilitarios.UtilSet;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public abstract class ConexaoTeste extends ConexaoServer {
 
     public ConexaoTeste(Context ctx)
     {
         super(ctx);
-        setParametros() ;
+      //  setParametros() ;
     }
 
+/*
     private void setParametros() {
         JSONObject j = new JSONObject() ;
         try {
@@ -31,6 +27,7 @@ public abstract class ConexaoTeste extends ConexaoServer {
             erro(e.getMessage());
         }
     }
+*/
 
     @Override
     protected void onPostExecute(String s) {

@@ -19,7 +19,7 @@ public class OpcoesPrincipalADO {
         listOpcoesPricipais.add(new OpcaoMenuPrincipal(1,R.mipmap.ic_menu_pedido , "Pedido","Envia pedidos para mesas ou comandas.")) ;
         listOpcoesPricipais.add(new OpcaoMenuPrincipal(2,R.mipmap.ic_menu_conta, "Conta","Emitir contas para pagamento")) ;
         listOpcoesPricipais.add(new OpcaoMenuPrincipal(3,R.mipmap.menu_caixa, "Caixa / Movimento", "Abertura e fechamento do movimento.")) ;
-        listOpcoesPricipais.add(new OpcaoMenuPrincipal(4,R.mipmap.menu_vendavista, "Venda a Vista","Venda a vista de produtos.")) ;
+  //      listOpcoesPricipais.add(new OpcaoMenuPrincipal(4,R.mipmap.menu_vendavista, "Venda a Vista","Venda a vista de produtos.")) ;
     }
 
     public List<OpcaoMenuPrincipal> getList(){

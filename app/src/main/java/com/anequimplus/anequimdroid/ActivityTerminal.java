@@ -1,6 +1,7 @@
 package com.anequimplus.anequimdroid;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -99,6 +100,7 @@ public class ActivityTerminal extends AppCompatActivity {
             public void ok(Terminal t) {
                 setDadosTerminal(t) ;
 
+
             }
 
             @Override
@@ -128,6 +130,11 @@ public class ActivityTerminal extends AppCompatActivity {
             atualizar() ;
             return true;
         }
+        if (item.getItemId() == R.id.terminal_action_autentic) {
+            startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
+            return true;
+        }
+
         return true ;//super.onOptionsItemSelected(item);
     }
 

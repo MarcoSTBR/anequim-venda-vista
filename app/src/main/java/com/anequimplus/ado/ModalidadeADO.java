@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.anequimplus.entity.Modalidade;
-import com.anequimplus.entity.UrlParam;
 import com.anequimplus.tipos.TipoModalidade;
 
 import org.json.JSONArray;
@@ -25,11 +24,7 @@ public class ModalidadeADO {
     public ModalidadeADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-        /*
-        db.execSQL("DROP TABLE IF EXISTS MODALIDADE") ;
-        DBHelper.criarTabelas(db) ;
 
-         */
     }
 
     public void modalidadeADD(JSONArray jarr) throws JSONException {
@@ -54,14 +49,13 @@ public class ModalidadeADO {
                 "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS FROM MODALIDADE WHERE STATUS = 1", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            list.add(new Modalidade(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("CODIGO")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    TipoModalidade.valueOf(res.getString(res.getColumnIndex("TIPOMODALIDADE"))),
-                    res.getInt(res.getColumnIndex("COD_RECEBIMENTO")),
-                    new UrlParam(res.getString(res.getColumnIndex("URL")),
-                            res.getString(res.getColumnIndex("PARAM"))),
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
+            list.add(new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
+                    res.getInt(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("URL")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
             res.moveToNext();
         }
         return list ;
@@ -92,8 +86,8 @@ public class ModalidadeADO {
         contentValues.put("DESCRICAO", modalidade.getDescricao());
         contentValues.put("TIPOMODALIDADE", modalidade.getTipoModalidade().valor);
         contentValues.put("COD_RECEBIMENTO", modalidade.getCod_recebimento());
-        contentValues.put("URL", modalidade.getFoto().getUrl());
-        contentValues.put("PARAM", modalidade.getFoto().getParam());
+        contentValues.put("URL", modalidade.getFoto());
+        contentValues.put("PARAM", modalidade.getFoto());
         contentValues.put("STATUS", modalidade.getStatus());
         db.insert(DB_TABLE, null, contentValues) ;
     }
@@ -105,8 +99,8 @@ public class ModalidadeADO {
         contentValues.put("DESCRICAO", modalidade.getDescricao());
         contentValues.put("TIPOMODALIDADE", modalidade.getTipoModalidade().valor);
         contentValues.put("COD_RECEBIMENTO", modalidade.getCod_recebimento());
-        contentValues.put("URL", modalidade.getFoto().getUrl());
-        contentValues.put("PARAM", modalidade.getFoto().getParam());
+        contentValues.put("URL", modalidade.getFoto());
+        contentValues.put("PARAM", modalidade.getFoto());
         contentValues.put("STATUS", modalidade.getStatus());
         db.update(DB_TABLE, contentValues, "ID = ?", new String[] {String.valueOf(modalidade.getId())});
 

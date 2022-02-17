@@ -8,6 +8,7 @@ import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.OpcoesFechamento;
 import com.anequimplus.tipos.Link;
+import com.anequimplus.utilitarios.Configuracao;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
@@ -28,12 +29,21 @@ public abstract class ConexaoOpFechamento extends ConexaoServer {
         this.caixa = caixa ;
         maps.put("class", "AfoodOpcoesFechamento") ;
         maps.put("method", "consultar") ;
-        maps.put("system_user_id", UtilSet.getId_Usuario(ctx)) ;
-        maps.put("chave", UtilSet.getChave(ctx)) ;
+        maps.put("system_user_id", UtilSet.getUsuarioId(ctx)) ;
         maps.put("loja_id", UtilSet.getLojaId(ctx)) ;
         url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fConsultaOpFechamento).getUrl() ;
     }
 
+
+   public void execute(){
+      if (Configuracao.getPedidoCompartilhado(ctx)){
+          this.execute();
+      } else {
+          Dao.getOpcoesFechamentoADO(ctx).setMenuInterno();
+          oK(caixa, Dao.getOpcoesFechamentoADO(ctx).getList()) ;
+      }
+
+   }
 
     @Override
     protected void onPostExecute(String s) {

@@ -22,18 +22,17 @@
 
         <TextView
             android:id="@+id/textViewLabelPed"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:text="@string/label_pedido"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textViewGradePedidoQ"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewLabelPed"
             android:layout_alignStart="@id/textViewLabelPed"
@@ -44,8 +43,8 @@
             android:id="@+id/pedidocontaabrir"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/pedidoconta"
             android:layout_marginRight="15dp"
             android:background="@drawable/botao_customizado"
             android:src="?attr/homeAsUpIndicator" />
@@ -54,7 +53,7 @@
             android:id="@+id/pedidoconta"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_below="@id/pedidocontaabrir"
+            android:layout_marginTop="5dp"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="5dp"
             android:background="@drawable/botao_customizado"

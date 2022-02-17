@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,12 +26,13 @@ public class ActivityGradeVendas extends AppCompatActivity {
 
     private RecyclerView GradeVendas;
     private List<GradeVendas> listGradevendas;
-    private static int RESULT_PRODUTO = 1 ;
+    private String pedido ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade_vendas);
+        pedido = getIntent().getStringExtra("PEDIDO") ;
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setSubtitle(getIntent().getStringExtra("SUBTITULO"));
         setSupportActionBar(toolbar);
@@ -53,13 +53,20 @@ public class ActivityGradeVendas extends AppCompatActivity {
         GradeVendas.setAdapter(new GradeVendasAdapter(this, listGradevendas) {
             @Override
             public void selecionado(GradeVendas g) {
-                Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
-                Bundle params = new Bundle() ;
-                params.putInt("GRADE_ID", g.getId());
-                intent.putExtras(params) ;
-                startActivityForResult(intent, RESULT_PRODUTO);
+                seguirParaItens(g) ;
             }
         });
+    }
+
+
+    public void seguirParaItens(GradeVendas g){
+        Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
+        Bundle params = new Bundle() ;
+        params.putInt("GRADE_ID", g.getId());
+        params.putString("PEDIDO",pedido);
+        intent.putExtras(params) ;
+        // startActivityForResult(intent, RESULT_PRODUTO);
+        startActivity(intent);
     }
 
 
@@ -97,15 +104,6 @@ public class ActivityGradeVendas extends AppCompatActivity {
             }.execute() ;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RESULT_PRODUTO) {
-            if (resultCode == RESULT_OK){
-                setResult(RESULT_OK);
-                finish();
-            }
-        }
-    }
 
     private void alerta(String txt){
         AlertDialog alert = new AlertDialog.Builder(this)

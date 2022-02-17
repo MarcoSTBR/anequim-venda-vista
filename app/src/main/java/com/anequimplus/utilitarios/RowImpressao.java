@@ -20,6 +20,14 @@ public class RowImpressao {
         this.tipoEstilo = TipoEstiloFont.ptsNormal ;
     }
 
+    public RowImpressao(String linha, TipoAlinhamento tipoAlinhamento, int tamFont, TipoEstiloFont tipoEstilo) {
+        this.linha = linha;
+        this.tipoAlinhamento = tipoAlinhamento;
+        this.tamFont = tamFont;
+        this.tipoEstilo = TipoEstiloFont.ptsNormal ;
+        this.tipoEstilo = tipoEstilo ;
+    }
+
     public  RowImpressao(JSONObject j) throws JSONException {
         this.linha = j.getString("LINHA");
         this.tamFont = j.getInt("TAMFONT");

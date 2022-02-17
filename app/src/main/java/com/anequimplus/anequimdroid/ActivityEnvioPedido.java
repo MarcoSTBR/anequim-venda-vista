@@ -5,50 +5,54 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.anequimplus.adapter.EdicaoItem;
 import com.anequimplus.adapter.PedidoEnvioAdapter;
 import com.anequimplus.ado.Dao;
+import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.Produto;
 import com.anequimplus.utilitarios.DisplaySet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONException;
+
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class ActivityEnvioPedido extends AppCompatActivity {
 
     private ImageButton imagelupaproduto ;
     private EditText editProdutoPesquisa ;
     private RecyclerView listaPrdPedido ;
-    private Pedido pedido ;
-    private PedidoItem pedidoItem ;
-    private int idPed = 0 ;
     private Toolbar toolbar ;
-    private static int GRUPO_RETORNO = 1 ;
-    private static int ITEM_EDICAO = 2 ;
+    private Pedido pedido ;
+    private String pedidoSelecionado ;
+    private EdicaoItem edicaoItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enviopedido);
-        idPed = getIntent().getIntExtra("PEDIDO_ID",0) ;
-        pedido = Dao.getPedidoADO(getBaseContext()).getId(idPed) ;
-
+        pedidoSelecionado = getIntent().getStringExtra("PEDIDO") ;
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,32 +68,147 @@ public class ActivityEnvioPedido extends AppCompatActivity {
 
         listaPrdPedido  = findViewById(R.id.listaPrdPedido);
         imagelupaproduto  = findViewById(R.id.imagelupaproduto);
-        editProdutoPesquisa  = findViewById(R.id.editProdutoPesquisa);
+        imagelupaproduto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityEnvioPedido.this, ActivityProdutoList.class) ;
+                Bundle params = new Bundle() ;
+                params.putString("PEDIDO", pedidoSelecionado);
+                intent.putExtras(params) ;
+                startActivity(intent);
+            }
+        });
 
+        editProdutoPesquisa  = findViewById(R.id.editProdutoPesquisa);
+        editProdutoPesquisa.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                        addProduto();
+                        return true;
+                    }
+
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void addProduto() {
+        String codigo = editProdutoPesquisa.getText().toString() ;
+        if (codigo.length() > 0) {
+            Produto p = Dao.getProdutoADO(this).getCodigo(codigo) ;
+            if (p != null){
+                Pedido ped = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+                Double com = p.getComissao() / 100 * p.getPreco() ;
+                PedidoItem pedidoItem = new PedidoItem(0, ped.getId(), new ItenSelect(0, p, 1, p.getPreco(), 0, com, p.getPreco(), "", 1)) ;
+                Dao.getPedidoItemADO(this).incluir(pedidoItem);
+                editProdutoPesquisa.setText("");
+                carregaList() ;
+            } else {
+                editProdutoPesquisa.setText("");
+                Toast.makeText(this, "Código "+codigo+" Não Encontrado!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        toolbar.setTitle("Pedido: "+pedido.getPedido());
+        toolbar.setTitle("Pedido : "+pedidoSelecionado);
+        edicao() ;
         carregaList() ;
-
         editProdutoPesquisa.setText("");
+    }
+
+    private void edicao() {
+      edicaoItem = new EdicaoItem() {
+          @Override
+          public void mais(PedidoItem pedidoItem, double q) {
+              pedidoItem.getItenSelect().setQuantidade(q);
+              setValoresGrade(pedidoItem);
+          }
+
+          @Override
+          public void menos(PedidoItem pedidoItem, double q) {
+              if (q <= 0) {
+                  new AlertDialog.Builder(ActivityEnvioPedido.this)
+                          .setIcon(android.R.drawable.presence_busy)
+                          .setTitle(pedidoItem.getItenSelect().getProduto().getDescricao())
+                          .setMessage("Deseja Excluir o Produto?")
+                          .setCancelable(false).setNegativeButton("Não", null)
+                          .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                              @Override
+                              public void onClick(DialogInterface dialog, int which) {
+                                  carregaList();
+
+                              }
+                          })
+                          .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                              @Override
+                              public void onClick(DialogInterface dialogInterface, int i) {
+                                  Dao.getPedidoItemADO(ActivityEnvioPedido.this).excluir(pedidoItem);
+                                  carregaList();
+                              }
+                          }).show();
+              } else {
+                  pedidoItem.getItenSelect().setQuantidade(q);
+                  setValoresGrade(pedidoItem);
+              }
+          }
+
+          @Override
+          public void editar(PedidoItem pedidoItem) {
+              Intent intent = new Intent(ActivityEnvioPedido.this, ActivityProdutoAdd.class) ;
+              Bundle params = new Bundle() ;
+              params.putInt("ITEMSELECT_ID", pedidoItem.getId());
+              intent.putExtras(params) ;
+              startActivity(intent);
+          }
+      };
+
+    }
+
+    private void setValoresGrade(PedidoItem pedidoItem) {
+        double q = pedidoItem.getItenSelect().getQuantidade() ;
+        double prc = pedidoItem.getItenSelect().getPreco() ;
+        double vl = q * prc ;
+        double cm = pedidoItem.getItenSelect().getComissao() / 100 * vl ;
+        pedidoItem.getItenSelect().setValor(vl);
+        pedidoItem.getItenSelect().setComissao(cm);
+        Dao.getPedidoItemADO(this).alterar(pedidoItem);
+
     }
 
 
     private void enviarConexaoPedidos()  {
-                new ConexaoEnvioPedido(this) {
-                    @Override
-                    public void envioOK(int count) {
-                        enviado() ;
-                        //carregaList() ;
-                    }
-                    @Override
-                    public void erroEnvio(String msg) {
-                        alert(msg);
-                    }
-                }.execute();
+        Pedido ped = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+        try {
+            new ConexaoEnvioPedido(this, ped) {
+                @Override
+                public void envioOK(List<Pedido> l) {
+                    enviado() ;
+
+                }
+
+                @Override
+                public void erroEnvio(String msg) {
+                            alert(msg);
+                        }
+            }.execute();
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        }
     }
 
     private void enviado(){
@@ -106,51 +225,28 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 }).show();
     }
 
-    private void addProduto() {
+    private void addProdutoPeloGrupoProduto() {
         Intent intent = new Intent(getBaseContext(), ActivityGradeVendas.class) ;
         Bundle params = new Bundle() ;
-        params.putString("SUBTITULO", "Pedido "+pedido.getPedido());
+        params.putString("PEDIDO", pedidoSelecionado);
+        params.putString("SUBTITULO", "Pedido "+pedidoSelecionado);
         intent.putExtras(params) ;
-        startActivityForResult(intent, GRUPO_RETORNO);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == GRUPO_RETORNO) {
-            if (resultCode == RESULT_OK){
-                Log.i("resposta_Pedidos", "Tamanho"+Dao.getItemSelectADO(getBaseContext()).getList().size()) ;
-                for (ItenSelect it : Dao.getItemSelectADO(getBaseContext()).getList()){
-                    if (it.getQuantidade()>0) {
-                        Log.i("resposta_Pedidos", it.getProduto().getDescricao());
-                        Dao.getPedidoItemADO(getBaseContext()).pedidoItemAdd(pedido, it);
-                    }
-                }
-                carregaList();
-            }
-        }
-        if (requestCode == ITEM_EDICAO){
-            if (resultCode == RESULT_OK) {
-                Log.i("resposta_edicao", Dao.getItemSelectADO(getBaseContext()).getList().get(0).getProduto().getDescricao());
-                pedidoItem.setItenSelect(Dao.getItemSelectADO(getBaseContext()).getList().get(0));
-                Log.i("DescricaoAlteracao",Dao.getItemSelectADO(getBaseContext()).getList().get(0).getProduto().getDescricao());
-                Log.i("DescricaoAlteracao",Dao.getItemSelectADO(getBaseContext()).getList().get(0).getObs());
-                Dao.getPedidoItemADO(getBaseContext()).alterar(pedidoItem);
-                carregaList();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        //startActivityForResult(intent, GRUPO_RETORNO);
+        startActivity(intent);
     }
 
     private void carregaList(){
-        pedido = Dao.getPedidoADO(this).getId(idPed) ;
+        pedido  = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
         if (pedido != null) {
             GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
-            // at last set adapter to recycler view.
             listaPrdPedido.setLayoutManager(layoutManager);
-            listaPrdPedido.setAdapter(new PedidoEnvioAdapter(this, pedido.getListPedidoItem()));
+            listaPrdPedido.setAdapter(new PedidoEnvioAdapter(this, pedido.getListPedidoItem(), edicaoItem));
             diplayQuantidade();
-            Log.i("listpedidoaberto", "id "+idPed+" pedido "+pedido.getPedido()+" size "+pedido.getListPedidoItem().size()) ;
+            Log.i("listpedidoaberto", " pedido "+pedido.getPedido()+" size "+pedido.getListPedidoItem().size()) ;
+
         } else   Log.i("listpedidoaberto", "pedido.getListPedidoItem() nulo") ;
+
+
 
     }
 
@@ -211,7 +307,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Dao.getPedidoItemADO(getBaseContext()).delete(pit);
+                        Dao.getPedidoItemADO(getBaseContext()).excluir(pit);
                         carregaList();
 
                     }
@@ -309,17 +405,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
         }
     }
 
- */   private void setEditar(PedidoItem pit) {
-        pedidoItem = pit ;
-        Dao.getItemSelectADO(getBaseContext()).getList().clear();
-        Dao.getItemSelectADO(getBaseContext()).getList().add(pedidoItem.getItenSelect()) ;
-        Intent intent = new Intent(getBaseContext(), ActivityProdutoAdd.class) ;
-        Bundle params = new Bundle() ;
-        params.putInt("ITEMSELECT_ID", pedidoItem.getItenSelect().getId());
-        intent.putExtras(params) ;
-        startActivityForResult(intent , ITEM_EDICAO);
-    }
-
+ */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -333,7 +419,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
             finish();
         }
         if (item.getItemId() == R.id.action_envitem_icl_prod){
-            addProduto();
+            addProdutoPeloGrupoProduto();
         }
         //return super.onOptionsItemSelected(item);
         return true;

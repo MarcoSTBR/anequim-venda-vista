@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ActivityGradeVendaItem"
-    tools:showIn="@layout/activity_grade_venda_item">
+    tools:showIn="@layout/activity_grade_venda_item"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
 
     <LinearLayout
@@ -17,10 +19,14 @@
         <EditText
             android:id="@+id/editTextFiltroProduto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:ems="10"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:background="@drawable/edit_customizado"
+            android:hint="Descrição do Produto" />
 
         <LinearLayout
             android:layout_width="match_parent"

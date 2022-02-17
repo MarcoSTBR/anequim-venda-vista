@@ -36,4 +36,11 @@ public class Configuracao {
         else  return false ;
     }
 
+    public static void setLinkContaCompartilhada(Context ctx, String s) {
+        UtilSet.gravaParamString(ctx, "linkContaCompartilhada",s) ;
+    }
+
+    public static String getLinkContaCompartilhada(Context ctx) {
+        return UtilSet.lerParamString(ctx, "linkContaCompartilhada") ;
+    }
 }

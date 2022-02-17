@@ -23,19 +23,6 @@ public class ProdutoADO {
     public ProdutoADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase();
-/*
-        db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS PRODUTO ( "
-                + "ID INTEGER , "
-                + "CODIGO TEXT , "
-                + "UNIDADE TEXT , "
-                + "DESCRICAO TEXT , "
-                + "STATUS INTEGER,"
-                + "IMAGEM TEXT,"
-                + "COMISSAO DOUBLE,"
-                + "PRECO DOUBLE)");
-
-*/
     }
 
     public void setJSON(JSONArray jr) throws JSONException {
@@ -69,17 +56,17 @@ public class ProdutoADO {
     public List<Produto> getTodos() {
         List<Produto> l = new ArrayList<Produto>();
         Cursor res = db.rawQuery("SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
-                "FROM PRODUTO ORDER BY ID ", null);
+                "FROM PRODUTO ORDER BY DESCRICAO ", null);
         res.moveToFirst();
         while(res.isAfterLast()==false) {
-                l.add(new Produto(res.getInt(res.getColumnIndex("ID")),
-                        res.getString(res.getColumnIndex("CODIGO")),
-                        res.getString(res.getColumnIndex("UNIDADE")),
-                        res.getString(res.getColumnIndex("DESCRICAO")),
-                        res.getString(res.getColumnIndex("IMAGEM")),
-                        res.getInt(res.getColumnIndex("STATUS")),
-                        res.getDouble(res.getColumnIndex("PRECO")),
-                        res.getDouble(res.getColumnIndex("COMISSAO"))));
+                l.add(new Produto(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                        res.getString(res.getColumnIndexOrThrow("UNIDADE")),
+                        res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                        res.getString(res.getColumnIndexOrThrow("IMAGEM")),
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        res.getDouble(res.getColumnIndexOrThrow("PRECO")),
+                        res.getDouble(res.getColumnIndexOrThrow("COMISSAO"))));
                 Log.i("ProdutosC", l.get(l.size()-1).toString());
                 res.moveToNext();
         }
@@ -111,14 +98,33 @@ public class ProdutoADO {
                 "FROM PRODUTO WHERE ID = ?", new String[]{String.valueOf(nId)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            produto = new Produto(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("CODIGO")),
-                    res.getString(res.getColumnIndex("UNIDADE")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getString(res.getColumnIndex("IMAGEM")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    res.getDouble(res.getColumnIndex("PRECO")),
-                    res.getDouble(res.getColumnIndex("COMISSAO")));
+            produto = new Produto(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("UNIDADE")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getString(res.getColumnIndexOrThrow("IMAGEM")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    res.getDouble(res.getColumnIndexOrThrow("PRECO")),
+                    res.getDouble(res.getColumnIndexOrThrow("COMISSAO")));
+            res.moveToNext();
+        }
+        return produto ;
+    }
+
+    public Produto getCodigo(String codigo) {
+        Produto produto = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
+                "FROM PRODUTO WHERE CODIGO = ?", new String[]{codigo});
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            produto = new Produto(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("UNIDADE")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getString(res.getColumnIndexOrThrow("IMAGEM")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    res.getDouble(res.getColumnIndexOrThrow("PRECO")),
+                    res.getDouble(res.getColumnIndexOrThrow("COMISSAO")));
             res.moveToNext();
         }
         return produto ;

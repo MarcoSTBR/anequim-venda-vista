@@ -7,4 +7,8 @@
         android:title="@string/ok"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/terminal_action_autentic"
+        android:title="@string/action_autentic"
+        app:showAsAction="ifRoom" />
 </menu>

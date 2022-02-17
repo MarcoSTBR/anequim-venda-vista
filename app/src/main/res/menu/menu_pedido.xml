@@ -17,6 +17,11 @@
         android:id="@+id/action_pedido_ok"
         android:title="@string/ok"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_pedido_atualizar"
+        android:title="@string/action_pedido_atualizar"
+        android:icon="@drawable/ic_baseline_refresh_24"
+        app:showAsAction="ifRoom" />
 
 
 </menu>

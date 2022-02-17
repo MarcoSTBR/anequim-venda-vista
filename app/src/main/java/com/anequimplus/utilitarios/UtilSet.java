@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.NetworkInterface;
@@ -23,32 +20,12 @@ import java.util.UUID;
 public class UtilSet {
 
 
-    public static boolean logado(Context ctx){
-        return !lerParamString(ctx, "AUTENTICACAO").equals("");
-    }
-
-    public static void getAutenticacao(Context ctx , JSONObject j) throws JSONException {
-        j.put("AUTENTICACAO", getId_Usuario(ctx)) ;
-        j.put("CHAVE", getChave(ctx)) ;
-    }
-
-
     public static void setToken(Context ctx, String token){
         gravaParamString(ctx, "TOKEN",token) ;
     }
 
     public static String getToken(Context ctx){
         return lerParamString(ctx, "TOKEN") ;
-    }
-
-
-    public static void setAutenticacao(Context ctx , String autentic, String nome_usuario) {
-        gravaParamString(ctx,"AUTENTICACAO",autentic);
-        gravaParamString(ctx,"NOME_USUARIO",nome_usuario);
-    }
-
-    public static String getId_Usuario(Context ctx ) {
-        return lerParamString(ctx,"AUTENTICACAO");
     }
 
     public static String getNome_Usuario(Context ctx ) {
@@ -78,7 +55,6 @@ public class UtilSet {
     public static void setPassword(Context ctx , String aut) {
         gravaParamString(ctx,"PASSWORD",aut);
     }
-
 
     public static String lerParamString(Context ctx, String chave) {
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -134,6 +110,7 @@ public class UtilSet {
         //        && (cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI)) ;
 
     }
+
     public static String getMAC(Context ctx){
 
         /*
@@ -150,7 +127,7 @@ public class UtilSet {
 
                 byte[] macBytes = nif.getHardwareAddress();
                 if (macBytes == null) {
-                    return "";
+                    return "02:00:00:00:00:00";
                 }
 
                 StringBuilder res1 = new StringBuilder();
@@ -164,12 +141,12 @@ public class UtilSet {
                 return res1.toString();
             }
         } catch (Exception ex) {
+            return "02:00:00:00:00:00";
         }
         return "02:00:00:00:00:00";
 
 
     }
-
 
     public static void setImpPadraoContaPedido(Context ctx, String descricao) {
         gravaParamString(ctx, "IMP_CONTA",descricao) ;
@@ -190,7 +167,6 @@ public class UtilSet {
         if (t == null) t = "" ;
         return t ;
     }
-
 
     public static void setImpPadraoFechamento(Context ctx, String descricao) {
         gravaParamString(ctx, "IMP_FECHAMENTOCONTA",descricao) ;
@@ -221,6 +197,7 @@ public class UtilSet {
     public static int getLojaId(Context ctx) {
         return Integer.parseInt(lerParamString(ctx, "LOJA_ID")) ;
     }
+
     public static void setLojaNome(Context ctx, String nome) {
         gravaParamString(ctx, "LOJA_NOME", nome) ;
     }
@@ -233,6 +210,7 @@ public class UtilSet {
         gravaParamString(ctx, "LOGIN", login) ;
 
     }
+
     public static String getLogin(Context ctx) {
       return lerParamString(ctx, "LOGIN") ;
 
@@ -241,6 +219,7 @@ public class UtilSet {
     public static void setUsuarioId(Context ctx, int usuario_id) {
         gravaParamString(ctx, "USUARIO_ID", Integer.toString(usuario_id)) ;
     }
+
     public static int getUsuarioId(Context ctx) {
       return Integer.parseInt(lerParamString(ctx, "USUARIO_ID")) ;
     }

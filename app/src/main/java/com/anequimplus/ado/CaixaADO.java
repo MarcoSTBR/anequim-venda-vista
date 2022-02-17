@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.anequimplus.entity.Caixa;
+import com.anequimplus.entity.FilterTable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,76 +23,66 @@ public class CaixaADO {
     public CaixaADO(Context ctx) {
         this.ctx = ctx ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-       // delete() ;
-/*
-        db.execSQL("DROP TABLE IF EXISTS CAIXA") ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS CAIXA ( "
-                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "UUID TEXT, "
-                + "USUARIO_ID INTEGER, "
-                + "DATA DATETIME, "
-                + "DATA_FINAL DATETIME, "
-                + "VALOR DOUBLE,"
-                + "STATUS INTEGER,"
-                + "GEREZIM_ID INTEGER) "
-        );
-
- */
      }
-
 
     public Caixa getCaixaAberto(int usuario_id) {
         Caixa caixa = null ;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dt = null;
-        Date dtf = null;
-        Cursor res =  db.rawQuery( "SELECT ID, UUID, USUARIO_ID, DATA, " +
-                "DATA_FINAL, VALOR,  STATUS, GEREZIM_ID " +
-                " FROM CAIXA WHERE (USUARIO_ID = ?) AND (STATUS = ?) ", new String[]{String.valueOf(usuario_id), String.valueOf(1)});
-        res.moveToFirst();
-        if (!res.isAfterLast()){
-            try {
-                dt = (Date) df.parse(res.getString(res.getColumnIndex("DATA")));
-                dtf = (Date) df.parse(res.getString(res.getColumnIndex("DATA_FINAL")));
-            caixa = new Caixa(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("UUID")),
-                    dt,
-                    dtf,
-                    res.getInt(res.getColumnIndex("USUARIO_ID")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    res.getDouble(res.getColumnIndex("VALOR")),
-                    res.getInt(res.getColumnIndex("GEREZIM_ID"))) ;
-            } catch (ParseException e) {
-                e.printStackTrace();
-                Log.e("erro", e.getMessage()) ;
-            }
-            res.moveToNext();
+        List<FilterTable> filters = new ArrayList<FilterTable>() ;
+        filters.add(new FilterTable("USUARIO_ID", "=", String.valueOf(usuario_id))) ;
+        List<Caixa> lista = getList(filters) ;
+        for (Caixa cp : lista){
+            if (cp.getStatus() == 1) caixa = cp ;
         }
         return caixa;
     }
 
-    public List<Caixa> getCaixas() {
+    public Caixa get(int caixa_id) {
+        Caixa caixa = null ;
+        List<FilterTable> filters = new ArrayList<FilterTable>() ;
+        filters.add(new FilterTable("ID", "=", String.valueOf(caixa_id))) ;
+        List<Caixa> lista = getList(filters) ;
+        for (Caixa cp : lista){
+           caixa = cp ;
+        }
+        return caixa;
+    }
+
+    public List<Caixa> getList(List<FilterTable> l) {
         List<Caixa> list = new ArrayList<Caixa>() ;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = null;
         Date dtf = null;
+        String where = "" ;
+        if (l.size() > 0){
+            for (FilterTable f : l){
+               if (where.length() == 0)
+                  where = "("+ f.getCampo() +" "+ f.getOperador() +" "+ f.getVariavel() +")" ;
+                else
+                  where = where + " AND ("+ f.getCampo() +" "+ f.getOperador() +" "+ f.getVariavel() +")" ;
+            }
+            where = " WHERE "+where ;
+        }
         Cursor res =  db.rawQuery( "SELECT ID, UUID, USUARIO_ID, DATA, " +
-                "DATA_FINAL, VALOR,  STATUS FROM CAIXA ", null);
+                "DATA_FINAL, VALOR,  STATUS FROM CAIXA "+
+                where, null);
         res.moveToFirst();
+        Log.i("getList", "SELECT ID, UUID, USUARIO_ID, DATA, " +
+                "DATA_FINAL, VALOR,  STATUS FROM CAIXA "+
+                where) ;
         if (!res.isAfterLast()){
             try {
-                dt = (Date) df.parse(res.getString(res.getColumnIndex("DATA")));
-                dtf = (Date) df.parse(res.getString(res.getColumnIndex("DATA_FINAL")));
-                list.add(new Caixa(res.getInt(res.getColumnIndex("ID")),
-                        res.getString(res.getColumnIndex("UUID")),
+                dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
+                dtf = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA_FINAL")));
+                list.add(new Caixa(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        res.getString(res.getColumnIndexOrThrow("UUID")),
                         dt,
                         dtf,
-                        res.getInt(res.getColumnIndex("USUARIO_ID")),
-                        res.getInt(res.getColumnIndex("STATUS")),
-                        res.getDouble(res.getColumnIndex("VALOR")),
-                        res.getInt(res.getColumnIndex("GEREZIM_ID")))
+                        res.getInt(res.getColumnIndexOrThrow("USUARIO_ID")),
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        res.getDouble(res.getColumnIndexOrThrow("VALOR")))
                 ) ;
 
+                Log.i("getList", list.get(l.size()-1).getJson().toString()) ;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -114,25 +105,33 @@ public class CaixaADO {
         contentValues.put("DATA_FINAL", df.format(caixa.getDataFechamento()));
         contentValues.put("STATUS", caixa.getStatus());
         contentValues.put("VALOR", caixa.getValor());
-        contentValues.put("GEREZIM_ID", caixa.getGerezim_id());
         caixa.setId( (int) db.insert("CAIXA", null, contentValues));
     }
 
-    public void caixa_recebido(int id, int gerezim_id){
+    public void alterar(Caixa caixa) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ContentValues contentValues = new ContentValues();
-        contentValues.put("GEREZIM_ID", gerezim_id);
-        db.update("CAIXA", contentValues, "ID = ?", new String[] {String.valueOf(id)});
+        contentValues.put("UUID", caixa.getUuid());
+        contentValues.put("USUARIO_ID", caixa.getUsuario_Id());
+        contentValues.put("DATA", df.format(caixa.getData()));
+        contentValues.put("DATA_FINAL", df.format(caixa.getDataFechamento()));
+        contentValues.put("STATUS", caixa.getStatus());
+        contentValues.put("VALOR", caixa.getValor());
+        db.update("CAIXA",contentValues, "ID = ?", new String[]{String.valueOf(caixa.getId())});
     }
 
     public void caixa_fechamento(Caixa caixa){
         ContentValues contentValues = new ContentValues();
         contentValues.put("STATUS", caixa.getStatus());
-        contentValues.put("GEREZIM_ID", caixa.getGerezim_id());
         db.update("CAIXA", contentValues, "ID = ?", new String[] {String.valueOf(caixa.getId())});
     }
 
     private void delete() {
         db.delete("CAIXA", null, null) ;
+    }
+
+    private void delete(int id) {
+        db.delete("CAIXA", "ID = ?", new String[]{String.valueOf(id)}) ;
     }
 
 }

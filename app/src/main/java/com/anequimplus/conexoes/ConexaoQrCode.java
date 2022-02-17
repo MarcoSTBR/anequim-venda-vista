@@ -6,16 +6,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.anequimplus.utilitarios.UtilSet;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public abstract class ConexaoQrCode extends AsyncTask<String, Void, Bitmap> {
@@ -29,10 +23,11 @@ public abstract class ConexaoQrCode extends AsyncTask<String, Void, Bitmap> {
     public ConexaoQrCode(Context ctx, String chave) {
         this.ctx = ctx ;
         this.chave = chave ;
-        setParametros() ;
+      //  setParametros() ;
 
     }
 
+/*
     private void setParametros()  {
         JSONObject j = new JSONObject();
         try {
@@ -44,6 +39,7 @@ public abstract class ConexaoQrCode extends AsyncTask<String, Void, Bitmap> {
             e.printStackTrace();
         }
     }
+*/
 
     @Override
     protected Bitmap doInBackground(String... strings) {

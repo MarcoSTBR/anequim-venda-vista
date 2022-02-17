@@ -13,6 +13,11 @@ public class OpcoesFechamento  {
         this.descricao = j.getString("descricao");
     }
 
+    public OpcoesFechamento(int id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
     public int getId() {
         return id;
     }

@@ -96,7 +96,7 @@ public abstract class ContaPedidoAdapter extends BaseAdapter {
             }
         });
         String subtotal = frmV.format(cp.getTotalItens()) ;
-        String comissao = frmV.format(cp.getComissao()) ;
+        String comissao = frmV.format(cp.getTotalComissao()) ;
         String desconto = frmV.format(cp.getDesconto());
         String total = frmV.format(cp.getTotal()) ;
         String pagamento = frmV.format(cp.getTotalPagamentos());

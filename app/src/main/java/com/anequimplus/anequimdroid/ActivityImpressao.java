@@ -18,15 +18,12 @@ import androidx.appcompat.widget.Toolbar;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoImpressaoLocal;
-import com.anequimplus.conexoes.ConexaoImpressoras;
 import com.anequimplus.conexoes.ConexaoRelatorios;
-import com.anequimplus.conexoes.ConexaoServidor;
+import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.Impressora;
+import com.anequimplus.impressao.BuilderControleImp;
+import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ListenerImpressao;
-import com.anequimplus.impressao.RelatorioA7;
-import com.anequimplus.impressao.RelatorioLIO;
-import com.anequimplus.tipos.TipoImpressora;
 import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.utilitarios.UtilSet;
 
@@ -37,12 +34,12 @@ public class ActivityImpressao extends AppCompatActivity {
 
     private TextView textViewImpressao ;
     private int opcao  ;
-    private int caixa_id ;
+    private Caixa caixa ;
     private Toolbar toolbar ;
     private Spinner spinnerImp ;
-    private ConexaoServidor cx ;
     private Impressora impressoraPadrao = null ;
-    private ConexaoRelatorios conexaoRelatorios ;
+    private ControleImpressora controleImpressora = null ;
+    private List<RowImpressao> listImpressao ;
 
 
     @Override
@@ -53,44 +50,47 @@ public class ActivityImpressao extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         opcao          = getIntent().getIntExtra("OPCAO_ID",-1) ;
-        caixa_id       = getIntent().getIntExtra("CAIXA_ID",-1) ;
+        int caixa_id   = getIntent().getIntExtra("CAIXA_ID",-1) ;
+        caixa = Dao.getCaixaADO(this).get(caixa_id) ;
         toolbar.setTitle(getIntent().getStringExtra("TITULO"));
         toolbar.setSubtitle(getIntent().getStringExtra("SUBTITULO"));
         textViewImpressao = (TextView) findViewById(R.id.textViewImpressao) ;
-        spinnerImp     = (Spinner) findViewById(R.id.spinnerImp) ;
+        spinnerImp = (Spinner) findViewById(R.id.spinnerImp) ;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (controleImpressora != null){
+            controleImpressora.close();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         carregaImp() ;
-        //carregaRelatorio() ;
-    }
-    private void carregaRelatorio() {
-        try {
-            conexaoRelatorios = new ConexaoRelatorios(this, impressoraPadrao, caixa_id, opcao) {
-                @Override
-                public void Ok(List<RowImpressao> l) {
-                    textViewImpressao.setText(conexaoRelatorios.getStringLinhas());
-                }
-
-                @Override
-                public void erroMensagem(String msg) {
-                    textViewImpressao.setText(msg);
-                    //alertaErro(msg);
-
-                }
-            } ;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage());
-        }
-        conexaoRelatorios.execute();
-
     }
 
+    private void carregaImp() {
+        ImpressoraAdapter impAdp = new ImpressoraAdapter(getBaseContext(),Dao.getImpressoraADO(getBaseContext()).getList()) ;
+        spinnerImp.setAdapter(impAdp);
+        spinnerImp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(i) ;
+                UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao()) ;
+                setImpressoraPadrao();
+                //carregaRelatorio() ;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        setImpressoraPadrao();
+    }
 
     private void setImpressoraPadrao() {
 
@@ -102,14 +102,52 @@ public class ActivityImpressao extends AppCompatActivity {
             if (descImp.equals(impSp.getDescricao())) {
                 spinnerImp.setSelection(i);
                 impressoraPadrao = impSp ;
+                carregaRelatorio() ;
             }
         }
         if (impressoraPadrao == null){
             impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(0) ;
             UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao());
             spinnerImp.setSelection(0) ;
-
+            carregaRelatorio() ;
         }
+    }
+
+    private void carregaRelatorio() {
+        instanciarImp() ;
+        try {
+            ConexaoRelatorios conexaoRelatorios = new ConexaoRelatorios(this, impressoraPadrao, caixa, opcao) {
+                @Override
+                public void ok(List<RowImpressao> l) {
+                    listImpressao = l ;
+                    display();
+                }
+
+                @Override
+                public void erroMensagem(String msg) {
+                    textViewImpressao.setText(msg);
+                    alertaErro(msg);
+
+                }
+            } ;
+
+            conexaoRelatorios.execute();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alertaErro(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            alertaErro(e.getMessage());
+        }
+    }
+
+    private void display() {
+       String s = "" ;
+       for (RowImpressao r : listImpressao) {
+           s = s + r.getLinha() + "\n" ;
+       }
+        textViewImpressao.setText(s);
     }
 
     private void alertaErro(String mensagem) {
@@ -126,43 +164,10 @@ public class ActivityImpressao extends AppCompatActivity {
                 }).show();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_impressao, menu);
         return true;
-    }
-
-    private void carregaImp() {
-            new ConexaoImpressoras(this) {
-                @Override
-                public void Ok() {
-                    ImpressoraAdapter impAdp = new ImpressoraAdapter(getBaseContext(),Dao.getImpressoraADO(getBaseContext()).getList()) ;
-                    spinnerImp.setAdapter(impAdp);
-                    spinnerImp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(i) ;
-                            UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao()) ;
-                            setImpressoraPadrao();
-                            carregaRelatorio() ;
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                        }
-                    });
-                    setImpressoraPadrao();
-                    carregaRelatorio() ;
-                }
-
-                @Override
-                public void erroMensagem(String msg) {
-                    Toast.makeText(getBaseContext(),msg, Toast.LENGTH_LONG).show();
-
-                }
-            }.execute();
     }
 
     @Override
@@ -171,63 +176,33 @@ public class ActivityImpressao extends AppCompatActivity {
             finish();
         }
         if(item.getItemId() == R.id.action_imprimir_ok){
-            setOpFEchamento() ;
+            imprimirRelatorio() ;
             return true ;
         }
         return true ;
     }
 
-    private void setOpFEchamento(){
-        if (impressoraPadrao == null) {
-           alertaErro("Selecione uma Impressora!");
-
-        } else {
-           if (impressoraPadrao.getTipoImpressora() == TipoImpressora.tpILocal) {
-               try {
-                   new ConexaoImpressaoLocal(this, impressoraPadrao, caixa_id, opcao) {
-                       @Override
-                       public void ok(String s) {
-                           Toast.makeText(getBaseContext(), s, Toast.LENGTH_LONG).show();
-                       }
-
-                       @Override
-                       public void erroMensagem(String msg) {
-                           alertaErro(msg);
-                       }
-                   }.execute() ;
-               } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
-                   e.printStackTrace();
-                   alertaErro(e.getMessage());
-               }
-           } else {
-               imprimirRelatorio() ;
-           }
-        }
-
-    }
-    private void imprimirRelatorio() {
-
-        ListenerImpressao listenerImpressao = new ListenerImpressao() {
+    private void instanciarImp(){
+        controleImpressora = BuilderControleImp.getImpressora(this, impressoraPadrao.getTipoImpressora()) ;
+        ListenerImpressao listener = new ListenerImpressao() {
             @Override
             public void onImpressao(int status) {
-                Toast.makeText(getBaseContext(),"Impressão OK", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityImpressao.this, "Impressão OK", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(int status, String messagem) {
-                alertaErro(messagem) ;
+                Toast.makeText(ActivityImpressao.this, messagem, Toast.LENGTH_SHORT).show();
+
             }
         };
-        if (impressoraPadrao.getTipoImpressora() == TipoImpressora.tpILio){
-            RelatorioLIO relatorioLIO = new RelatorioLIO(getBaseContext(), conexaoRelatorios, listenerImpressao);
-            relatorioLIO.executar();
+        controleImpressora.setListenerImpressao(listener);
+        controleImpressora.open();
+    }
 
-        }
-        if (impressoraPadrao.getTipoImpressora() == TipoImpressora.tpIV7){
-            RelatorioA7 A7 = new RelatorioA7(getBaseContext(), conexaoRelatorios, listenerImpressao );
-            A7.executar();
-        }
 
+    private void imprimirRelatorio() {
+        controleImpressora.impressaoLivre(listImpressao);
     }
 
 }

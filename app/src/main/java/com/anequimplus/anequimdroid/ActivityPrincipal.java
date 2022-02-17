@@ -25,11 +25,13 @@ import com.anequimplus.entity.Modalidade;
 import com.anequimplus.entity.OpcaoMenuPrincipal;
 import com.anequimplus.entity.Terminal;
 import com.anequimplus.tipos.Link;
+import com.anequimplus.utilitarios.TokenSet;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +40,6 @@ public class ActivityPrincipal extends AppCompatActivity {
    private ListView gradePrimcipal ;
    private List<OpcaoMenuPrincipal> listOpcoesPricipais ;
    private static int ABERTURACAIXA = 3 ;
-   private static int VERIFICARCHAVE = 4 ;
    private Toolbar toolbar ;
 
     @Override
@@ -56,13 +57,10 @@ public class ActivityPrincipal extends AppCompatActivity {
                         startActivity(new Intent(getBaseContext(), ActivityPedido.class));
                         break;
                     case 2:
-                        startActivity(new Intent(getBaseContext(), ActivityConta.class));
+                        startActivity(new Intent(getBaseContext(), ActivityContaList.class));
                         break;
                     case 3:
                         abrirFecharCaixa() ;
-                        break;
-                    case 4:
-                        startActivity(new Intent(getBaseContext(), ActivityVendaVista.class));
                         break;
                 }
             }
@@ -92,8 +90,20 @@ public class ActivityPrincipal extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        toolbar.setSubtitle(UtilSet.getLojaNome(getBaseContext())) ;
+        toolbar.setTitle("Usuário: "+UtilSet.getUsuarioNome(this)) ;
+        //toolbar.setSubtitle(UtilSet.getUsuarioNome(this)) ;
         iniciarMenu() ;
+        verificaToken() ;
+
+    }
+
+    public void verificaToken(){
+        try {
+            TokenSet.validate(getBaseContext()) ;
+        } catch (TokenSet.ExceptionTokenExpirado e) {
+            e.printStackTrace();
+            startActivity(new Intent(getBaseContext(), ActivityLogin.class));
+        }
     }
 
 
@@ -106,21 +116,12 @@ public class ActivityPrincipal extends AppCompatActivity {
                 setCaixa(valor);
             }
         }
-        if (requestCode == VERIFICARCHAVE){
-            if (resultCode != RESULT_OK){
-                finish();
-            } else {
-                startActivity(new Intent(getBaseContext(), ActivityConfiguracao.class));
-            }
-        }
     }
 
     private void setCaixa(double v){
-
         Modalidade modalidade = null ;
         Date data = new Date() ;
-
-        Caixa caixa = new Caixa(0, UtilSet.getUUID(), data, data, UtilSet.getUsuarioId(this),1, v, 0) ;
+        Caixa caixa = new Caixa(0, UtilSet.getUUID(), data, data, UtilSet.getUsuarioId(this),1, v) ;
         Dao.getCaixaADO(this).setCaixa(caixa);
         Toast.makeText(this, "Caixa Aberto", Toast.LENGTH_SHORT).show();
         Log.i("Caixa", caixa.getJson().toString()) ;
@@ -129,9 +130,14 @@ public class ActivityPrincipal extends AppCompatActivity {
 
     private void enviarCaixa(Caixa caixa){
 
-            new ConexaoCaixa(getBaseContext(), caixa) {
+        List<Caixa> caixas = new ArrayList<Caixa>() ;
+        caixas.add(caixa) ;
+        try {
+            new ConexaoCaixa(this, caixas) {
+
                 @Override
-                public void Ok(Caixa caixa) {
+                public void Ok(List<Caixa> l) {
+                  //  Dao.getCaixaADO(getBaseContext()).caixa_recebido(l);
                     Toast.makeText(getBaseContext(), "Caixa Enviado", Toast.LENGTH_SHORT).show();
                 }
 
@@ -141,6 +147,13 @@ public class ActivityPrincipal extends AppCompatActivity {
 
                 }
             }.execute() ;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        }
     }
 
     private void iniciarMenu(){
@@ -159,15 +172,6 @@ public class ActivityPrincipal extends AppCompatActivity {
                 .setPositiveButton("Ok", null).show();
     }
 
-    private void setAlert(String txt){
-        new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("Alerta")
-                .setMessage(txt)
-                .setCancelable(false)
-                .setPositiveButton("OK",null).show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -183,11 +187,12 @@ public class ActivityPrincipal extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.action_logout) {
             startActivity(new Intent(getBaseContext(), ActivityLogin.class));
-            finish();
             return true;
         }
-
-
+        if (item.getItemId() == R.id.action_conf_autenticacao) {
+            startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
+            return true;
+        }
         return true ;//super.onOptionsItemSelected(item);
     }
 

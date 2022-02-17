@@ -27,6 +27,7 @@ public class ContaPedidoA7  extends CorpoRelatorio {
     private ListenerImpressao listenerImpressao;
     private int tamColuna = 48 ;
 
+
     public ContaPedidoA7(Context ctx, ContaPedido contaPedido, String link, String param, ListenerImpressao listenerImpressao) {
         super(ctx, link, param);
         this.ctx = ctx;
@@ -88,7 +89,7 @@ public class ContaPedidoA7  extends CorpoRelatorio {
         t.add(getLinha("="));
         insertTotais(t,"SUBTOTAL:",contaPedido.getTotalItens(), true);
         insertTotais(t,"DESCONTO:",contaPedido.getDesconto(), false);
-        insertTotais(t,"TAXA:",contaPedido.getComissao(), false);
+        insertTotais(t,"TAXA:",contaPedido.getTotalComissao(), false);
         insertTotais(t,"TOTAL:",contaPedido.getTotal(), true);
         insertTotais(t,"PAGAMENTO:",contaPedido.getTotalPagamentos(), false);
         insertTotais(t,"TOTAL A PAGAR:",contaPedido.getTotalaPagar(), false);

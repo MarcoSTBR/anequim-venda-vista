@@ -3,6 +3,7 @@ package com.anequimplus.conexoes;
 import android.content.Context;
 import android.util.Log;
 
+import com.anequimplus.ado.Dao;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
@@ -51,6 +52,7 @@ public abstract class ConexaoCNPJ extends ConexaoServer{
                 if (j.getJSONArray("data").length() > 0) {
                     JSONObject obj = (JSONObject) j.getJSONArray("data").get(0);
                     UtilSet.setServidorMaster(ctx, obj.getString("URL_MOBILE"));
+                    Dao.getLinkAcessoADO(ctx).iniciarPadrao() ;
                     oK(cnpj, obj.getString("URL_MOBILE"));
                 } else erro(0,"CNPJ "+cnpj+" Inexistente!");
             } else {

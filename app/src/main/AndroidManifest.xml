@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.anequimplus.anequimdroid"
-    android:targetSandboxVersion="1" >
+    android:targetSandboxVersion="1">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -21,34 +21,33 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_logotipo_foreground"
+        android:icon="@mipmap/ic_logotipo_principal_foreground"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:roundIcon="@mipmap/ic_logotipo_foreground"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
-        tools:replace="android:icon,android:theme" >
+        tools:replace="android:icon,android:theme">
         <activity
-            android:name=".ActivityTerminal"
+            android:name=".ActivityContaList"
             android:exported="false" />
+        <activity
+            android:name=".ActivityContaManutention"
+            android:exported="false"
+            android:label="@string/title_activity_conta_manutention"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/network_security_config" />
 
         <activity
-            android:name=".ActivityVendaVistaLista"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_venda_vista_lista"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ActivityProdutoList"
+            android:exported="true" />
         <activity
-            android:name=".ActivityVendaVistaPagamento"
-            android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".ActivityVendaVista"
-            android:configChanges="orientation|screenSize" />
+            android:name=".ActivityTerminal"
+            android:exported="true" />
         <activity
             android:name=".ActivityNFCe"
             android:configChanges="orientation|screenSize"
@@ -120,7 +119,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ActivityInicial"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

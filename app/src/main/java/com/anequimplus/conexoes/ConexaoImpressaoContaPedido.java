@@ -7,13 +7,13 @@ import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.Impressora;
+import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ImpressaoA7;
 import com.anequimplus.impressao.ImpressaoLio;
 import com.anequimplus.impressao.ListenerImpressao;
 import com.anequimplus.tipos.Link;
 import com.anequimplus.tipos.TipoImpressora;
 import com.anequimplus.utilitarios.RowImpressao;
-import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,23 +26,24 @@ import java.util.List;
 public abstract class ConexaoImpressaoContaPedido extends ConexaoServer {
 
     private Impressora impressora ;
-//    private ListenerImpressao listenerImpressao ;
+    private ContaPedido contaPedido ;
 
-    public ConexaoImpressaoContaPedido(Context ctx, Impressora impressora, List<ContaPedido> listContapedido) throws LinkAcessoADO.ExceptionLinkNaoEncontrado, JSONException, MalformedURLException {
+    public ConexaoImpressaoContaPedido(Context ctx, Impressora impressora, ContaPedido contaPedido) {
         super(ctx);
         //this.listenerImpressao = listenerImpressao ;
         msg = "Impressão Conta Pedido" ;
-
         this.impressora = impressora ;
-
+        this.contaPedido = contaPedido ;
         maps.put("class", "AfoodContaPedido") ;
         maps.put("method", "imprimir") ;
-        maps.put("chave", UtilSet.getChave(ctx)) ;
-        maps.put("loja_id", UtilSet.getLojaId(ctx)) ;
-        maps.put("system_user_id", UtilSet.getId_Usuario(ctx)) ;
-        maps.put("impressora_id", impressora.getId()) ;
-        maps.put("pedidos", getPedidos(listContapedido)) ;
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImprimirConta).getUrl() ;
+        maps.put("pedido", contaPedido.getId()) ;
+        try {
+            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImprimirConta).getUrl() ;
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     private JSONArray getPedidos(List<ContaPedido> listContapedido) throws JSONException {
@@ -83,6 +84,10 @@ public abstract class ConexaoImpressaoContaPedido extends ConexaoServer {
                 list.add(new RowImpressao(j.getJSONObject(i)));
         }
         return list ;
+    }
+
+    public void execute(ControleImpressora cntrol){
+        cntrol.imprimeConta(contaPedido);
     }
 
     @Override

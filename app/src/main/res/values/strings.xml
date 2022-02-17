@@ -9,7 +9,7 @@
     <string name="conf_vendavistaNFCe">Pergurar se Emite NFCe na Venda a Vista:</string>
 
     <string name="title_activity_produto_add">Inclusão de Produto</string>
-    <string name="label_pedido">Pedido/Mesa</string>
+    <string name="label_pedido">Conta</string>
     <string name="title_activity_envio_pedido">Envio de Pedidos</string>
     <string name="title_activity_pedido">Pedidos</string>
     <string name="ok">OK</string>
@@ -41,5 +41,33 @@
 
     <string name="terminal_descricao">Descrição deste Terminal</string>
     <string name="terminal_tipo_emissao">Tipo de Emissão de NF</string>
+
+    <string-array name="conta_manutention">
+        <item name="tab_text_1">Tab 1</item>
+        <item name="tab_text_2">Tab 2</item>
+    </string-array>
+
+    <string-array name="configuracao">
+        <item>Operacional</item>
+        <item>Conexão</item>
+        <item>Impressora</item>
+    </string-array>
+
+    <string-array name="conta_list">
+        <item>Aberto</item>
+        <item>Fechado</item>
+    </string-array>
+
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_conta_manutention">ActivityContaManutention</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="produto_label">Produto</string>
+    <string name="inicial_link">https://stbr.com.br</string>
+    <string name="todo">TODO</string>
+    <string name="inicial_registrar">Registrar</string>
+    <string name="inicial_entrar">Entrar</string>
+    <string name="action_pedido_atualizar">Atualizar</string>
 
 </resources>

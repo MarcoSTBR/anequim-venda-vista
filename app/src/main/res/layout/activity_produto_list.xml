@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityProdutoList">
+
+
+    <TextView
+        android:id="@+id/textViewTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/produto_label" />
+
+    <EditText
+        android:id="@+id/editTextProduto"
+        android:layout_width="306dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTitulo"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/edit_customizado"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Digite o código ou nome"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textSize="25dp" />
+
+    <ImageButton
+        android:id="@+id/atualizarprodutos"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/editTextProduto"
+        android:layout_alignBottom="@id/editTextProduto"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@id/editTextProduto"
+        android:background="@drawable/botao_customizado"
+        android:src="@drawable/ic_baseline_refresh_24" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grade_produto_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/editTextProduto"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/layout_grade_produto_list" />
+</RelativeLayout>

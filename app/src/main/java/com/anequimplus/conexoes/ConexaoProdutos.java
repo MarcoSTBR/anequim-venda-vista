@@ -50,7 +50,6 @@ public abstract class ConexaoProdutos extends ConexaoServer{
             erro(e.getMessage()) ;
             Toast.makeText(ctx, "JSON "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
 
     public abstract void Ok();

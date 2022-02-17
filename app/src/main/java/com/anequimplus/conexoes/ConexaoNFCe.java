@@ -26,7 +26,7 @@ public abstract class ConexaoNFCe extends ConexaoServer {
         maps.put("chave",UtilSet.getChave(ctx)) ;
         maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
         maps.put("MAC",UtilSet.getMAC(ctx)) ;
-        maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
+        maps.put("system_user_id",UtilSet.getUsuarioId(ctx)) ;
         maps.put("impressora_id",impressora.getId()) ;
         url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fNFCeGetContaPedido).getUrl();
         //url = new URL(UtilSet.getServidor(ctx) + "/NFCeGetContaPedido");
@@ -40,7 +40,7 @@ public abstract class ConexaoNFCe extends ConexaoServer {
         maps.put("chave",UtilSet.getChave(ctx)) ;
         maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
         maps.put("MAC",UtilSet.getMAC(ctx)) ;
-        maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
+        maps.put("system_user_id",UtilSet.getUsuarioId(ctx)) ;
         maps.put("pedido_id",contaPedido.getId()) ;
         url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fNFCeGetContaPedido).getUrl();
         //url = new URL(UtilSet.getServidor(ctx) + "/NFCeGetContaPedido");

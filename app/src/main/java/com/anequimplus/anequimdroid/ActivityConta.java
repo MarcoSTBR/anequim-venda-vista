@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,27 +26,30 @@ import com.anequimplus.adapter.ContaPedidoViewAdapter;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoConfiguracaoLio;
 import com.anequimplus.conexoes.ConexaoContaPedido;
 import com.anequimplus.conexoes.ConexaoContaPedidoItemCancelar;
-import com.anequimplus.conexoes.ConexaoPagamentoConta;
-import com.anequimplus.conexoes.ConexaoPagamentoLio;
-import com.anequimplus.conexoes.ConexaoServidor;
+import com.anequimplus.conexoes.ConexaoTransferencia;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.ContaPedidoItemCancelamento;
+import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.entity.Modalidade;
+import com.anequimplus.entity.Transferencia;
+import com.anequimplus.impressao.BuilderControleImp;
+import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ListenerImpressao;
-import com.anequimplus.tipos.PagamentoStatus;
-import com.anequimplus.tipos.TipoModalidade;
+import com.anequimplus.tipos.Link;
 import com.anequimplus.utilitarios.DisplaySet;
 import com.anequimplus.utilitarios.UtilSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONException;
+
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,17 +59,16 @@ public class ActivityConta extends AppCompatActivity {
     private ContaPedido contaPedido ;
     private Modalidade modalidade ;
     private Toolbar toolbar ;
-    private ConexaoServidor cx = null ;
     private Caixa caixa = null ;
     private static int CONTA_PAGAMENTO = 1 ;
     private static int CONTA_VALOR = 2 ;
     private Spinner spinnerImp ;
-    //private List<Impressora> listImpressora = null;
     private Impressora impressoraPadrao ;
     private String clientID ;
     private String accessToken ;
-    private ListenerImpressao listenerImpressao ;
     private int idContaSelecionada = -1 ;
+    private ControleImpressora controlImp = null ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +108,11 @@ public class ActivityConta extends AppCompatActivity {
         spinnerImp     = (Spinner) findViewById(R.id.spinnerImpConta) ;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (controlImp != null) controlImp.close();
+    }
 
     @Override
     protected void onResume() {
@@ -121,17 +127,17 @@ public class ActivityConta extends AppCompatActivity {
         spinnerImp.setAdapter(impAdp);
         spinnerImp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+            @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(i) ;
                 UtilSet.setImpPadraoContaPedido(getBaseContext(), impressoraPadrao.getDescricao()) ;
                 setImpressoraPadrao() ;
                 //UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao()) ;
                 //carregaRelatorio() ;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
         setImpressoraPadrao();
@@ -180,6 +186,7 @@ public class ActivityConta extends AppCompatActivity {
 */
     private void setImpressoraPadrao() {
         String descImp = UtilSet.getImpPadraoContaPedido(this);
+        impressoraPadrao = null ;
         for (int i = 0 ; i<spinnerImp.getCount() ; i++){
             spinnerImp.getItemAtPosition(i);
             Impressora impSp = (Impressora)spinnerImp.getItemAtPosition(i) ;
@@ -189,6 +196,27 @@ public class ActivityConta extends AppCompatActivity {
                 impressoraPadrao = impSp ;
             }
         }
+        instanciarImp(impressoraPadrao) ;
+    }
+
+    private void instanciarImp(Impressora impressoraPadrao) {
+       if (impressoraPadrao != null) {
+           controlImp = BuilderControleImp.getImpressora(this, impressoraPadrao.getTipoImpressora());
+           ListenerImpressao limp = new ListenerImpressao() {
+               @Override
+               public void onImpressao(int status) {
+                   Toast.makeText(ActivityConta.this, "Impressão OK", Toast.LENGTH_SHORT).show();
+               }
+
+               @Override
+               public void onError(int status, String messagem) {
+                   Toast.makeText(ActivityConta.this, messagem, Toast.LENGTH_SHORT).show();
+
+               }
+           };
+           controlImp.setListenerImpressao(limp);
+           controlImp.open();
+       }
     }
 
     @Override
@@ -253,25 +281,37 @@ public class ActivityConta extends AppCompatActivity {
 
     private void consultarConta() {
        Log.i("consultarConta", "idContaSelecionada "+idContaSelecionada) ;
-       new ConexaoContaPedido(this) {
-              @Override
-              public void oK(List<ContaPedido> l) {
-                 selecionanalista(l);
-              }
+       List<FilterTable> filters = new ArrayList<FilterTable>() ;
+       filters.add(new FilterTable("ID", "=", String.valueOf(idContaSelecionada))) ;
+        try {
+            new ConexaoContaPedido(this, filters) {
+                   @Override
+                   public void oK(List<ContaPedido> l) {
+                      selecionanalista(l);
+                   }
 
-              @Override
-              public void erro(String msg) {
-                  alert(msg);
-              }
-          }.execute();
+                   @Override
+                   public void erro(String msg) {
+                       alert(msg);
+                   }
+               }.execute();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        }
     }
 
     private void selecionanalista(List<ContaPedido> l) {
         contaPedido = null ;
         for (ContaPedido c : l){
             Log.i("consultarConta", "ContaPedido "+c.getPedido()) ;
-            if (c.getId() == idContaSelecionada)
-                contaPedido = c ;
+            if (c.getId() == idContaSelecionada) {
+                contaPedido = c;
+                verificaConta() ;
+            }
         }
         if (contaPedido == null){
             new AlertDialog.Builder(this)
@@ -288,6 +328,17 @@ public class ActivityConta extends AppCompatActivity {
 
         } else {
             displayConta() ;
+        }
+
+    }
+
+    private void verificaConta(){
+        if (contaPedido.getTotalaPagar() <= 0){
+            if (contaPedido.getStatus() == 2)
+                alertSair(contaPedido.getPedido()+" Fechado ");
+             else {
+                 fechamentoPedido();
+            }
         }
 
     }
@@ -312,75 +363,18 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void receberValor(){
-        /*
         caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this)) ;
         if (caixa != null){
-            if ((listContaPedidoSelect.size() == 1) && (caixa != null)) {
-                contaPedido = Dao.getContaPedidoADO(getBaseContext()).getContaPedido(listContaPedidoSelect.get(0)) ;
-                if (contaPedido.getTotalaPagar() > 0) {
-                    DecimalFormat frmV = new DecimalFormat("R$  #0.00");
-                    double valor = contaPedido.getTotalaPagar();
-                    Intent intent = new Intent(getBaseContext(), ActivityValor.class);
-                    Bundle params = new Bundle();
-                    params.putString("TITULO", "Pagamento da Conta: " + contaPedido.getPedido());
-                    params.putString("SUBTITULO", frmV.format(valor));
-                    params.putDouble("VALOR", valor);
-                    intent.putExtras(params);
-                    startActivityForResult(intent, CONTA_VALOR);
-                } else alert("Não há saldo devedor!") ;
-            } else {
-                if (listContaPedidoSelect.size() != 1)
-                    alert("Selecione uma conta somente!") ;
-                if (caixa == null)
-                    alert("Abra o Caixa!") ;
-            }
-        } else
-            alert("Caixa Fechado!") ;
-
-        try {
-            new ConexaoCaixa(this, Link.fConsultaCaixa,  0.0){
-
-                @Override
-                public void caixaAberto(Caixa c) {
-                    caixa = c ;
-                    if ((listContaPedidoSelect.size() == 1) && (caixa != null)) {
-                        contaPedido = Dao.getContaPedidoADO(getBaseContext()).getContaPedido(listContaPedidoSelect.get(0)) ;
-                        if (contaPedido.getTotalaPagar() > 0) {
-                            DecimalFormat frmV = new DecimalFormat("R$  #0.00");
-                            double valor = contaPedido.getTotalaPagar();
-                            Intent intent = new Intent(getBaseContext(), ActivityValor.class);
-                            Bundle params = new Bundle();
-                            params.putString("TITULO", "Pagamento da Conta: " + contaPedido.getPedido());
-                            params.putString("SUBTITULO", frmV.format(valor));
-                            params.putDouble("VALOR", valor);
-                            intent.putExtras(params);
-                            startActivityForResult(intent, CONTA_VALOR);
-                        } else alert("Não há saldo devedor!") ;
-                    } else {
-                        if (listContaPedidoSelect.size() != 1)
-                            alert("Selecione uma conta somente!") ;
-                        if (caixa == null)
-                            alert("Abra o Caixa!") ;
-                    }
-                }
-
-                @Override
-                public void caixaFechado(String msg) {
-                    alert(msg) ;
-                }
-
-                @Override
-                public void erro(String msg) {
-                    alert(msg) ;
-                }
-            }.execute() ;
-        } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alert(e.getMessage()) ;
+            Bundle params = new Bundle();
+            Intent intent = new Intent(this, ActivityPagamento.class);
+            params.putInt("CONTA_ID", idContaSelecionada);
+            intent.putExtras(params);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Caixa Fechado", Toast.LENGTH_SHORT).show();
         }
-*/
     }
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
@@ -465,7 +459,7 @@ public class ActivityConta extends AppCompatActivity {
             }
         } else alert("Valor incorreto!");
     }
-
+*/
     private void alerta(String titulo, String txt){
          new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -476,48 +470,15 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void setImprimirPedido(){
-        /*
-        if ((listContaPedidoSelect.size() > 0) && (impressoraPadrao != null)) {
-            //contaPedido = Dao.getContaPedidoADO(getBaseContext()).getContaPedido(listContaPedidoSelect.get(0));
-            try {
-                 new ConexaoImpressaoContaPedido(this, impressoraPadrao, getListPedidos()) {
-                    @Override
-                    public void oK() {
-                        Toast.makeText(getBaseContext(),"Impressão OK", Toast.LENGTH_LONG) ;
-                    }
 
-                    @Override
-                    public void erro(String mgg) {
-                        alerta("Erro na Impressão", mgg);
-                    }
-                }.execute() ;
-            } catch (MalformedURLException | JSONException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-                e.printStackTrace();
-                alerta("Erro na Impressão", e.getMessage());
-            }
-
-
+        if (impressoraPadrao != null) {
+            controlImp.imprimeConta(contaPedido);
         } else {
-            if (listContaPedidoSelect.size() == 0)
-                alerta("Atenção", "Selecione uma Conta ou Mais Contas!");
-            if (impressoraPadrao == null)
                 alerta("Atenção", "Selecione uma Impressora!");
         }
 
-         */
     }
-   /*
-    private List<ContaPedido> getListPedidos(){
 
-       List<ContaPedido> l = new ArrayList<ContaPedido>() ;
-       for (String s : listContaPedidoSelect){
-           l.add(Dao.getContaPedidoADO(getBaseContext()).getContaPedido(s)) ;
-       }
-      return l ;
-
-
-    }
-  */
     private void alert(String t){
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -525,6 +486,21 @@ public class ActivityConta extends AppCompatActivity {
                 .setMessage(t)
                 .setCancelable(false)
                 .setPositiveButton("Ok", null).show();
+
+    }
+
+    private void alertSair(String t){
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Atenção:")
+                .setMessage(t)
+                .setCancelable(false)
+                .setPositiveButton("Sair", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                }).show();
 
     }
 
@@ -543,7 +519,7 @@ public class ActivityConta extends AppCompatActivity {
             @Override
             public void transferir(ContaPedidoItem item) {
                 setTransfere(item) ;
-                Toast.makeText(ActivityConta.this, "TRANSFERIR "+item.getProduto(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ActivityConta.this, "TRANSFERIR "+item.getProduto(), Toast.LENGTH_SHORT).show();
 
             }
         };
@@ -587,9 +563,24 @@ public class ActivityConta extends AppCompatActivity {
     }
 
     private void tranferirParaConta(String conta, ContaPedidoItem item) {
-        Toast.makeText(ActivityConta.this, "Tranferindo item item "+item.getProduto().getDescricao()+" para "+conta, Toast.LENGTH_LONG).show();
-    }
+        ContaPedido cp = new ContaPedido(UtilSet.getUUID(), conta, new Date(), UtilSet.getUsuarioId(this)) ;
+        Transferencia t = new Transferencia(0, UtilSet.getUUID(), new Date(), contaPedido, cp, item, item.getQuantidade(), 1, UtilSet.getUsuarioId(this));
+        new ConexaoTransferencia(this, t) {
+            @Override
+            public void ok() {
+                consultarConta();
 
+            }
+
+            @Override
+            public void erro(int cod, String msg) {
+                alert(msg);
+
+            }
+        }.execute();
+
+        
+    }
 
     private void perguntarCancelamento(final ContaPedidoItem item){
         new AlertDialog.Builder(this)
@@ -607,9 +598,10 @@ public class ActivityConta extends AppCompatActivity {
                 .show();
 
     }
+
     private void cancelarItem(ContaPedidoItem item) {
         Log.i("cancelarItem", item.getProduto().getDescricao()) ;
-        ContaPedidoItemCancelamento cancel = new ContaPedidoItemCancelamento(0, UtilSet.getUUID(), item.getId(), item.getUUID(), new Date(),
+        ContaPedidoItemCancelamento cancel = new ContaPedidoItemCancelamento(0, UtilSet.getUUID(), item, new Date(),
                 UtilSet.getUsuarioId(this), item.getQuantidade(), 1) ;
 
         new ConexaoContaPedidoItemCancelar(this, cancel) {
@@ -628,44 +620,43 @@ public class ActivityConta extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         displayConta() ;
     }
+
     private void fechamentoPedido() {
-        /*
-        if ((listContaPedidoSelect.size() > 0) && (impressoraPadrao != null)) {
-            //NFCeSetContaPedido
-            try {
-                new ConexaoNFCe(getBaseContext(), listContaPedidoSelect) {
-                    @Override
-                    public void setNFCE(NFCe nfce) {
-                        Intent intent = new Intent(getBaseContext(), ActivityNFCe.class);
-                        Bundle params = new Bundle();
-                        params.putString("CHAVE", nfce.getChave());
-                        intent.putExtras(params);
-                        startActivity(intent);
+        try {
+            if (contaPedido.getTotalaPagar() > 0) throw new Exception("Pagamento Não Realizado!") ;
+            contaPedido.setStatus(2);
+            contaPedido.setData_fechamento(new Date());
+            new ConexaoContaPedido(this, contaPedido, Link.fAlterarPedido) {
+                @Override
+                public void oK(List<ContaPedido> l) {
+                    alertSair("Pedido fechado "+l.size());
+                    //finish();
 
-                    }
+                }
 
-                    @Override
-                    public void erro(String msg) {
-                        alerta("Erro", msg) ;
-                    }
-                }.execute();
-            } catch (MalformedURLException | LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-                e.printStackTrace();
-                alerta("Erro", e.getMessage()) ;
-            }
-        } else {
-            if (listContaPedidoSelect.size() == 0)
-                alerta("Atenção", "Selecione uma Conta ou Mais Contas!");
-            if (impressoraPadrao == null)
-                alerta("Atenção", "Selecione uma Impressora!");
+                @Override
+                public void erro(String mgg) {
+                    alert(mgg);
+                }
+            }.execute();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            alert(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            alert(e.getMessage());
         }
-     */
 
     }
 

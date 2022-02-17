@@ -2,10 +2,6 @@ package com.anequimplus.entity;
 
 import com.anequimplus.tipos.Link;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -20,6 +16,7 @@ public class LinkAcesso {
         this.link = link;
         this.url = url;
     }
+/*
 
     public LinkAcesso(JSONObject j) throws JSONException, MalformedURLException {
         id = j.getInt("ID");
@@ -40,6 +37,7 @@ public class LinkAcesso {
         }
         return j ;
     }
+*/
 
     public int getId() {
         return id;

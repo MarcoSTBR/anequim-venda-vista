@@ -19,14 +19,13 @@ import java.util.Map;
 
 public class ConexaoServer  extends AsyncTask<String, Void, String> {
 
-    private ProgressDialog progressDialog ;
-    public String msg ;
     public Context ctx ;
+    public String msg ;
     public int codInt = 0;
-//    public String nParm = "" ;
     public Map<String, Object>  maps ;
     public URL url ;
     public String token ;
+    private ProgressDialog progressDialog ;
 
 
     public ConexaoServer(Context ctx) {
@@ -68,7 +67,8 @@ public class ConexaoServer  extends AsyncTask<String, Void, String> {
             byte[] postDataBytes = postData.toString().getBytes("UTF-8");
             Log.i("parameters", postData.toString());
 //            URL u = new URL(url.toString()+"&"+param) ;
-//            Log.i("url_u", u.toString());
+            if (url == null) throw new Exception("Link inválido!") ;
+            Log.i("url_u", url.toString());
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();  //abre conexao
             connection.setRequestMethod("POST"); //fala que quer um post
@@ -108,24 +108,34 @@ public class ConexaoServer  extends AsyncTask<String, Void, String> {
 
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Log.i("ProtocolException",codInt+" "+e.getMessage()) ;
             resposta = e.getMessage();
         } catch (IOException e) {
             e.printStackTrace();
+            Log.i("IOException",codInt+" "+e.getMessage()) ;
+            resposta = e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("Exception",codInt+" "+e.getMessage()) ;
             resposta = e.getMessage();
         }
         Log.i("decodedString",codInt+" "+resposta) ;
+        if (codInt == 0) resposta = "Sem conexão com Servidor " + resposta ;
         return resposta;
     }
 
     @Override
     protected void onCancelled() {
         progressDialog.dismiss();
+        Log.i("onPostExecute", msg+" cancelled ") ;
         super.onCancelled();
     }
 
     @Override
     protected void onPostExecute(String s) {
         progressDialog.dismiss();
+        Log.i("onPostExecute", msg+" cod "+codInt+" "+s) ;
+        if (codInt == 0) s = "Sem Conexão com o Servidor!" ;
         super.onPostExecute(s);
     }
     /*

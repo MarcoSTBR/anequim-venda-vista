@@ -68,8 +68,8 @@ public abstract class PedidoAdapterView extends RecyclerView.Adapter<PedidoAdapt
 
         public void bind(Pedido p){
             Log.i("RecyclerView", p.getPedido()) ;
-            txt.setText(" Pedido: "+p.getPedido());
-            obs.setText("Iten(s) ("+frmQ.format(p.getQuantidadeTotalItens())+") no valor de R$ "+frmV.format(p.getValorTotalItens()));
+            txt.setText(" Conta: "+p.getPedido());
+            obs.setText("Iten(s) ("+frmQ.format(p.getQuantidadeTotalItens())+")\nValor de R$ "+frmV.format(p.getValorTotalItens()));
 
             if (p.getStatus() == 1) {
                 Abrir.setBackground(getNegativo(Color.GREEN, bt));

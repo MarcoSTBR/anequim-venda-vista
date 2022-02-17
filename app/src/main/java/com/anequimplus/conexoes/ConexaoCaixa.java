@@ -9,34 +9,38 @@ import com.anequimplus.entity.Caixa;
 import com.anequimplus.tipos.Link;
 import com.anequimplus.utilitarios.UtilSet;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ConexaoCaixa extends ConexaoServer {
 
    // private Caixa caixa ;
 
-    public ConexaoCaixa(Context ctx, Caixa caixa)  {
+    public ConexaoCaixa(Context ctx, List<Caixa> caixas) throws MalformedURLException, LinkAcessoADO.ExceptionLinkNaoEncontrado {
         super(ctx);
         msg = "Atualizar Caixa";
-//        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        try {
-          maps.put("class","AfoodCaixas") ;
-          maps.put("method","atualizar") ;
-          maps.put("MAC",UtilSet.getMAC(ctx)) ;
-          maps.put("caixa", caixa.getJson().toString()) ;
-          url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAtualizarCaixa).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            erro("inicio "+e.getMessage());
-
-        }
+        maps.put("class","AfoodCaixas") ;
+        maps.put("method","atualizar") ;
+        maps.put("MAC",UtilSet.getMAC(ctx)) ;
+        maps.put("caixas", getJson(caixas)) ;
+        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAtualizarCaixa).getUrl() ;
     }
+
+    private JSONArray getJson(List<Caixa> caixas){
+        JSONArray jaa = new JSONArray();
+        for (Caixa c : caixas){
+            jaa.put(c.getJson());
+        }
+        Log.i("caixas", jaa.toString()) ;
+        return jaa ;
+    }
+
 
     @Override
     protected void onPostExecute(String s) {
@@ -44,13 +48,13 @@ public abstract class ConexaoCaixa extends ConexaoServer {
         Log.i("Resp_Caixa", codInt +" "+ s) ;
         try {
             JSONObject j = new JSONObject(s) ;
-            if (j.getString("status").equals("success")) {
-                Caixa caixa = new Caixa(j.getJSONObject("data")) ;
-                Dao.getCaixaADO(ctx).caixa_recebido(caixa.getId(), caixa.getGerezim_id());
-                Ok(caixa) ;
-            } else {
-                erro(j.getString("data"));
-            }
+            if (j.getString("status").equals("success")){
+               List<Caixa> l = new ArrayList<Caixa>() ;
+               for (int i=0; i < j.getJSONArray("data").length() ; i++)
+                 l.add(new Caixa(j.getJSONArray("data").getJSONObject(i))) ;
+               Ok(l);
+            } else erro(j.getString("data"));
+
         } catch (JSONException e) {
             e.printStackTrace();
             erro(e.getMessage()) ;
@@ -60,10 +64,9 @@ public abstract class ConexaoCaixa extends ConexaoServer {
             erro(e.getMessage()) ;
         //    Toast.makeText(ctx, "PARSE "+e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
 
-    public abstract void Ok(Caixa caixa);
+    public abstract void Ok(List<Caixa> l);
     public abstract void erro(String msg);
 
 }

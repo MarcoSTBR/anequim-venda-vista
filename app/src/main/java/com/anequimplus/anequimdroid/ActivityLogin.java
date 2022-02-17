@@ -1,5 +1,6 @@
 package com.anequimplus.anequimdroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -13,7 +14,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.anequimplus.conexoes.ConexaoConfTerminal;
+import com.anequimplus.conexoes.ConexaoGradeVendas;
+import com.anequimplus.conexoes.ConexaoImpressoras;
 import com.anequimplus.conexoes.ConexaoLogin;
+import com.anequimplus.conexoes.ConexaoModalidade;
+import com.anequimplus.conexoes.ConexaoProdutos;
+import com.anequimplus.entity.Terminal;
 import com.anequimplus.utilitarios.UtilSet;
 
 public class ActivityLogin extends AppCompatActivity {
@@ -45,6 +52,7 @@ public class ActivityLogin extends AppCompatActivity {
                 return false;
             }
         });
+        setResult(RESULT_CANCELED);
 
     }
 
@@ -63,8 +71,8 @@ public class ActivityLogin extends AppCompatActivity {
                  new ConexaoLogin(this, editTextUsuario.getText().toString(), editTextSenha.getText().toString()) {
                       @Override
                       public void Ok(int code) {
-
-                          finish() ;
+                          setResult(RESULT_OK);
+                          setTerminal();
                       }
 
                       @Override
@@ -82,6 +90,106 @@ public class ActivityLogin extends AppCompatActivity {
                 .setMessage(text)
                 .setCancelable(false)
                 .setPositiveButton("Ok",null).show();
+    }
+
+    private void setTerminal(){
+        String mac = UtilSet.getMAC(this) ;
+        new ConexaoConfTerminal(this, mac) {
+            @Override
+            public void ok(Terminal t) {
+                setProdutos() ;
+            }
+
+            @Override
+            public void erroMsg(int cod, String msg) {
+                startActivity(new Intent(getBaseContext(), ActivityTerminal.class));
+            }
+        }.execute();
+    }
+
+    private void setProdutos() {
+        new ConexaoProdutos(this){
+
+            @Override
+            public void Ok() {
+                setImpressoras() ;
+            }
+
+            @Override
+            public void erro(String msg) {
+                alertContinuacao(msg); ;
+            }
+        }.execute() ;
+    }
+
+
+    public void setImpressoras(){
+        new ConexaoImpressoras(this){
+
+            @Override
+            public void Ok() {
+                setGrade();
+            }
+
+            @Override
+            public void erroMensagem(String msg) {
+                alertContinuacao(msg) ;
+            }
+        }.execute() ;
+
+    }
+    public void setGrade(){
+        new ConexaoGradeVendas(this){
+
+            @Override
+            public void oK() {
+                setModalidades() ;
+            }
+
+            @Override
+            public void erro(String msg) {
+                alertContinuacao(msg); ;
+            }
+        }.execute() ;
+
+
+    }
+
+    public void setModalidades(){
+        new ConexaoModalidade(this){
+            @Override
+            public void oK() {
+               finish();
+
+            }
+
+            @Override
+            public void erro(String msg) {
+                alertContinuacao(msg) ;
+            }
+        }.execute();
+
+    }
+
+    private void alertContinuacao(String txt){
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Retorno:")
+                .setMessage(txt)
+                .setCancelable(false)
+                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).
+                setNegativeButton("Repetir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setTerminal();
+                            }
+                        }
+                ).show();
     }
 
     @Override

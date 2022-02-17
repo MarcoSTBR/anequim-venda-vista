@@ -5,131 +5,106 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.ItenSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
-import com.anequimplus.entity.Produto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PedidoItemADO {
+
     private Context ctx ;
+    private SQLiteDatabase db = null ;
     private final String DB_TABLE = "PEDIDO_ITEM" ;
-    private SQLiteDatabase db ;
 
     public PedidoItemADO(Context ctx) {
         this.ctx = ctx;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
     }
 
-    public void pedidoItemAdd(Pedido pedido, ItenSelect itenSelect) {
-        PedidoItem it = new PedidoItem(0, pedido, itenSelect) ;
-        inserir(it);
-    }
-
-    public void atualiza(PedidoItem pedidoItem) {
-        alterar(pedidoItem);
-    }
-
-
-    public int getListItens() {
-        int n = 0 ;
-        List<Pedido> list = Dao.getPedidoADO(ctx).getList() ;
-        for (Pedido p : list) {
-            for (PedidoItem it : p.getListPedidoItem()) {
-                n = n + 1 ;
-                }
+    public List<PedidoItem> getList(List<FilterTable> filters){
+        List<PedidoItem> l = new ArrayList<PedidoItem>() ;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = null ;
+        String where ="" ;
+        if (filters.size() > 0 ){
+            for (FilterTable f : filters) {
+                if (where.length() == 0)
+                    where = "("+f.getCampo()+" "+f.getOperador()+" "+f.getVariavel()+")" ;
+                else
+                    where = where + " AND ("+f.getCampo()+" "+f.getOperador()+" "+f.getVariavel()+")" ;
             }
-        return n ;
-    }
-
-    public PedidoItem getPedidoItemId(int nid) {
-        PedidoItem pedidoItem = null ;
-        Cursor res =  db.rawQuery( "SELECT ID, PEDIDO_ID, PRODUTO_ID, " +
-                "QUANTIDADE, PRECO, DESCONTO, VALOR, OBS FROM PEDIDO_ITEM " +
-                "WHERE ID = ?", new String[] {String.valueOf(nid)} );
+            where = " WHERE "+ where ;
+        }
+        Cursor res =  db.rawQuery( "SELECT ID, PEDIDO_ID, PRODUTO_ID, QUANTIDADE, " +
+                "PRECO, DESCONTO, COMISSAO, VALOR, STATUS, OBS "+
+                " FROM PEDIDO_ITEM "+ where, null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            Pedido pedido   = Dao.getPedidoADO(ctx).getId(res.getInt(res.getColumnIndex("PEDIDO_ID"))) ;
-            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
-            ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
-                    produto,
-                    res.getDouble(res.getColumnIndex("QUANTIDADE")),
-                    res.getDouble(res.getColumnIndex("PRECO")),
-                    res.getDouble(res.getColumnIndex("DESCONTO")),
-                    res.getDouble(res.getColumnIndex("VALOR")),
-                    res.getString(res.getColumnIndex("OBS")));
-            pedidoItem = new PedidoItem(
-                    res.getInt(res.getColumnIndex("ID")),
-                    pedido,
-                    itenSelect) ;
+                l.add(new PedidoItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
+                        new ItenSelect(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))),
+                        res.getDouble(res.getColumnIndexOrThrow("QUANTIDADE")),
+                        res.getDouble(res.getColumnIndexOrThrow("PRECO")),
+                        res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
+                        res.getDouble(res.getColumnIndexOrThrow("COMISSAO")),
+                        res.getDouble(res.getColumnIndexOrThrow("VALOR")),
+                        res.getString(res.getColumnIndexOrThrow("OBS")),
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")))));
             res.moveToNext();
         }
-        return pedidoItem ;
+        return l ;
     }
 
-    public List<PedidoItem> getListPedidoItem(Pedido pedido){
-        List<PedidoItem> list = new ArrayList<PedidoItem>() ;
-        Cursor res =  db.rawQuery( "SELECT ID, PEDIDO_ID, PRODUTO_ID, " +
-                "QUANTIDADE, PRECO, DESCONTO, VALOR, OBS FROM PEDIDO_ITEM WHERE PEDIDO_ID = ?", new String[] {String.valueOf(pedido.getId())} );
-        res.moveToFirst();
-        while(res.isAfterLast() == false){
-            Produto produto = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))) ;
-            ItenSelect itenSelect = new ItenSelect(res.getInt(res.getColumnIndex("ID")),
-                    produto,
-                    res.getDouble(res.getColumnIndex("QUANTIDADE")),
-                    res.getDouble(res.getColumnIndex("PRECO")),
-                    res.getDouble(res.getColumnIndex("DESCONTO")),
-                    res.getDouble(res.getColumnIndex("VALOR")),
-                    res.getString(res.getColumnIndex("OBS")));
-            list.add(new PedidoItem(
-                    res.getInt(res.getColumnIndex("ID")),
-                    pedido,
-                    itenSelect)) ;
-            res.moveToNext();
-        }
-        return list ;
+    public PedidoItem get(int id){
+        PedidoItem it = null ;
+        List<FilterTable> filters = new ArrayList<FilterTable>() ;
+        filters.add(new FilterTable("ID", "=", String.valueOf(id))) ;
+        List<PedidoItem> itens = getList(filters) ;
+        if (itens.size() > 0)
+            it = itens.get(0) ;
+        return it ;
+
     }
 
-    private void inserir(PedidoItem pedidoItem){
+    public void incluir(PedidoItem p){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ContentValues contentValues = new ContentValues();
-        contentValues.put("PEDIDO_ID", pedidoItem.getPedido().getId());
-        contentValues.put("PRODUTO_ID", pedidoItem.getItenSelect().getProduto().getId());
-        contentValues.put("QUANTIDADE", pedidoItem.getItenSelect().getQuantidade());
-        contentValues.put("PRECO", pedidoItem.getItenSelect().getPreco());
-        contentValues.put("DESCONTO", pedidoItem.getItenSelect().getDesconto());
-        contentValues.put("OBS", pedidoItem.getItenSelect().getObs());
-        contentValues.put("VALOR", pedidoItem.getItenSelect().getValor());
-        pedidoItem.setId((int) db.insert(DB_TABLE, null, contentValues)) ;
+        contentValues.put("PEDIDO_ID", p.getPedido_id());
+        contentValues.put("PRODUTO_ID", p.getItenSelect().getProduto().getId());
+        contentValues.put("QUANTIDADE", p.getItenSelect().getQuantidade());
+        contentValues.put("PRECO", p.getItenSelect().getPreco());
+        contentValues.put("DESCONTO", p.getItenSelect().getDesconto());
+        contentValues.put("COMISSAO", p.getItenSelect().getComissao());
+        contentValues.put("VALOR", p.getItenSelect().getValor());
+        contentValues.put("OBS", p.getItenSelect().getObs());
+        p.setId((int)db.insert(DB_TABLE, null, contentValues)) ;
     }
-
-    public void alterar(PedidoItem pedidoItem){
+    public void alterar(PedidoItem p) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ContentValues contentValues = new ContentValues();
-        contentValues.put("PEDIDO_ID", pedidoItem.getPedido().getId());
-        contentValues.put("PRODUTO_ID", pedidoItem.getItenSelect().getProduto().getId());
-        contentValues.put("QUANTIDADE", pedidoItem.getItenSelect().getQuantidade());
-        contentValues.put("PRECO", pedidoItem.getItenSelect().getPreco());
-        contentValues.put("DESCONTO", pedidoItem.getItenSelect().getDesconto());
-        contentValues.put("OBS", pedidoItem.getItenSelect().getObs());
-        contentValues.put("VALOR", pedidoItem.getItenSelect().getValor());
-        db.update(DB_TABLE, contentValues, "ID = ?", new String[] {String.valueOf(pedidoItem.getId())});
+        contentValues.put("PEDIDO_ID", p.getPedido_id());
+        contentValues.put("PRODUTO_ID", p.getItenSelect().getProduto().getId());
+        contentValues.put("QUANTIDADE", p.getItenSelect().getQuantidade());
+        contentValues.put("PRECO", p.getItenSelect().getPreco());
+        contentValues.put("DESCONTO", p.getItenSelect().getDesconto());
+        contentValues.put("COMISSAO", p.getItenSelect().getComissao());
+        contentValues.put("VALOR", p.getItenSelect().getValor());
+        contentValues.put("OBS", p.getItenSelect().getObs());
+        db.update(DB_TABLE, contentValues, "ID = ?", new String[] {String.valueOf(p.getId())});
     }
 
-    public void delete(){
-        db.delete(DB_TABLE,null, null) ;
+    public void excluir(PedidoItem pedidoItem) {
+        db.delete(DB_TABLE, "ID = ?", new String[]{String.valueOf(pedidoItem.getId())}) ;
     }
 
-    public void delete(Pedido pedido){
-        db.delete(DB_TABLE,"PEDIDO_ID = ?",new String[]{ String.valueOf(pedido.getId()) }) ;
-    }
-
-    public void delete(PedidoItem pedidoItem){
-        db.delete(DB_TABLE,"ID = ?",new String[]{ String.valueOf(pedidoItem.getId()) }) ;
-    }
-
-    public void delete(int id){
-        db.delete(DB_TABLE,"ID = ?",new String[]{ String.valueOf(id) }) ;
+    public void excluir(Pedido pedido) {
+        db.delete(DB_TABLE, "PEDIDO_ID = ?", new String[]{String.valueOf(pedido.getId())}) ;
     }
 
 }

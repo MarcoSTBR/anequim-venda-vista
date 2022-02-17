@@ -70,7 +70,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS CAIXA") ;
         db.execSQL("DROP TABLE IF EXISTS GRADE_VENDAS") ;
         db.execSQL("DROP TABLE IF EXISTS GRADE_VENDAS_ITEM") ;
-        db.execSQL("DROP TABLE IF EXISTS CAIXA") ;
         db.execSQL("DROP TABLE IF EXISTS LINKACESSO ") ;
         db.execSQL("DROP TABLE IF EXISTS GRUPO ") ;
         db.execSQL("DROP TABLE IF EXISTS PRODUTO ") ;
@@ -78,6 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_ITEM ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_I ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_ITEM_I ") ;
+        db.execSQL("DROP TABLE IF EXISTS PEDIDO_PG_I ") ;
         db.execSQL("DROP TABLE IF EXISTS FUNCIONARIO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_FUNCIONARIO ") ;
         db.execSQL("DROP TABLE IF EXISTS PEDIDO_FUNC_ITEM ") ;
@@ -89,6 +89,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS VENDA_VISTA_PAGAMENTO") ;
         db.execSQL("DROP TABLE IF EXISTS MODALIDADE") ;
         db.execSQL("DROP TABLE IF EXISTS LOJA") ;
+        db.execSQL("DROP TABLE IF EXISTS TRANSFERENCIA") ;
+        db.execSQL("DROP TABLE IF EXISTS PEDIDO_ITEM_CANCEL") ;
+        db.execSQL("DROP TABLE IF EXISTS IMPRESSORA") ;
     }
 
 
@@ -155,7 +158,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "QUANTIDADE DOUBLE, "
                 + "PRECO DOUBLE, "
                 + "DESCONTO DOUBLE, "
+                + "COMISSAO DOUBLE, "
                 + "VALOR DOUBLE, "
+                + "STATUS INTEGER, "
                 + "OBS TEXT) ");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_I ( "
@@ -163,7 +168,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "PEDIDO TEXT , "
                 + "UUID TEXT, "
                 + "STATUS INTEGER, "
-                + "DATA DATETIME) ");
+                + "DESCONTO DOUBLE, "
+                + "SYSTEM_USER_ID INTEGER, "
+                + "DATA DATETIME, "
+                + "STATUS_COMISSAO INTEGER, "
+                + "NUM_IMPRESSAO INTEGER, "
+                + "DATA_FECHAMENTO DATETIME, "
+                + "NUM_PESSOAS INTEGER) ");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_ITEM_I ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -178,6 +189,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "VALOR DOUBLE, "
                 + "STATUS INTEGER, "
                 + "OBS TEXT) ");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_PG_I ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "DATA DATETIME, "
+                + "PEDIDO_ID INTEGER, "
+                + "CAIXA_ID INTEGER, "
+                + "MODALIDADE_ID INTEGER, "
+                + "VALOR DOUBLE, "
+                + "STATUS INTEGER)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_ITEM_CANCEL ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -197,6 +218,37 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "VALOR DOUBLE, "
                 + "STATUS INTEGER) ");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS MODALIDADE ( "
+                + "ID INTEGER, "
+                + "CODIGO TEXT, "
+                + "DESCRICAO TEXT, "
+                + "TIPOMODALIDADE TEXT, "
+                + "COD_RECEBIMENTO INTEGER, "
+                + "URL TEXT, "
+                + "PARAM TEXT,"
+                + "STATUS INTEGER)") ;
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS TRANSFERENCIA ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "CONTA_PEDIDO_ITEM_ID INTEGER, "
+                + "CONTA_PEDIDO_ORIGEM_ID INTEGER, "
+                + "CONTA_PEDIDO_DESTINO_ID INTEGER, "
+                + "DATA DATETIME, "
+                + "USUARIO_ID INTEGER, "
+                + "QUANTIDADE DOUBLE, "
+                + "STATUS INTEGER)") ;
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS PEDIDO_ITEM_CANCEL ( "
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "UUID TEXT, "
+                + "CONTA_PEDIDO_ITEM_ID INTEGER, "
+                + "DATA DATETIME, "
+                + "USUARIO_ID INTEGER, "
+                + "QUANTIDADE DOUBLE, "
+                + "STATUS INTEGER)") ;
+
+/*
         db.execSQL("CREATE TABLE IF NOT EXISTS VENDA_VISTA ( "
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "CAIXA_ID INTEGER, "
@@ -221,16 +273,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "MODALIDADE_ID INTEGER, "
                 + "STATUS INTEGER, "
                 + "VALOR DOUBLE)") ;
+*/
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS MODALIDADE ( "
-                + "ID INTEGER, "
-                + "CODIGO TEXT, "
-                + "DESCRICAO TEXT, "
-                + "TIPOMODALIDADE TEXT, "
-                + "COD_RECEBIMENTO INTEGER, "
-                + "URL TEXT, "
-                + "PARAM TEXT,"
-                + "STATUS INTEGER)") ;
+
 /*
         db.execSQL("CREATE TABLE IF NOT EXISTS GRUPO ( "
                 + "ID INTEGER , "
@@ -281,18 +326,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public void limparTudo(Context ctx) {
         SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
         excluirTabelas(db);
+        //excluirTodasTabelas(db) ;
         criarTabelas(db);
 
     }
 
-    public void excluirTodasTabelas(Context ctx){
-        SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
+    public void excluirTodasTabelas(SQLiteDatabase db){
+//        SQLiteDatabase db = getDB(ctx).getWritableDatabase() ;
         Cursor res =  db.rawQuery( "SELECT name FROM sqlite_master", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            String tabela = res.getString(res.getColumnIndex("name")) ;
+            String tabela = res.getString(res.getColumnIndexOrThrow("name")) ;
             Log.i("tabelas", tabela) ;
-            if ((!tabela.equals("android_metadata")) && (tabela.equals("sqlite_sequence")))
+            if (!((tabela.equals("android_metadata")) || (tabela.equals("sqlite_sequence"))))
               db.execSQL("DROP TABLE IF EXISTS "+tabela) ;
             res.moveToNext();
         }
@@ -303,8 +349,10 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor res =  db.rawQuery( "SELECT name FROM sqlite_master", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            Log.i("tabelas", res.getString(res.getColumnIndex("name"))) ;
+            Log.i("tabelas", res.getString(res.getColumnIndexOrThrow("name"))) ;
             res.moveToNext();
         }
     }
+
+
 }

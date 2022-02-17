@@ -17,17 +17,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.ado.Dao;
-import com.anequimplus.entity.ItenSelect;
+import com.anequimplus.entity.PedidoItem;
 
 public class ActivityProdutoAdd extends AppCompatActivity {
 
     private TextView textViewProdAdd ;
-    private TextView textViewProdAddProduto ;
     private EditText editTextObs ;
     private EditText editQuant ;
     private ImageButton imageButtonMais ;
     private ImageButton imageButtonMenos ;
-    private ItenSelect itenSelect ;
+    private PedidoItem itenSelect ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +35,27 @@ public class ActivityProdutoAdd extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        itenSelect = Dao.getItemSelectADO(getBaseContext()).getItemSelectId(getIntent().getIntExtra("ITEMSELECT_ID",-1)) ;
+        int idPedidoItem = getIntent().getIntExtra("ITEMSELECT_ID",0) ;
+        itenSelect = Dao.getPedidoItemADO(this).get(idPedidoItem) ;
         textViewProdAdd = findViewById(R.id.textViewProdAdd);
-        textViewProdAddProduto = findViewById(R.id.textViewProdAddProduto);
         editTextObs = findViewById(R.id.editTextObs);
+        editTextObs.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                itenSelect.getItenSelect().setObs(s.toString());
+            }
+        });
+
         editQuant = findViewById(R.id.editQuant);
         editQuant.addTextChangedListener(new TextWatcher() {
             @Override
@@ -54,16 +70,17 @@ public class ActivityProdutoAdd extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                double q = 0 ;
                 if (editable.toString().length() > 0) {
-                    double q = Double.valueOf(String.valueOf(editQuant.getText()));
-                    itenSelect.setQuantidade(q);
+                    q = Double.valueOf(String.valueOf(editQuant.getText()));
                 } else {
-                    double q = 1.0 ;
-                    itenSelect.setQuantidade(q);
+                    q = 1.0 ;
                 }
-
+                if (q <= 0) q = 1 ;
+                itenSelect.getItenSelect().setQuantidade(q);
             }
         });
+
         imageButtonMais = findViewById(R.id.imageButtonMais);
         imageButtonMais.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,78 +88,58 @@ public class ActivityProdutoAdd extends AppCompatActivity {
                 double q = Double.valueOf(String.valueOf(editQuant.getText())) ;
                 q = q + 1.0 ;
                 editQuant.setText(Double.toString(q));
-                itenSelect.setQuantidade(q);
-                itenSelect.setObs(editTextObs.getText().toString()) ;
+                itenSelect.getItenSelect().setQuantidade(q);
+                itenSelect.getItenSelect().setObs(editTextObs.getText().toString()) ;
             }
         });
+
         imageButtonMenos = findViewById(R.id.imageButtonMenos);
         imageButtonMenos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 double q = Double.valueOf(String.valueOf(editQuant.getText())) ;
-                if (q <= 1) {
+                if (q <= 0) {
                     excluir();
-
                 } else {
                    q = q - 1.0 ;
-                   editQuant.setText(Double.toString(q));
-                   itenSelect.setQuantidade(q);
-                   itenSelect.setObs(editTextObs.getText().toString()) ;
                 }
+                editQuant.setText(Double.toString(q));
+                itenSelect.getItenSelect().setQuantidade(q);
+                itenSelect.getItenSelect().setObs(editTextObs.getText().toString()) ;
             }
         });
-        setResult(RESULT_CANCELED);
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (itenSelect == null) {
-            new AlertDialog.Builder(this)
-                    .setIcon(R.drawable.ic_notifications_black_24dp)
-                    .setTitle("Erro")
-                    .setMessage("Item não encontrado!")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    }).show();
-
-        } else {
-              textViewProdAdd.setText(itenSelect.getProduto().getCodBarra());
-              textViewProdAddProduto.setText(itenSelect.getProduto().getDescricao());
-              editTextObs.setText(itenSelect.getObs());
-              editQuant.setText(Double.toString(itenSelect.getQuantidade()));
-        }
+        textViewProdAdd.setText(itenSelect.getItenSelect().getProduto().getDescricao());
+        editTextObs.setText(itenSelect.getItenSelect().getObs());
+        editQuant.setText(Double.toString(itenSelect.getItenSelect().getQuantidade()));
     }
 
 
     private void excluir() {
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("Atenção:")
-                .setMessage("Quantidade Inválida, Deseja Sair?")
+                .setTitle("Excluir")
+                .setMessage("Deseja Excluir?")
                 .setCancelable(false)
                 .setNegativeButton("Não",null)
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
+                           Dao.getPedidoItemADO(ActivityProdutoAdd.this).excluir(itenSelect);
+                           finish();
                     }
                 }).show();
     }
 
     private void onClickEntrar() {
-        if (itenSelect.getQuantidade() > 0) {
-            setResult(RESULT_OK);
-            itenSelect.setObs(editTextObs.getText().toString()) ;
-        }
+        Dao.getPedidoItemADO(ActivityProdutoAdd.this).alterar(itenSelect);
         finish();
     }
-
+/*
     private void alert(String s) {
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -152,7 +149,7 @@ public class ActivityProdutoAdd extends AppCompatActivity {
                 .setPositiveButton("Ok",null).show();
 
     }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_produto_add, menu);
@@ -167,8 +164,6 @@ public class ActivityProdutoAdd extends AppCompatActivity {
         if (item.getItemId() == R.id.action_produto_add_ok) {
             onClickEntrar();
         }
-
-        //return super.onOptionsItemSelected(item);
         return true ;
     }
 }

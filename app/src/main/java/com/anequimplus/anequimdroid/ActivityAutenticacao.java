@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.anequimplus.ado.DBHelper;
+import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.conexoes.ConexaoAutenticacao;
 import com.anequimplus.conexoes.ConexaoCNPJ;
 import com.anequimplus.utilitarios.UtilSet;
@@ -22,6 +24,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.MalformedURLException;
 
 public class ActivityAutenticacao extends AppCompatActivity {
 
@@ -91,27 +95,53 @@ public class ActivityAutenticacao extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
-
-
     private void setCnpj() {
-        new ConexaoAutenticacao(this, editTextCnpj.getText().toString(), editTextLogin.getText().toString(), editTextPassword.getText().toString()) {
+        try {
+            new ConexaoAutenticacao(this, editTextCnpj.getText().toString(), editTextLogin.getText().toString(), editTextPassword.getText().toString()) {
 
-                @Override
-                public void oK(String cnpj, String login) {
+                    @Override
+                    public void oK(String cnpj, String login) {
+                        new DBHelper(getBaseContext()).limparTudo(getBaseContext());
+                        Toast.makeText(getBaseContext(),"OK", Toast.LENGTH_LONG).show();
+                        finish();
 
-                    Toast.makeText(getBaseContext(),"OK", Toast.LENGTH_LONG).show();
-                    finish();
+                    }
 
-                }
-
-                @Override
-                public void erro(int cod, String msg) {
-                    alert("Erro="+cod,msg) ;
-                }
-            }.execute();
+                    @Override
+                    public void erro(int cod, String msg) {
+                        alert("Erro="+cod,msg) ;
+                    }
+                }.execute();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            setCnpjRepetir(e.getMessage()) ;
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            setCnpjRepetir(e.getMessage()) ;
+        }
 
     }
 
+    private void setCnpjRepetir(String txt){
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Atenção")
+                .setMessage(txt)
+                .setCancelable(false)
+                .setPositiveButton("Repetir", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setCnpj() ;
+                    }
+                })
+                .setNegativeButton("Finalizar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show() ;
+    }
 
     private void verificaCNPJ(){
 
@@ -130,7 +160,6 @@ public class ActivityAutenticacao extends AppCompatActivity {
         }.execute() ;
 
     }
-
 
     private void alert(String Titulo, String txt){
         new AlertDialog.Builder(this)
@@ -190,6 +219,4 @@ public class ActivityAutenticacao extends AppCompatActivity {
                 }).show();
 
     }
-
-
 }

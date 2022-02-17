@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,10 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
+import com.anequimplus.adapter.ConfiguracaoPageAdapter;
 import com.anequimplus.ado.Dao;
-import com.anequimplus.utilitarios.Configuracao;
-import com.anequimplus.utilitarios.UtilSet;
+import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -30,9 +29,16 @@ import java.net.MalformedURLException;
 
 public class ActivityConfiguracao extends AppCompatActivity implements View.OnClickListener{
 
-    private CheckBox checkedVendaVistaImpressao ;
+
+/*
     private CheckBox checkBoxVendaVistaNFCe ;
+    private CheckBox checkedVendaVistaImpressao ;
     private String msgExterna = "";
+    private CheckBox checkedContaCompartilhada ;
+*/
+
+    private TabLayout tabLayout ;
+    private ViewPager viewPager ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,15 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle("Configuração");
+        tabLayout = findViewById(R.id.tabConfig) ;
+        viewPager = findViewById(R.id.viewpager_config) ;
+        viewPager.setAdapter(new ConfiguracaoPageAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.configuracao)));
+        tabLayout.setupWithViewPager(viewPager);
 
+
+/*
+
+        checkedContaCompartilhada = (CheckBox) findViewById(R.id.checkedContaCompartilhada);
         checkedVendaVistaImpressao = (CheckBox) findViewById(R.id.checkedVendaVistaImpressao);
         checkedVendaVistaImpressao.setOnClickListener(this);
         checkBoxVendaVistaNFCe = (CheckBox) findViewById(R.id.checkBoxVendaVistaNFCe);
@@ -50,28 +64,33 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
 
         TextView textViewMac = (TextView) findViewById(R.id.textViewMac) ;
         textViewMac.setText(UtilSet.getMAC(getBaseContext()));
+*/
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+/*
+        checkedContaCompartilhada.setChecked(Configuracao.getPedidoCompartilhado(this));
         checkedVendaVistaImpressao.setChecked(Configuracao.getVendaVistaPerguntarImpressao(this));
         checkBoxVendaVistaNFCe.setChecked(Configuracao.getVendaVistaPerguntarNFCe(this));
+*/
     }
+
 
     public void onClick(View view){
-
-        switch (view.getId()) {
+/*        switch (view.getId()) {
+            case R.id.checkedContaCompartilhada : Configuracao.setPedidoCompartilhado(this, checkedContaCompartilhada.isChecked());
+            break ;
             case R.id.checkedVendaVistaImpressao: Configuracao.setVendaVistaPerguntarImpressao(this, checkedVendaVistaImpressao.isChecked()) ;
-                                                  break;
+            break;
             case R.id.checkBoxVendaVistaNFCe: Configuracao.setVendaVistaPerguntarNFCe(this, checkBoxVendaVistaNFCe.isChecked()) ;
-                                                break;
-
+            break;
             default: alert("Erro");
-
-        }
+        }*/
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -85,9 +104,9 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
             finish();
         }
         if (item.getItemId() == R.id.action_conf_ok) {
+            finish();
             return true ;
         }
-
         if (item.getItemId() == R.id.action_conf_scan) {
             IntentIntegrator integrator = new IntentIntegrator(this) ;
             integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES) ;
@@ -96,13 +115,10 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
             integrator.initiateScan();
             return true ;
         }
-
         if (item.getItemId() == R.id.action_conf_autenticacao) {
             startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
-
             return true ;
         }
-
         return true ;
     }
 
@@ -133,7 +149,6 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
 
 
     }
-
 /*
     private void executar(){
         UtilSet.gravaParamString(getBaseContext(),"SERVIDOR", editTextServidor.getText().toString());

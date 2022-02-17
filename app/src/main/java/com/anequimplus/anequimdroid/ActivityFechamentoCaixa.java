@@ -25,6 +25,8 @@ import com.anequimplus.utilitarios.UtilSet;
 
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityFechamentoCaixa extends AppCompatActivity {
@@ -88,36 +90,67 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
 
     }
     public void setCaixa(){
+        List<Caixa> l = new ArrayList<Caixa>() ;
+        caixa.setStatus(2);
+        caixa.setData(new Date());
+        l.add(caixa) ;
 
-        new ConexaoCaixa(this, caixa){
+        try {
+            new ConexaoCaixa(this, l){
 
-            @Override
-            public void Ok(Caixa caixa) {
-                Dao.getCaixaADO(getBaseContext()).caixa_fechamento(caixa);
-
-            }
-
-            @Override
-            public void erro(String msg) {
-                alertaErro(msg) ;
+                @Override
+                public void Ok(List<Caixa> l) {
+                    for (Caixa c : l){
+                        if (c.getUuid().equals(caixa.getUuid())){
+                            Dao.getCaixaADO(getBaseContext()).alterar(caixa);
+                        }
+                    }
 
 
-            }
-        }.execute();
+                }
+
+                @Override
+                public void erro(String msg) {
+                    alertaErro(msg) ;
+
+
+                }
+            }.execute();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            alertaErro(e.getMessage());
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            alertaErro(e.getMessage());
+            e.printStackTrace();
+        }
+
 
     }
     private void getCaixa() {
         caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this));
-       // setCaixa();
-
+        if (caixa  == null){
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_notifications_black_24dp)
+                    .setTitle("Atenção")
+                    .setMessage("Caixa Fechado!")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).show();
+        } else {
+            getMenuFechamento() ;
+        }
     }
 
-    private void getFechamentos(){
+    private void getMenuFechamento(){
         try {
             new ConexaoOpFechamento(this, caixa) {
                 @Override
                 public void oK(Caixa c, List<OpcoesFechamento> list) {
-                    caixa = c ;
+                    //caixa = c ;
                     toolbar.setTitle("Fechamento Caixa");
                     SimpleDateFormat fdate = new SimpleDateFormat("E dd/MM/yyyy hh:mm:ss");
                     toolbar.setSubtitle(fdate.format(caixa.getData()));

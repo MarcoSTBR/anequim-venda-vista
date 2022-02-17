@@ -24,18 +24,6 @@ public class GradeVendasItemDAO {
     public GradeVendasItemDAO(Context ctx){
         this.ctx = ctx ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-        /*
-        db.execSQL("DROP TABLE IF EXISTS GRADE_VENDAS_ITEM") ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS GRADE_VENDAS_ITEM ( "
-                + "ID INTEGER , "
-                + "GRADE_VENDAS_ID INTEGER, "
-                + "PRODUTO_ID INTEGER, "
-                + "PRECO DOUBLE, "
-                + "COMISSAO DOUBLE, "
-                + "STATUS INTEGER)");
-
-         */
-
     }
 
    public void setGradeVendasItem(JSONArray jarr) throws JSONException {
@@ -68,11 +56,11 @@ public class GradeVendasItemDAO {
                 new String[]{String.valueOf(g.getId()),String.valueOf(1)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            list.add(new GradeVendasItem(res.getInt(res.getColumnIndex("ID")),
-                    res.getInt(res.getColumnIndex("GRADE_VENDAS_ID")),
-                    res.getInt(res.getColumnIndex("PRODUTO_ID")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))))
+            list.add(new GradeVendasItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getInt(res.getColumnIndexOrThrow("GRADE_VENDAS_ID")),
+                    res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))))
             );
             res.moveToNext();
         }
@@ -85,11 +73,11 @@ public class GradeVendasItemDAO {
                         "FROM GRADE_VENDAS_ITEM ORDER BY GRADE_VENDAS_ID  ",null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            list.add(new GradeVendasItem(res.getInt(res.getColumnIndex("ID")),
-                    res.getInt(res.getColumnIndex("GRADE_VENDAS_ID")),
-                    res.getInt(res.getColumnIndex("PRODUTO_ID")),
-                    res.getInt(res.getColumnIndex("STATUS")),
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID"))))
+            list.add(new GradeVendasItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getInt(res.getColumnIndexOrThrow("GRADE_VENDAS_ID")),
+                    res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))))
             );
             res.moveToNext();
         }
@@ -104,7 +92,7 @@ public class GradeVendasItemDAO {
         res.moveToFirst();
         while(res.isAfterLast() == false){
             list.add(
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndex("PRODUTO_ID")))
+                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")))
             );
             res.moveToNext();
         }

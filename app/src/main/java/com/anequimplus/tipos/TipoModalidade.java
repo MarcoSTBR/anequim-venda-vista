@@ -5,6 +5,7 @@ public enum TipoModalidade {
     pgCartaoLio("pgCartaoLio"), pgDesconto("pgDesconto"), pgGorjeta("pgGorjeta");
 
     public String valor;
+
     TipoModalidade(String v) {
         valor = v;
     }

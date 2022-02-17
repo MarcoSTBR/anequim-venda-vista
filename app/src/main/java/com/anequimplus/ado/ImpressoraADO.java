@@ -23,16 +23,11 @@ public class ImpressoraADO {
     public ImpressoraADO(Context ctx){
         this.ctx = ctx ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS IMPRESSORA ( "
-                + "ID INTEGER PRIMARY KEY, "
-                + "DESCRICAO TEXT, "
-                + "TAMCOLUNA INTEGER, "
-                + "TIPOIMPRESSORA TEXT, "
-                + "STATUS INTEGER)"
-        );
+
     }
 
     public void ImpressoraADD(JSONArray jarr) throws JSONException {
+       excluir() ;
        for (int i = 0 ; i < jarr.length() ; i++){
            Impressora imp = new Impressora(jarr.getJSONObject(i)) ;
            Impressora tmp = consultar(imp.getId()) ;
@@ -49,12 +44,12 @@ public class ImpressoraADO {
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, TAMCOLUNA, TIPOIMPRESSORA, STATUS FROM IMPRESSORA WHERE DESCRICAO = ? ", new String[]{descricao});
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            TipoImpressora tp = TipoImpressora.valueOf (res.getString(res.getColumnIndex("TIPOIMPRESSORA"))) ;
-            it  = new Impressora(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("TAMCOLUNA")),
+            TipoImpressora tp = TipoImpressora.valueOf (res.getString(res.getColumnIndexOrThrow("TIPOIMPRESSORA"))) ;
+            it  = new Impressora(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("TAMCOLUNA")),
                     tp,
-                    res.getInt(res.getColumnIndex("STATUS"))) ;
+                    res.getInt(res.getColumnIndexOrThrow("STATUS"))) ;
             res.moveToNext();
         }
         return it;
@@ -63,31 +58,32 @@ public class ImpressoraADO {
     }
     public List<Impressora> getList() {
         List<Impressora> list = new ArrayList<Impressora>();
+        list.add(getNenhuma()) ;
         Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, TAMCOLUNA, TIPOIMPRESSORA, STATUS FROM IMPRESSORA  ", null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
-            TipoImpressora tp = TipoImpressora.valueOf (res.getString(res.getColumnIndex("TIPOIMPRESSORA"))) ;
-            list.add(new Impressora(res.getInt(res.getColumnIndex("ID")),
-                    res.getString(res.getColumnIndex("DESCRICAO")),
-                    res.getInt(res.getColumnIndex("TAMCOLUNA")),
+            TipoImpressora tp = TipoImpressora.valueOf (res.getString(res.getColumnIndexOrThrow("TIPOIMPRESSORA"))) ;
+            list.add(new Impressora(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    res.getInt(res.getColumnIndexOrThrow("TAMCOLUNA")),
                     tp,
-                    res.getInt(res.getColumnIndex("STATUS")))) ;
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
             res.moveToNext();
         }
         return list ;
     }
 
    public Impressora consultar(int id){
-       Impressora it = null ;
        Cursor res =  db.rawQuery( "SELECT ID, DESCRICAO, TAMCOLUNA, TIPOIMPRESSORA, STATUS FROM IMPRESSORA WHERE ID = ? ", new String[]{String.valueOf(id)});
+       Impressora it = null ;
        res.moveToFirst();
        while(res.isAfterLast() == false){
-           TipoImpressora tp = TipoImpressora. valueOf (res.getString(res.getColumnIndex("TIPOIMPRESSORA"))) ;
-           it  = new Impressora(res.getInt(res.getColumnIndex("ID")),
-                   res.getString(res.getColumnIndex("DESCRICAO")),
-                   res.getInt(res.getColumnIndex("TAMCOLUNA")),
+           TipoImpressora tp = TipoImpressora. valueOf (res.getString(res.getColumnIndexOrThrow("TIPOIMPRESSORA"))) ;
+           it  = new Impressora(res.getInt(res.getColumnIndexOrThrow("ID")),
+                   res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                   res.getInt(res.getColumnIndexOrThrow("TAMCOLUNA")),
                    tp,
-                   res.getInt(res.getColumnIndex("STATUS"))) ;
+                   res.getInt(res.getColumnIndexOrThrow("STATUS"))) ;
            res.moveToNext();
        }
        return it;
@@ -111,5 +107,13 @@ public class ImpressoraADO {
         contentValues.put("TIPOIMPRESSORA", it.getTipoImpressora().descricao);
         contentValues.put("STATUS", it.getStatus());
         db.update("IMPRESSORA", contentValues, "ID = ?", new String[] {String.valueOf(it.getId())});
+    }
+
+    public void excluir(){
+        db.delete("IMPRESSORA", null, null) ;
+    }
+
+    public Impressora getNenhuma(){
+        return new Impressora(0, "Nenhum", 40, TipoImpressora.tpNenhum, 1) ;
     }
 }

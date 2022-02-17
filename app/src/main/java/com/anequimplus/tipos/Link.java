@@ -10,6 +10,8 @@ public enum Link {
     fConsultaProduto("fConsultaProduto"),
     fIncluirPedido("fIncluirPedido"),
     fConsultaPedido("fConsultaPedido"),
+    fAlterarPedido("fAlterarPedido"),
+    fTransferencia("fTransferencia"),
     fPagamentoPedido("fPagamentoPedido"),
     fTesteConexao("fTesteConexao"),
     fConsultaModalidade("fConsultaModalidade"),

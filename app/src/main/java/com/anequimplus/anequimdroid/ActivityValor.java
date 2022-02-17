@@ -1,13 +1,13 @@
 package com.anequimplus.anequimdroid;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DecimalFormat;
 
@@ -174,7 +174,7 @@ public class ActivityValor extends AppCompatActivity {
 
 
     private void display(){
-        if (txValor.equals("")){
+        if (txValor.equals("") || txValor.equals("-")){
             valor = 0 ;
         } else {
             valor = Double.valueOf(txValor) / 100 ;

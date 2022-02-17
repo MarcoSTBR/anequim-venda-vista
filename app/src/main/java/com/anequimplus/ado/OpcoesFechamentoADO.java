@@ -38,4 +38,13 @@ public class OpcoesFechamentoADO {
         }
         return null ;
     }
+
+    public void setMenuInterno() {
+        list.clear();
+        list.add(new OpcoesFechamento(1, "DEMONSTRATIVO"));
+        list.add(new OpcoesFechamento(2, "CONTAS"));
+        list.add(new OpcoesFechamento(3, "TRANSFERÊNCIAS"));
+        list.add(new OpcoesFechamento(4, "CANCELAMENTOS"));
+
+    }
 }

@@ -19,9 +19,12 @@ import com.anequimplus.ado.Dao;
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.entity.GradeVendasItem;
 import com.anequimplus.entity.ItenSelect;
+import com.anequimplus.entity.Pedido;
+import com.anequimplus.entity.PedidoItem;
 import com.anequimplus.utilitarios.DisplaySet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityGradeVendaItem extends AppCompatActivity {
@@ -31,11 +34,13 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     private Toolbar toolbar ;
     private GradeVendas gradeVendas ;
     private List<ItenSelect> itensList ;
+    private String pedido ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade_venda_item);
+        pedido = getIntent().getStringExtra("PEDIDO") ;
         toolbar = findViewById(R.id.toolbar);
         toolbar.setSubtitle("Selecione o Produto");
         setSupportActionBar(toolbar);
@@ -57,12 +62,24 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
             finish();
         }
         if (item.getItemId() == R.id.action_produto_ok){
-            //Intent intent = getIntent().putExtra("",m.getId());
-            Dao.getItemSelectADO(this).setList(itensList) ;
-            setResult(RESULT_OK, getIntent());
-            finish();
+            finalizar() ;
         }
         return true;
+    }
+
+    private void finalizar(){
+        for (ItenSelect i : itensList){
+            if (i.getQuantidade() > 0){
+                Pedido p = Dao.getPedidoADO(this).getPedido(pedido) ;
+                if (p == null) {
+                    p = new Pedido(0, pedido, new Date(), new ArrayList<PedidoItem>()) ;
+                    Dao.getPedidoADO(this).incluir(p); ;
+                }
+                PedidoItem item = new PedidoItem(0, p.getId(), i) ;
+                Dao.getPedidoItemADO(this).incluir(item);
+            }
+        }
+        finish();
     }
 
     @Override
@@ -93,7 +110,7 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
         itensList = new ArrayList<ItenSelect>() ;
         for (GradeVendasItem it : Dao.getGradeVendasItemADO(this).getGradeVendasItem(gradeVendas)) {
             if (it.getStatus() == 1){
-                itensList.add(new ItenSelect(it.getId(), it.getProduto(), 0,0,0,0,""));
+                itensList.add(new ItenSelect(it.getId(), it.getProduto(), 0,it.getProduto().getPreco(),0,0,0, "",1));
             }
         }
     }

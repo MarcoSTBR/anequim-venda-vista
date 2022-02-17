@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/botao_customizado"
+    android:layout_marginBottom="5dp"
+    android:id="@+id/grade_pedido_card"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/botao_customizado"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textContaPedido"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:text="@string/label_pedido"
+            android:textAlignment="center"
+            android:textColor="@color/colorPreto"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/listItensPedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPreto"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            app:autoSizeTextType="uniform"
+            tools:text="COCA COLA \n 100 X R$ 1.000,00 = 100.000,00" />
+
+        <TextView
+            android:id="@+id/textContaTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPreto"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            tools:text="Total" />
+
+        <TextView
+            android:id="@+id/textPagamento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPreto"
+            android:textSize="12sp"
+            android:typeface="monospace"
+            tools:text="Pagamento" />
+
+
+    </LinearLayout>
+
+
+
+
+
+</androidx.cardview.widget.CardView>

@@ -4,22 +4,26 @@ import java.io.Serializable;
 
 public class ItenSelect implements Serializable {
 
-    private int id ;
-    private Produto produto ;
-    private double quantidade ;
-    private double preco ;
-    private double desconto ;
-    private double valor ;
-    private String obs ;
+    private int id;
+    private Produto produto;
+    private double quantidade;
+    private double preco;
+    private double desconto;
+    private double comissao;
+    private double valor;
+    private String obs;
+    private int status;
 
-    public ItenSelect(int id, Produto produto, double quantidade, double preco, double desconto, double valor, String obs) {
-        this.id = id ;
+    public ItenSelect(int id, Produto produto, double quantidade, double preco, double desconto, double comissao, double valor, String obs, int status) {
+        this.id = id;
         this.produto = produto;
         this.quantidade = quantidade;
         this.preco = preco;
         this.desconto = desconto;
-        this.valor = valor ;
-        this.obs = obs ;
+        this.comissao = comissao;
+        this.valor = valor;
+        this.obs = obs;
+        this.status = status;
     }
 
     public int getId() {
@@ -46,6 +50,14 @@ public class ItenSelect implements Serializable {
         this.quantidade = quantidade;
     }
 
+    public double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(double preco) {
+        this.preco = preco;
+    }
+
     public double getDesconto() {
         return desconto;
     }
@@ -54,12 +66,12 @@ public class ItenSelect implements Serializable {
         this.desconto = desconto;
     }
 
-    public double getPreco() {
-        return preco;
+    public double getComissao() {
+        return comissao;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setComissao(double comissao) {
+        this.comissao = comissao;
     }
 
     public double getValor() {
@@ -71,8 +83,6 @@ public class ItenSelect implements Serializable {
     }
 
     public String getObs() {
-        if (obs == null) return " " ;
-        else
         return obs;
     }
 
@@ -80,5 +90,11 @@ public class ItenSelect implements Serializable {
         this.obs = obs;
     }
 
+    public int getStatus() {
+        return status;
+    }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

@@ -9,18 +9,16 @@ import java.util.Date;
 public class ContaPedidoItemCancelamento {
     private int id ;
     private String uuid ;
-    private int contaPedidoItem_id ;
-    private String contaPedidoItem_uuid ;
+    private ContaPedidoItem contaPedidoItem ;
     private Date data ;
     private int usuario_id ;
     private double quantidade ;
     private int status ;
 
-    public ContaPedidoItemCancelamento(int id, String uuid, int contaPedidoItem_id, String contaPedidoItem_uuid, Date data, int usuario_id, double quantidade, int status) {
+    public ContaPedidoItemCancelamento(int id, String uuid, ContaPedidoItem contaPedidoItem, Date data, int usuario_id, double quantidade, int status) {
         this.id = id;
         this.uuid = uuid;
-        this.contaPedidoItem_id = contaPedidoItem_id;
-        this.contaPedidoItem_uuid = contaPedidoItem_uuid;
+        this.contaPedidoItem = contaPedidoItem;
         this.data = data;
         this.usuario_id = usuario_id;
         this.quantidade = quantidade;
@@ -30,8 +28,9 @@ public class ContaPedidoItemCancelamento {
     public JSONObject getJSON() throws JSONException {
         JSONObject j = new JSONObject();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        j.put("CONTA_PEDIDO_ITEM_ID", contaPedidoItem_id) ;
-        j.put("CONTA_PEDIDO_ITEM_UUID", contaPedidoItem_uuid) ;
+        j.put("CONTA_PEDIDO_ITEM_ID", contaPedidoItem.getId()) ;
+        j.put("CONTA_PEDIDO_ITEM_UUID", contaPedidoItem.getUUID()) ;
+        j.put("UUID", uuid) ;
         j.put("DATA", df.format(data)) ;
         j.put("QUANTIDADE", quantidade) ;
         j.put("STATUS", status) ;
@@ -67,20 +66,12 @@ public class ContaPedidoItemCancelamento {
         this.uuid = uuid;
     }
 
-    public String getContaPedidoItem_uuid() {
-        return contaPedidoItem_uuid;
+    public ContaPedidoItem getContaPedidoItem() {
+        return contaPedidoItem;
     }
 
-    public void setContaPedidoItem_uuid(String contaPedidoItem_uuid) {
-        this.contaPedidoItem_uuid = contaPedidoItem_uuid;
-    }
-
-    public int getContaPedidoItem_id() {
-        return contaPedidoItem_id;
-    }
-
-    public void setContaPedidoItem_id(int contaPedidoItem_id) {
-        this.contaPedidoItem_id = contaPedidoItem_id;
+    public void setContaPedidoItem(ContaPedidoItem contaPedidoItem) {
+        this.contaPedidoItem = contaPedidoItem;
     }
 
     public Date getData() {
@@ -120,8 +111,8 @@ public class ContaPedidoItemCancelamento {
         return "ContaPedidoItemCancelamento{" +
                 "id=" + id +
                 ", uuid='" + uuid + '\'' +
-                ", contaPedidoItem_id=" + contaPedidoItem_id +
-                ", contaPedidoItem_uuid='" + contaPedidoItem_uuid + '\'' +
+                ", contaPedidoItem_id=" + contaPedidoItem.getId() +
+                ", contaPedidoItem_uuid='" + contaPedidoItem.getUUID() + '\'' +
                 ", data=" + data +
                 ", usuario_id=" + usuario_id +
                 ", quantidade=" + quantidade +

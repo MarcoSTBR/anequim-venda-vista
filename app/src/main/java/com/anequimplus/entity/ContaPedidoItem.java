@@ -1,7 +1,11 @@
 package com.anequimplus.entity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ContaPedidoItem {
     private int id ;
+    private int contaPedido_id ;
     private String UUID ;
     private Produto produto ;
     private double quantidade ;
@@ -12,8 +16,9 @@ public class ContaPedidoItem {
     private String obs ;
     private int status ;
 
-    public ContaPedidoItem(int id, String UUID, Produto produto, double quantidade, double preco, double desconto, double comissao, double valor, String obs, int status) {
+    public ContaPedidoItem(int id, int contaPedido_id, String UUID, Produto produto, double quantidade, double preco, double desconto, double comissao, double valor, String obs, int status) {
         this.id = id;
+        this.contaPedido_id = contaPedido_id ;
         this.UUID = UUID;
         this.produto = produto;
         this.quantidade = quantidade;
@@ -24,6 +29,20 @@ public class ContaPedidoItem {
         this.obs = obs;
         this.status = status;
     }
+
+    public ContaPedidoItem(JSONObject j, Produto p) throws JSONException {
+        id = j.getInt("id") ;
+        UUID = j.getString("UUID") ;
+        produto = p ;
+        quantidade = j.getDouble("QUANTIDADE");
+        preco = j.getDouble("PRECO");
+        desconto = j.getDouble("DESCONTO");
+        comissao = j.getDouble("COMISSAO");
+        valor = j.getDouble("VALOR");
+        obs = j.getString("OBS") ;
+        status = j.getInt("STATUS") ;
+    }
+
     public ContaPedidoItem(int i){
         this.id = id;
     }
@@ -106,6 +125,14 @@ public class ContaPedidoItem {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getContaPedido_id() {
+        return contaPedido_id;
+    }
+
+    public void setContaPedido_id(int contaPedido_id) {
+        this.contaPedido_id = contaPedido_id;
     }
 
     @Override

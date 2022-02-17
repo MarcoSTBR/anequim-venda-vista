@@ -4,43 +4,54 @@ import android.content.Context;
 
 import com.anequimplus.ado.Dao;
 import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
-import com.anequimplus.entity.Modalidade;
+import com.anequimplus.entity.ContaPedidoPagamento;
 import com.anequimplus.tipos.Link;
-import com.anequimplus.utilitarios.UtilSet;
+import com.anequimplus.utilitarios.Configuracao;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class ConexaoPagamentoConta extends ConexaoServer {
 
-    public ConexaoPagamentoConta(Context ctx, ContaPedido contaPedido, Caixa caixa, Modalidade modalidade, double valor) throws LinkAcessoADO.ExceptionLinkNaoEncontrado, MalformedURLException {
+    private ContaPedidoPagamento contaPedidoPagamento ;
+
+    public ConexaoPagamentoConta(Context ctx, ContaPedidoPagamento contaPedidoPagamento)  {
         super(ctx);
-        msg = "Pagamento" ;
-        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.contaPedidoPagamento = contaPedidoPagamento ;
+        msg = "Pagamento..." ;
        // SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
-
-        maps.put("class","AfoodContaPedidoPag") ;
-        maps.put("method","incluir") ;
-        maps.put("chave",UtilSet.getChave(ctx)) ;
-        maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
-        maps.put("MAC",UtilSet.getMAC(ctx)) ;
-        maps.put("system_user_id",UtilSet.getId_Usuario(ctx)) ;
-        maps.put("pedido_id",contaPedido.getId()) ;
-        maps.put("data_pag", fdate.format(new Date())) ;
-        maps.put("modalidade_id",modalidade.getId()) ;
-        maps.put("caixa_id",caixa.getId()) ;
-        maps.put("valor",valor) ;
-        maps.put("status",1) ;
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fPagamentoPedido).getUrl();
-
+        try {
+            maps.put("class","AfoodContaPedidoPag") ;
+            maps.put("method","incluir") ;
+            maps.put("data",this.contaPedidoPagamento.getJSON()) ;
+            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fPagamentoPedido).getUrl();
+        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
+            e.printStackTrace();
+            erro(0, e.getMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            erro(0, e.getMessage());
+        }
     }
 
+    public void execute(){
+        if (Configuracao.getPedidoCompartilhado(ctx)) {
+            this.execute() ;
+        } else {
+            Dao.getContaPedidoPagamentoADO(ctx).incluir(contaPedidoPagamento) ;
+            ContaPedido c = Dao.getContaPedidoInternoDAO(ctx).get(contaPedidoPagamento.getContaPedido_id()) ;
+            if (c.getTotalPagamentos() >= c.getTotal()){
+                c.setStatus(2);
+                c.setData_fechamento(new Date());
+                Dao.getContaPedidoInternoDAO(ctx).store(c) ;
+            }
+            oK();
+        }
+    }
 
     @Override
     protected void onPostExecute(String s) {
@@ -50,14 +61,14 @@ public abstract class ConexaoPagamentoConta extends ConexaoServer {
             if (j.getString("status").equals("success")){
                 oK();
             } else {
-                erro(j.getString("data"));
+                erro(codInt, j.getString("data"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            erro(e.getMessage());
+            erro(codInt, e.getMessage());
         }
     }
 
     public abstract void oK() ;
-    public abstract void erro(String msg) ;
+    public abstract void erro(int cod, String msg) ;
 }
