@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.anequimplus.DaoClass.DBHelper;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,17 +26,6 @@ public class CaixaADO {
         this.ctx = ctx ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
      }
-
-    public Caixa getCaixaAberto(int usuario_id) {
-        Caixa caixa = null ;
-        List<FilterTable> filters = new ArrayList<FilterTable>() ;
-        filters.add(new FilterTable("USUARIO_ID", "=", String.valueOf(usuario_id))) ;
-        List<Caixa> lista = getList(filters) ;
-        for (Caixa cp : lista){
-            if (cp.getStatus() == 1) caixa = cp ;
-        }
-        return caixa;
-    }
 
     public Caixa get(int caixa_id) {
         Caixa caixa = null ;
@@ -69,7 +60,7 @@ public class CaixaADO {
         Log.i("getList", "SELECT ID, UUID, USUARIO_ID, DATA, " +
                 "DATA_FINAL, VALOR,  STATUS FROM CAIXA "+
                 where) ;
-        if (!res.isAfterLast()){
+        while(res.isAfterLast() == false){
             try {
                 dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
                 dtf = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA_FINAL")));
@@ -82,7 +73,7 @@ public class CaixaADO {
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")))
                 ) ;
 
-                Log.i("getList", list.get(l.size()-1).getJson().toString()) ;
+              //  Log.i("getList", list.get(l.size()-1).getJson().toString()) ;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -92,9 +83,21 @@ public class CaixaADO {
 
     }
 
+    public Caixa getUUID(int id) {
+        FilterTables f = new FilterTables() ;
+        f.add(new FilterTable("ID", "=", String.valueOf(id)));
+        List<Caixa> lc = getList(f.getList()) ;
+        if (lc == null)
+            return null ;
+          else return lc.get(0) ;
+    }
+
+/*
+
     public boolean ifCaixaaberto(int usuario_id) {
         return getCaixaAberto(usuario_id) != null ? true : false ;
     }
+*/
 
     public void setCaixa(Caixa caixa) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -123,6 +126,11 @@ public class CaixaADO {
     public void caixa_fechamento(Caixa caixa){
         ContentValues contentValues = new ContentValues();
         contentValues.put("STATUS", caixa.getStatus());
+        db.update("CAIXA", contentValues, "ID = ?", new String[] {String.valueOf(caixa.getId())});
+    }
+    public void caixa_reabrir(Caixa caixa){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("STATUS", 1);
         db.update("CAIXA", contentValues, "ID = ?", new String[] {String.valueOf(caixa.getId())});
     }
 

@@ -2,24 +2,18 @@ package com.anequimplus.impressao;
 
 import android.content.Context;
 
-import com.anequimplus.tipos.TipoImpressora;
+import com.anequimplus.entity.Impressora;
 
 public class BuilderControleImp {
 
-    private static ControleImpressora c ;
-    public static ControleImpressora getImpressora(Context ctx,  TipoImpressora tipo){
-        switch (tipo){
-            case tpElginM10: c = new ContaPedidoM10(ctx) ;
-            break;
-            case tpI9: c = new ContaPedidoI9(ctx) ;
-            break;
-            case tpNenhum: c = new ContaPedidoNenhum(ctx) ;
-            break ;
-            default:
-                c = new ContaPedidoNenhum(ctx) ;
-        };
-        return c ;
+    public static ControleImpressora getImpressora(Context ctx,  Impressora impressora){
+        switch (impressora.getTipoImpressora()){
+            case tpElginM10: return new ContaPedidoM10(ctx) ;
+            case tpI9: return new ContaPedidoI9(ctx, impressora) ;
+            case tpI8: return new ContaPedidoI8(ctx, impressora) ;
+            case tpIUSB: return new ContaPedidoUSB(ctx, impressora) ;
+            default: return new ContaPedidoNenhum(ctx) ;
+        }
     }
-
 
 }

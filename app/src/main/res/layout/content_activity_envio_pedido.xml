@@ -11,49 +11,52 @@
     tools:showIn="@layout/activity_enviopedido">
 
 
-        <TextView
-            android:id="@+id/textProdutoPesquisa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:textColor="@color/colorBranco"
-            android:text="Produto"
+    <ImageButton
+        android:id="@+id/imagelupaproduto"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/edit_customizado"
+        android:src="@drawable/ic_lupa_search_24" />
+
+    <EditText
+        android:id="@+id/editProdutoPesquisa"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/imagelupaproduto"
+        android:background="@drawable/edit_customizado"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Código do Produto"
+        android:inputType="number" />
+    <Button
+        android:id="@+id/botao_pedido_enviar"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/editProdutoPesquisa"
+        android:background="@drawable/botao_inicial_customizado"
+        android:textAllCaps="false"
+        android:text="@string/pedido_enviar" />
             />
 
 
-        <EditText
-            android:id="@+id/editProdutoPesquisa"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/textProdutoPesquisa"
-            android:background="@drawable/edit_customizado"
-            android:gravity="center"
-            android:inputType="number"
-            android:hint="Código do Produto"
-            android:ems="10"
+    <Button
+        android:id="@+id/botao_pedido_produto"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/editProdutoPesquisa"
+        android:background="@drawable/botao_inicial_customizado"
+        android:text="@string/produto_label"
+        android:textAllCaps="false" />
 
-            />
-
-         <ImageButton
-            android:id="@+id/imagelupaproduto"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/editProdutoPesquisa"
-            android:layout_alignBottom="@id/editProdutoPesquisa"
-            android:layout_toRightOf="@id/editProdutoPesquisa"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/edit_customizado"
-            android:src="@drawable/ic_lupa_search_24" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listaPrdPedido"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/editProdutoPesquisa"
-            tools:listitem="@layout/layout_grade_pedidoitem"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listaPrdPedido"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/botao_pedido_produto"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/layout_grade_pedidoitem" />
 
 
 </RelativeLayout>

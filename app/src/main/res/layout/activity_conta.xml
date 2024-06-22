@@ -19,13 +19,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             />
 
-        <Spinner
-            android:id="@+id/spinnerImpConta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:popupBackground="?attr/colorPrimary" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_activity_conta" />

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginBottom="5dp"
     android:background="@drawable/botao_customizado">
 
     <ImageView
@@ -14,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:paddingLeft="10dp"
+        android:layout_marginLeft="5dp"
         app:srcCompat="@android:drawable/ic_menu_set_as" />
     <TextView
         android:id="@+id/texto_transferencia"
@@ -25,67 +22,104 @@
         android:paddingLeft="10dp"
         android:text="Transferir Item:"
         />
+
     <TextView
         android:id="@+id/item_para_transferencia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/texto_transferencia"
-        android:layout_marginTop="15dp"
-        android:paddingLeft="50dp"
-        android:textSize="10dp"
+        android:layout_marginTop="5dp"
         android:text="1 Coca Cola "
-        />
+        android:gravity="center"
+        android:textColor="@color/colorPreto"
+        android:textSize="20dp" />
+
     <TextView
         android:id="@+id/item_para_conta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_para_transferencia"
         android:gravity="center"
-        android:textSize="20dp"
         android:text="Para Conta "
-        />
+        android:textSize="20dp" />
 
     <EditText
         android:id="@+id/edit_para_conta"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_para_conta"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
         android:background="@drawable/edit_customizado"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:hint="Digite a Conta Para Transferência"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:ems="10"
+        android:hint="Digite a Conta"
         android:inputType="number"
         android:textAlignment="center"
-        />
+        android:textSize="20dp" />
+
+    <RelativeLayout
+        android:id="@+id/quadroquant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/edit_para_conta"
+        >
+
+        <ImageButton
+            android:id="@+id/ib_menosS"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/botao_customizado"
+            app:srcCompat="@drawable/ic_baseline_remove_24" />
+
+        <TextView
+            android:id="@+id/textQPrPedidoItemS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/ib_maisS"
+            android:layout_toEndOf="@id/ib_menosS"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:text="999910" />
+
+        <ImageButton
+            android:id="@+id/ib_maisS"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/botao_customizado"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/botao_trasnferencia_confirmar"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edit_para_conta"
-        android:background="@drawable/botao_customizado"
-        android:gravity="center"
+        android:layout_below="@id/quadroquant"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="15dp"
-        android:textSize="20dp"
-        android:text="SIM"
-        android:layout_marginLeft="20dp"
         android:layout_marginBottom="10dp"
-        />
+        android:background="@drawable/botao_inicial_customizado"
+        android:gravity="center"
+        android:text="Confirmar"
+        android:textAllCaps="false"
+        android:layout_alignParentEnd="true"
+        android:textSize="20dp" />
+
     <Button
         android:id="@+id/botao_trasnferencia_cancela"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_alignTop="@id/botao_trasnferencia_confirmar"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/botao_customizado"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:text="NÂO"
         android:layout_marginRight="20dp"
-        />
+        android:background="@drawable/botao_inicial_customizado"
+        android:gravity="center"
+        android:text="Sair"
+        android:textAllCaps="false"
+        android:textSize="20dp" />
 
 </RelativeLayout>

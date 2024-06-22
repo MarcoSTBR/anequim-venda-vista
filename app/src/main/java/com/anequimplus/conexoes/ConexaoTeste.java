@@ -1,51 +1,38 @@
 package com.anequimplus.conexoes;
 
 import android.content.Context;
+import android.util.Log;
 
-import org.json.JSONException;
+import com.anequimplus.utilitarios.Configuracao;
+
 import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class ConexaoTeste extends ConexaoServer {
 
-    public ConexaoTeste(Context ctx)
-    {
+    public ConexaoTeste(Context ctx) throws MalformedURLException {
         super(ctx);
-      //  setParametros() ;
+        method = "GET" ;
+        token = "" ;
+        url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/teste") ;
     }
-
-/*
-    private void setParametros() {
-        JSONObject j = new JSONObject() ;
-        try {
-            UtilSet.getAutenticacao(ctx, j);
-            j.put("TESTE","Teste Conexao") ;
-            j.put("MAC", UtilSet.getMAC(ctx)) ;
-            //nParm = j.toString() ;
-            url = new URL(UtilSet.getServidor(ctx)+"/testeconexao/") ;
-        } catch (JSONException | MalformedURLException e) {
-            e.printStackTrace();
-            erro(e.getMessage());
-        }
-    }
-*/
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        Log.e("teste", codInt+" "+s) ;
         try {
-            JSONObject j = new JSONObject(s) ;
-            String ms = (String) j.get("MENSAGEM");
-            if (j.getInt("CODRETORNO") == 1){
-                oK(ms);
-            } else {
-                erro(ms);
-            }
-        } catch (JSONException e) {
+            JSONObject j = new JSONObject(s);
+            if (j.getString("status").equals("success")) {
+                retorno(j.getString("data"));
+            } else retorno(j.getString("data")); ;
+        } catch (Exception e) {
             e.printStackTrace();
-            erro(e.getMessage());
+            retorno(s);
         }
     }
 
-    public abstract void oK(String msg) ;
-    public abstract void erro(String msg) ;
+    public abstract void retorno(String msg) ;
 }

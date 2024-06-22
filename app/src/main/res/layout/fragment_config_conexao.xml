@@ -9,10 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Conexão de Conta Compartilhada" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkedContaCompartilhada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Conexão de Conta Compartilhada" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -22,6 +32,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Nome/IP" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/api_v13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Versão 13"/>
+            <RadioButton
+                android:id="@+id/api_v14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Versão 14"/>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/testar_conexao"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="TESTAR CONEXÂO"
+            android:background="@drawable/botao_inicial_customizado"
+            />
 
     </LinearLayout>
 

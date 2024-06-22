@@ -13,81 +13,108 @@ import com.auth0.android.jwt.JWT;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TokenSet {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static int getUsuarioId(Context ctx) throws JSONException {
 
-        JWT jwt = getJWT(ctx) ;
-        Log.i("jwt", jwt.toString()) ;
+        JWT jwt = getJWT(ctx);
+        Log.i("jwt", jwt.toString());
 
-        JSONObject j = new JSONObject(getPayload(ctx)) ;
-        return j.getInt("usuarioId") ;
+        JSONObject j = new JSONObject(getPayload(ctx));
+        return j.getInt("usuarioId");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String getUsuarioNome(Context ctx) throws JSONException {
-        JSONObject j = new JSONObject(getPayload(ctx)) ;
-        return j.getString("usuarioNome") ;
+        JSONObject j = new JSONObject(getPayload(ctx));
+        return j.getString("usuarioNome");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static int getLojaId(Context ctx) throws JSONException {
-        JSONObject j = new JSONObject(getPayload(ctx)) ;
-        return j.getInt("loja_id") ;
+        JSONObject j = new JSONObject(getPayload(ctx));
+        return j.getInt("loja_id");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String getLojaNome(Context ctx) throws JSONException {
-        JSONObject j = new JSONObject(getPayload(ctx)) ;
-        return j.getString("loja") ;
+        JSONObject j = new JSONObject(getPayload(ctx));
+        return j.getString("loja");
     }
 
 
     public static String getPayload(Context ctx) {
         //Base64.Decoder base64 = Base64.getDecoder() ;
-        String token = UtilSet.getToken(ctx) ;
-
+        String token = UtilSet.lerParamString(ctx, "TOKEN"); //getToken(ctx) ;
         String[] arr = token.split("\\.");
-        int i = 1 ;
-        Log.i("token",token) ;
-        for (String a : arr){
-            Log.i("token",a) ;
-            if (i == 2){
+        int i = 1;
+        Log.i("token", token);
+        for (String a : arr) {
+            Log.i("token", a);
+            if (i == 2) {
                 return new String(Base64.decode(a, 0));
             }
-            i++ ;
+            i++;
         }
-        return "não encontrou" ;
+        return "não encontrou";
     }
 
-    public static boolean ifTokenVazio(Context ctx){
-        return UtilSet.getToken(ctx).equals("");
+    public static void setToken(Context ctx, String token) {
+        UtilSet.gravaParamString(ctx, "TOKEN", token);
+    }
+
+    public static boolean ifTokenVazio(Context ctx) {
+        return TokenSet.getToken(ctx).equals("");
+    }
+
+
+    public static String getTokenUrl(Context ctx) {
+        return "Bearer " + TokenSet.getToken(ctx);
     }
 
     public static String getToken(Context ctx) {
-        return "Bearer " + UtilSet.getToken(ctx) ;
+        return UtilSet.lerParamString(ctx, "TOKEN");
     }
+
 
     private static JWT getJWT(Context ctx) {
-        return new JWT(UtilSet.getToken(ctx));
+        String t = TokenSet.getToken(ctx);
+        return new JWT(t);
     }
 
-    public static void validate(Context ctx) throws ExceptionTokenExpirado {
-        JWT jwt = getJWT(ctx) ;
-        if (jwt.isExpired(0)) throw new ExceptionTokenExpirado("Token Expirado!") ;
+    public static boolean isExpired(Context ctx) {
+        JWT jwt = getJWT(ctx);
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date dataInpirado = jwt.getExpiresAt();
+        Date hj = new Date();
+        Log.i("token_", "ExpiresAt " + s.format(dataInpirado)
+                + " IssuedAt " + s.format(jwt.getIssuedAt())
+                + " expirado " + hj.after(dataInpirado));
+
+
+        return (hj.after(dataInpirado));
+//        if (hj.after(df)){
+//            throw new ExceptionTokenExpirado(String.format("Token Expirado, desde " + s.format( jwt.getExpiresAt()))) ;
+//        }
     }
 
-    public static class ExceptionTokenExpirado extends Exception{
-        private String msg ;
-        public ExceptionTokenExpirado(String msg){
-            this.msg = msg ;
+    public static class ExceptionTokenExpirado extends Exception {
+        private String msg;
+
+        public ExceptionTokenExpirado(String msg) {
+            this.msg = msg;
         }
 
         @Nullable
         @Override
-        public String getMessage(){
-            return msg ;
+        public String getMessage() {
+            return msg;
         }
-    } ;
+    }
+
+    ;
 }

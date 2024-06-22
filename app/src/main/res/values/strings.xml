@@ -5,8 +5,8 @@
     <string name="action_logout">Login</string>
     <string name="title_activity_login">Login</string>
 
-    <string name="conf_vendavistaimpressaor">Pergurar se Imprime Venda a Vista:</string>
-    <string name="conf_vendavistaNFCe">Pergurar se Emite NFCe na Venda a Vista:</string>
+    <string name="conf_acumular_pedido">Acumular Pedidos Para Envio:</string>
+    <string name="conf_conta_cliente_pergunta_nfce">Pergurar se Emite NFCe:</string>
 
     <string name="title_activity_produto_add">Inclusão de Produto</string>
     <string name="label_pedido">Conta</string>
@@ -31,43 +31,75 @@
     <string name="title_activity_autenticacao_antigo">Autenticação</string>
     <string name="title_activity_nfce">ActivityNFCe</string>
 
-    <string name="activity_venda_vista_produto">Produto</string>
-    <string name="activity_venda_vista_botao_pagamento">Parcial</string>
-    <string name="title_activity_list_venda">Lista</string>
-    <string name="title_activity_venda_vista_lista">ActivityVendaVistaLista</string>
     <!-- Strings used for fragments for navigation -->
-
-    <string name="title_activity_venda_vista">Enviar Venda Vista</string>
 
     <string name="terminal_descricao">Descrição deste Terminal</string>
     <string name="terminal_tipo_emissao">Tipo de Emissão de NF</string>
-
-    <string-array name="conta_manutention">
-        <item name="tab_text_1">Tab 1</item>
-        <item name="tab_text_2">Tab 2</item>
-    </string-array>
 
     <string-array name="configuracao">
         <item>Operacional</item>
         <item>Conexão</item>
         <item>Impressora</item>
+        <item>Comanda Remota</item>
+        <item>NFCe</item>
     </string-array>
 
     <string-array name="conta_list">
+        <item>Pedido</item>
         <item>Aberto</item>
         <item>Fechado</item>
     </string-array>
 
+    <string-array name="conta_df">
+        <item>Pedido</item>
+        <item>Aberto</item>
+        <item>Fechado</item>
+    </string-array>
+
+    <string-array name="sup_san_list">
+        <item>Suprimento</item>
+        <item>Sangria</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="title_activity_conta_manutention">ActivityContaManutention</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="produto_label">Produto</string>
+    -->
+    <string name="produto_label">Produto ></string>
     <string name="inicial_link">https://stbr.com.br</string>
-    <string name="todo">TODO</string>
     <string name="inicial_registrar">Registrar</string>
     <string name="inicial_entrar">Entrar</string>
     <string name="action_pedido_atualizar">Atualizar</string>
+    <string name="title_activity_conta_list">Contas</string>
+    <!-- Strings used for fragments for navigation
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    -->
+    <string name="title_activity_fechamento_conta">Fechamento</string>
+    <string name="pedido_enviar">Enviar</string>
+    <string name="exportar_limpar">Limpar Dados Internos</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="supsan_suprimento">Suprimento</string>
+    <string name="supsan_sangria">Sangria</string>
+    <string name="adicionar_sup_san">Adicionar</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="configuracao_comanda_remota">Servidor Impressora Remota</string>
+    <string name="title_activity_display_nfce">ActivityDisplayNFce</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>

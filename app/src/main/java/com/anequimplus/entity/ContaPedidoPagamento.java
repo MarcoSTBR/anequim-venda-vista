@@ -5,9 +5,10 @@ import com.anequimplus.utilitarios.UtilSet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ContaPedidoPagamento {
+public class ContaPedidoPagamento extends Entidade {
 
     private int id ;
     private int contaPedido_id ;
@@ -17,8 +18,9 @@ public class ContaPedidoPagamento {
     private Modalidade modalidade ;
     private double valor ;
     private int status ;
+    private int conf_terminal_id ;
 
-    public ContaPedidoPagamento(int id, int contaPedido_id, String uuid, Date data, int caixa_id, Modalidade modalidade, double valor, int status) {
+    public ContaPedidoPagamento(int id, int contaPedido_id, String uuid, Date data, int caixa_id, Modalidade modalidade, double valor, int status, int conf_terminal_id) {
         this.id = id;
         this.contaPedido_id = contaPedido_id ;
         this.uuid = uuid;
@@ -27,6 +29,7 @@ public class ContaPedidoPagamento {
         this.modalidade = modalidade;
         this.valor = valor;
         this.status = status;
+        this.conf_terminal_id = conf_terminal_id ;
 
     }
 
@@ -38,7 +41,7 @@ public class ContaPedidoPagamento {
     }
 
     public ContaPedidoPagamento(JSONObject j, Modalidade modalidade) throws JSONException {
-        this.id = j.getInt("id") ;
+        this.id = j.getInt("ID") ;
         this.contaPedido_id = j.getInt("CONTA_PEDIDO_ID") ;
         this.uuid = j.getString("UUID");
         this.data = UtilSet.getData(j.getString("DATA"));
@@ -46,12 +49,37 @@ public class ContaPedidoPagamento {
         this.modalidade = modalidade;
         this.valor = j.getDouble("VALOR");
         this.status = j.getInt("STATUS");
-
+        if (!j.isNull("CONF_TERMINAL_ID"))
+            this.conf_terminal_id = j.getInt("CONF_TERMINAL_ID") ;
     }
 
 
-    public JSONObject getJSON() {
+    public JSONObject getExportacaoJSON() throws JSONException {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject j = new JSONObject() ;
+        j.put("UUID", uuid) ;
+        j.put("CONTA_PEDIDO_ID", contaPedido_id) ;
+        j.put("DATA", df.format(data)) ;
+        j.put("CAIXA_ID", caixa_id) ;
+        j.put("MODALIDADE_ID", modalidade.getId()) ;
+        j.put("VALOR", valor) ;
+        j.put("STATUS", status) ;
+        j.put("CONF_TERMINAL_ID", conf_terminal_id) ;
+        return j ;
+    }
+
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("UUID", uuid) ;
+        j.put("PEDIDO_ID", contaPedido_id) ;
+        j.put("DATA", df.format(data)) ;
+        j.put("CAIXA_ID", caixa_id) ;
+        j.put("MODALIDADE_ID", modalidade.getId()) ;
+        j.put("VALOR", valor) ;
+        j.put("STATUS", status) ;
         return j ;
     }
 
@@ -118,4 +146,14 @@ public class ContaPedidoPagamento {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public int getConf_terminal_id() {
+        return conf_terminal_id;
+    }
+
+    public void setConf_terminal_id(int conf_terminal_id) {
+        this.conf_terminal_id = conf_terminal_id;
+    }
+
+
 }

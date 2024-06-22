@@ -25,6 +25,10 @@ public class ContaPedidoM10 implements ControleImpressora {
     public void open() {
         Termica.setContext(ctx);
         int retorno = Termica.AbreConexaoImpressora(6, "M8", "", 0);
+        if (retorno != 0){
+            Termica.FechaConexaoImpressora() ;
+            retorno = Termica.AbreConexaoImpressora(6, "M8", "", 0);
+        }
     }
 
     @Override
@@ -77,7 +81,21 @@ public class ContaPedidoM10 implements ControleImpressora {
         } else {
            listenerImpressao.onError(retorno,"Erro na Impressão COD: "+retorno) ;
         }
-    };
+    }
+
+    @Override
+    public void imprimirRecibo(ContaPedido conta) {
+        impressaoContaPedido = new ImpressaoContaPedidoM10(40);
+        impressaoContaPedido.setContaPedido(conta);
+        List<LinhaImpressao> list = impressaoContaPedido.getRecibo() ;
+        int retorno = 0 ;
+        for (LinhaImpressao l : list){
+            retorno = Termica.ImpressaoTexto(l.getLinha(), l.getAling().valor, l.getEst().valor ,  l.getTam().valor);
+        }
+        retorno = Termica.CorteTotal(10) ;
+        if (retorno != 0) listenerImpressao.onError(retorno,"Erro na Impressão COD: "+retorno) ;
+        listenerImpressao.onImpressao(retorno);
+    }
 
     @Override
     public void imprimeConta(ContaPedido conta) {
@@ -95,8 +113,10 @@ public class ContaPedidoM10 implements ControleImpressora {
 
     @Override
     public void imprimirXML(String txt) {
-        listenerImpressao.onError(0, "Erro na Impressao em M10 " );
-
+        int retorno = Termica.ImprimeXMLNFCe(txt, 0, "", 10) ;
+        Termica.CorteTotal(1) ;
+        if (retorno != 0) listenerImpressao.onImpressao(retorno);
+            else  listenerImpressao.onError(retorno, "Erro ao Imprimir XML");  ;
     }
 
     public static class LinhaImpressao {
@@ -215,8 +235,6 @@ Valor	Descrição
 112	8 x na largura
 
 */
-
-
 
 /*        testeimpressao() ;
 

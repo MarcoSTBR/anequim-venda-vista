@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.anequimplus.entity.Grupo;
+import androidx.annotation.NonNull;
+
+import com.anequimplus.DaoClass.DBHelper;
 import com.anequimplus.entity.Produto;
 
 import org.json.JSONArray;
@@ -38,9 +40,10 @@ public class ProdutoADO {
                inserir(p);
             } else {
                 Log.i("ProdutosA", p.toString()) ;
-                Log.i("ProdutosA", jr.getJSONObject(i).toString()) ;
-                if (!p.toString().equals(resp.toString()))
-                  alterar(p) ;
+                if (!p.toString().equals(resp.toString())) {
+                    alterar(p);
+                    Log.i("ProdutosAA", p.toJson().toString()) ;
+                }
             }
         }
     }
@@ -92,12 +95,12 @@ public class ProdutoADO {
        return b ;
      }
 
-    public Produto getProdutoId(int nId){
+    public Produto getProdutoId(@NonNull int nId){
         Produto produto = null ;
         Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
                 "FROM PRODUTO WHERE ID = ?", new String[]{String.valueOf(nId)});
         res.moveToFirst();
-        while(res.isAfterLast() == false){
+        if (res.isAfterLast() == false){
             produto = new Produto(res.getInt(res.getColumnIndexOrThrow("ID")),
                     res.getString(res.getColumnIndexOrThrow("CODIGO")),
                     res.getString(res.getColumnIndexOrThrow("UNIDADE")),
@@ -106,7 +109,7 @@ public class ProdutoADO {
                     res.getInt(res.getColumnIndexOrThrow("STATUS")),
                     res.getDouble(res.getColumnIndexOrThrow("PRECO")),
                     res.getDouble(res.getColumnIndexOrThrow("COMISSAO")));
-            res.moveToNext();
+           // res.moveToNext();
         }
         return produto ;
     }
@@ -116,7 +119,7 @@ public class ProdutoADO {
         Cursor res =  db.rawQuery( "SELECT ID, CODIGO, UNIDADE, DESCRICAO, STATUS, IMAGEM, PRECO, COMISSAO " +
                 "FROM PRODUTO WHERE CODIGO = ?", new String[]{codigo});
         res.moveToFirst();
-        while(res.isAfterLast() == false){
+        if (res.isAfterLast() == false){
             produto = new Produto(res.getInt(res.getColumnIndexOrThrow("ID")),
                     res.getString(res.getColumnIndexOrThrow("CODIGO")),
                     res.getString(res.getColumnIndexOrThrow("UNIDADE")),
@@ -130,19 +133,6 @@ public class ProdutoADO {
         return produto ;
     }
 
-    private Grupo getGrupoList(List<Grupo> list, Grupo tmp){
-        Grupo resp = null ;
-        for (Grupo g : list){
-            if (g.getId() == tmp.getId()){
-                resp = g ;
-            }
-        }
-        if (resp == null){
-            resp = tmp ;
-            list.add(resp) ;
-        }
-        return resp ;
-    }
 
     public void inserir(Produto produto){
         ContentValues contentValues = new ContentValues();

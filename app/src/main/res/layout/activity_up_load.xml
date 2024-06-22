@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ActivityUpLoad">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarExportar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="?attr/actionBarPopupTheme"
+        app:titleTextColor="@color/colorBranco"
+        app:title="Exportação"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/exportar_limpar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/botao_inicial_customizado"
+            android:padding="10dp"
+            android:text="Limpar movimento"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/exportar_exportar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/botao_inicial_customizado"
+            android:text="Exportar movimento"
+            android:layout_marginRight="5dp"
+            android:padding="10dp"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/grade_exportacao"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/layout_grade_exportacao" />
+
+</LinearLayout>

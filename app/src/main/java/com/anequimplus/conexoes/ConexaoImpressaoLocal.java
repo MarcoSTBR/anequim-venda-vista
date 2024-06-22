@@ -2,22 +2,20 @@ package com.anequimplus.conexoes;
 
 import android.content.Context;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.entity.Impressora;
-import com.anequimplus.tipos.Link;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class
 ConexaoImpressaoLocal extends ConexaoServer {
 
 
-    public ConexaoImpressaoLocal(Context ctx, Impressora impressora, int caixa_id, int opcao_id) throws MalformedURLException, LinkAcessoADO.ExceptionLinkNaoEncontrado {
+    public ConexaoImpressaoLocal(Context ctx, Impressora impressora, int caixa_id, int opcao_id) throws MalformedURLException {
         super(ctx);
         msg = "Impressão Local" ;
         maps.put("class","AfoodOpcoesFechamento") ;
@@ -27,7 +25,7 @@ ConexaoImpressaoLocal extends ConexaoServer {
         maps.put("impressora_id",impressora.getId()) ;
         maps.put("caixa_id",caixa_id) ;
         maps.put("opcao_id",opcao_id) ;
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fExecutaOpFechamento).getUrl() ;
+        url =  new URL(UtilSet.getServidorMaster(ctx)) ; //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fExecutaOpFechamento).getUrl() ;
 
     }
 

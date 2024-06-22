@@ -6,4 +6,5 @@
     <color name="colorBranco">#FDFDFD</color>
     <color name="colorPreto">#000000</color>
     <color name="texto_sombriado">#8E9F7E</color>
+    <color name="customizado">#C5EAEE</color>
 </resources>

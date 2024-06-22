@@ -19,16 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tituloConta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:text="Pedido 00001"
-            android:textColor="@color/colorBranco"
-            android:textSize="20dp" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/gradeConta"
             android:layout_width="match_parent"
@@ -43,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:itemBackground="@color/colorBranco"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_conta_nav" />
 

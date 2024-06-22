@@ -13,13 +13,13 @@
 
     <ImageView
         android:id="@+id/fotoGradeVendas"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/botao_customizado"
-        app:srcCompat="@mipmap/ic_grupo_produto_foreground" />
+        app:srcCompat="@drawable/grupo_padrao" />
 
     <TextView
         android:id="@+id/descricaoGradeVendas"
@@ -28,8 +28,8 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/fotoGradeVendas"
         android:padding="20dp"
-        android:textSize="20dp"
         android:text="TextView"
-        />
+        android:textColor="@color/colorPreto"
+        android:textSize="20dp" />
 
 </RelativeLayout>

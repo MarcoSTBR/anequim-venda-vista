@@ -24,7 +24,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:gravity="center"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:background="@drawable/edit_customizado"
             android:hint="Descrição do Produto" />
 

@@ -3,10 +3,8 @@ package com.anequimplus.conexoes;
 import android.content.Context;
 import android.util.Log;
 
-import com.anequimplus.ado.Dao;
 import com.anequimplus.utilitarios.UtilSet;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +17,20 @@ public abstract class ConexaoCNPJ extends ConexaoServer{
         super(ctx);
         this.cnpj = cnpj;
         token = "" ;
+        maps.put("class", "AfoodCNPJ");
+        maps.put("method", "autenticacao");
+        maps.put("cnpj", cnpj);
+        try {
+            url =  new URL(UtilSet.getServidorMaster(ctx)) ;
+           // url =  new URL("https://gileade.com.br/anequimfood/rest.php") ;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            erro(0, e.getMessage());
+        }
+
+/*
+
         try
         {
             JSONArray jarr = new JSONArray() ;
@@ -34,11 +46,14 @@ public abstract class ConexaoCNPJ extends ConexaoServer{
             maps.put("nameClass", "AdmClienteCNPJService");
             maps.put("data", jarr.toString());
             url = new URL("https://www.gerezim.com.br/strap/rest_client.php?nameClass=AdmClienteCNPJService") ;
+
         } catch (MalformedURLException | JSONException e) {
                 e.printStackTrace();
                 erro(0, e.getMessage());
         }
+*/
     }
+
 
     @Override
     protected void onPostExecute(String s) {
@@ -52,9 +67,9 @@ public abstract class ConexaoCNPJ extends ConexaoServer{
                 if (j.getJSONArray("data").length() > 0) {
                     JSONObject obj = (JSONObject) j.getJSONArray("data").get(0);
                     UtilSet.setServidorMaster(ctx, obj.getString("URL_MOBILE"));
-                    Dao.getLinkAcessoADO(ctx).iniciarPadrao() ;
+                   // DaoDbTabela.getLinkAcessoADO(ctx).iniciarPadrao() ;
                     oK(cnpj, obj.getString("URL_MOBILE"));
-                } else erro(0,"CNPJ "+cnpj+" Inexistente!");
+                } else erro(codInt,"CNPJ "+cnpj+" Inexistente!");
             } else {
                 erro(codInt, j.getString("data"));
             }

@@ -1,5 +1,7 @@
 package com.anequimplus.entity;
 
+import com.anequimplus.utilitarios.UtilSet;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +40,7 @@ public class Terminal {
         j.put("MAC",mac) ;
         j.put("DESCRICAO",descricao) ;
         j.put("TIPO_EMISSAO",tipo_emissao) ;
+        j.put("CHAVE", UtilSet.Md5(descricao)) ;
         j.put("STATUS",status) ;
         return j;
     }

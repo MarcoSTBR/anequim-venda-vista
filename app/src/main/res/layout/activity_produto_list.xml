@@ -6,46 +6,52 @@
     android:layout_height="match_parent"
     tools:context=".ActivityProdutoList">
 
-
-    <TextView
-        android:id="@+id/textViewTitulo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/produto_label" />
-
-    <EditText
-        android:id="@+id/editTextProduto"
-        android:layout_width="306dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewTitulo"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/edit_customizado"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="Digite o código ou nome"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textSize="25dp" />
-
     <ImageButton
         android:id="@+id/atualizarprodutos"
         android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/editTextProduto"
-        android:layout_alignBottom="@id/editTextProduto"
-        android:layout_marginRight="5dp"
-        android:layout_toRightOf="@id/editTextProduto"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/botao_customizado"
         android:src="@drawable/ic_baseline_refresh_24" />
+
+    <EditText
+        android:id="@+id/editTextProduto"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/atualizarprodutos"
+        android:background="@drawable/edit_customizado"
+        android:ems="10"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:hint="código ou descrição"
+        android:inputType="textPersonName"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/produto_list_cancelar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextProduto"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/botao_inicial_customizado"
+        android:text="Cancelar" />
+
+    <Button
+        android:id="@+id/produto_list_confirmar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextProduto"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/botao_inicial_customizado"
+        android:text="Confirmar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/grade_produto_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/editTextProduto"
+        android:layout_below="@id/produto_list_confirmar"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/layout_grade_produto_list" />
 </RelativeLayout>

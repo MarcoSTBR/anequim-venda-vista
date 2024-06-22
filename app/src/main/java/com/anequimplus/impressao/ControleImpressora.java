@@ -13,5 +13,6 @@ public interface ControleImpressora {
     public void imprimeConta(ContaPedido conta) ;
     public void imprimirXML(String txt) ;
     public void impressaoLivre(List<RowImpressao> l) ;
+    public void imprimirRecibo(ContaPedido conta) ;
 
 }

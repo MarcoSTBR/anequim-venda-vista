@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragment_conta_list.Fragment_conta_fechada">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/filtro_conta_fechadas"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/edit_customizado"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="Número da Conta"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:textSize="25dp" />
+
+        <ImageButton
+            android:id="@+id/contasFechadasBusca"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@id/filtro_conta_fechadas"
+            android:layout_toEndOf="@id/filtro_conta_fechadas"
+            android:background="@drawable/botao_inicial_customizado"
+            android:src="@drawable/ic_baseline_refresh_24" />
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/grade_conta_list_fechada"
@@ -14,4 +45,4 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />
 
-</FrameLayout>
+</LinearLayout>

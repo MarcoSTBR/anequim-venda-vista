@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.adapter.GradeVendasAdapter;
-import com.anequimplus.ado.Dao;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoGradeVendas;
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.utilitarios.DisplaySet;
@@ -49,7 +49,7 @@ public class ActivityGradeVendas extends AppCompatActivity {
     public void grade(){
         GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
         GradeVendas.setLayoutManager(layoutManager);
-        listGradevendas = Dao.getGradeVendasADO(this).getGradeVendas() ;
+        listGradevendas = DaoDbTabela.getGradeVendasADO(this).getGradeVendas() ;
         GradeVendas.setAdapter(new GradeVendasAdapter(this, listGradevendas) {
             @Override
             public void selecionado(GradeVendas g) {
@@ -60,7 +60,7 @@ public class ActivityGradeVendas extends AppCompatActivity {
 
 
     public void seguirParaItens(GradeVendas g){
-        Intent intent = new Intent(getBaseContext(), ActivityGradeVendaItem.class) ;
+        Intent intent = new Intent(ActivityGradeVendas.this, ActivityGradeVendaItem.class) ;
         Bundle params = new Bundle() ;
         params.putInt("GRADE_ID", g.getId());
         params.putString("PEDIDO",pedido);

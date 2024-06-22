@@ -14,8 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.anequimplus.ado.DBHelper;
-import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.DaoClass.DBHelper;
 import com.anequimplus.conexoes.ConexaoAutenticacao;
 import com.anequimplus.conexoes.ConexaoCNPJ;
 import com.anequimplus.utilitarios.UtilSet;
@@ -32,7 +31,6 @@ public class ActivityAutenticacao extends AppCompatActivity {
     private EditText editTextCnpj ;
     private EditText editTextLogin ;
     private EditText editTextPassword ;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +64,10 @@ public class ActivityAutenticacao extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        editTextCnpj.setText(UtilSet.getCnpj(getBaseContext()));
-        editTextLogin.setText(UtilSet.getLogin(getBaseContext()));
+        editTextCnpj.setText(UtilSet.getCnpj(this));
+        editTextLogin.setText("");
+        editTextPassword.setText("");
+        //editTextLogin.setText(UtilSet.getLogin(this));
     }
 
     @Override
@@ -95,16 +95,13 @@ public class ActivityAutenticacao extends AppCompatActivity {
         //return super.onOptionsItemSelected(item);
     }
 
-    private void setCnpj() {
+    private void setAutenticacao() {
         try {
             new ConexaoAutenticacao(this, editTextCnpj.getText().toString(), editTextLogin.getText().toString(), editTextPassword.getText().toString()) {
 
                     @Override
                     public void oK(String cnpj, String login) {
-                        new DBHelper(getBaseContext()).limparTudo(getBaseContext());
-                        Toast.makeText(getBaseContext(),"OK", Toast.LENGTH_LONG).show();
-                        finish();
-
+                        sairOk();
                     }
 
                     @Override
@@ -115,10 +112,30 @@ public class ActivityAutenticacao extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             setCnpjRepetir(e.getMessage()) ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            setCnpjRepetir(e.getMessage()) ;
         }
+
+    }
+
+    private void sairOk() {
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Limpar Dados")
+                .setMessage("Deseja Limpar os Dados Internos?")
+                .setCancelable(false)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new DBHelper(ActivityAutenticacao.this).limparTudo(getBaseContext());
+                        finish();
+                    }
+                })
+                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show() ;
 
     }
 
@@ -131,7 +148,7 @@ public class ActivityAutenticacao extends AppCompatActivity {
                 .setPositiveButton("Repetir", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        setCnpj() ;
+                        setAutenticacao() ;
                     }
                 })
                 .setNegativeButton("Finalizar", new DialogInterface.OnClickListener() {
@@ -154,7 +171,7 @@ public class ActivityAutenticacao extends AppCompatActivity {
 
             @Override
             public void oK(String cnpj, String url) {
-                setCnpj() ;
+                setAutenticacao() ;
 
             }
         }.execute() ;
@@ -190,20 +207,6 @@ public class ActivityAutenticacao extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data) ;
-        if (result != null){
-            if (result.getContents() != null){
-                getQRCode(result.getContents()) ;
-                //  Toast.makeText(getBaseContext(),result.getContents(), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getBaseContext(),"Nenhum resultado", Toast.LENGTH_SHORT).show();
-            }
-        } else
-            super.onActivityResult(requestCode, resultCode, data);
-    }
-
     private void alertOK() {
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -218,5 +221,19 @@ public class ActivityAutenticacao extends AppCompatActivity {
                     }
                 }).show();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data) ;
+        if (result != null){
+            if (result.getContents() != null){
+                getQRCode(result.getContents()) ;
+                //  Toast.makeText(getBaseContext(),result.getContents(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getBaseContext(),"Nenhum resultado", Toast.LENGTH_SHORT).show();
+            }
+        } else
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }

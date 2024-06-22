@@ -23,8 +23,10 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:textSize="18sp"
+            android:text="COCA COLA"
+            android:textColor="@color/colorPreto"
             tools:text="COCA COLA 300ML" />
 
         <TextView
@@ -32,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="OBS"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:textAlignment="textStart"
             android:textColor="@color/texto_sombriado"
@@ -43,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center"
-            android:textSize="18sp"
+            android:textSize="10dp"
             android:textColor="@color/colorPreto"
             tools:text="1 X R$ 12.00 = R$ 12.00" />
     </LinearLayout>
@@ -57,11 +58,11 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/ib_mais"
+            android:id="@+id/ib_editar"
             android:layout_width="80dp"
             android:layout_height="32dp"
             android:background="@drawable/botao_customizado"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/ib_menos"
@@ -71,11 +72,13 @@
             app:srcCompat="@drawable/ic_baseline_remove_24" />
 
         <ImageButton
-            android:id="@+id/ib_editar"
+            android:id="@+id/ib_mais"
             android:layout_width="80dp"
             android:layout_height="32dp"
             android:background="@drawable/botao_customizado"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+
     </LinearLayout>
 
 </LinearLayout>

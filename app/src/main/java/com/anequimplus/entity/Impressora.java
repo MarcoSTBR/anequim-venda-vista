@@ -7,7 +7,7 @@ import com.anequimplus.tipos.TipoImpressora;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Impressora {
+public class Impressora extends Entidade{
 
     private int id ;
     private String descricao ;
@@ -30,6 +30,17 @@ public class Impressora {
         this.tamColuna = tamColuna;
         this.tipoImpressora = tipoImpressora;
         this.status = status;
+    }
+
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("DESCRICAO", descricao) ;
+        j.put("TAMCOLUNA", tamColuna) ;
+        j.put("TIPOIMPRESSORA", tipoImpressora.descricao) ;
+        j.put("STATUS", status) ;
+        return j ;
     }
 
     public int getId() {
@@ -71,4 +82,5 @@ public class Impressora {
     public void setStatus(int status) {
         this.status = status;
     }
+
 }

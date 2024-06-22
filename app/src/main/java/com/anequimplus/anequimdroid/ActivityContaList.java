@@ -28,7 +28,6 @@ public class ActivityContaList extends AppCompatActivity {
         viewPager = findViewById(R.id.viewpager_conta) ;
         viewPager.setAdapter(new ContaPageAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.conta_list)));
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override
@@ -36,6 +35,6 @@ public class ActivityContaList extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home){
             finish();
         }
-        return super.onOptionsItemSelected(item);
+        return true ;//super.onOptionsItemSelected(item);
     }
 }

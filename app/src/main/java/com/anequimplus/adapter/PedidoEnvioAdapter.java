@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.PedidoItemAcomp;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
             ib_mais.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Double q = item.getItenSelect().getQuantidade() + 1;
+                    Double q = item.getItemSelect().getQuantidade() + 1;
                     edicaoItem.mais(item, q);
                     setValores(item);
                 }
@@ -80,7 +81,7 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
             ib_menos.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Double q = item.getItenSelect().getQuantidade() - 1 ;
+                    Double q = item.getItemSelect().getQuantidade() - 1 ;
                     edicaoItem.menos(item, q);
                     setValores(item);
                 }
@@ -96,12 +97,41 @@ public class PedidoEnvioAdapter extends RecyclerView.Adapter<PedidoEnvioAdapter.
         private void setValores(PedidoItem p) {
             DecimalFormat frm = new DecimalFormat("R$ #0.00");
             DecimalFormat qrm = new DecimalFormat("#0.###");
-            textViewPedidoItem.setText(p.getItenSelect().getProduto().getDescricao());
-            String txt = qrm.format(p.getItenSelect().getQuantidade())+" X "+
-                    frm.format(p.getItenSelect().getPreco())+" = "+
-                    frm.format(p.getItenSelect().getValor()) ;
+            textViewPedidoItem.setText(p.getItemSelect().getProduto().getDescricao());
+            String acomp = "" ;
+            Double vacomp = 0.0 ;
+            for (PedidoItemAcomp ac : p.getAcompanhamentos()){
+                String aux = qrm.format(ac.getItemSelect().getQuantidade())+" "+
+                        ac.getItemSelect().getProduto().getDescricao() ;
+                if (ac.getItemSelect().getValor() > 0)
+                    aux = aux + " - " + frm.format(ac.getItemSelect().getValor()) ;
+                if (acomp.length() == 0)
+                   acomp = acomp + aux  ;
+                 else acomp = acomp + "\n" + aux  ;
+                vacomp = vacomp + ac.getItemSelect().getValor() ;
+            }
+
+            String txt = qrm.format(p.getItemSelect().getQuantidade())+" X "+
+                    frm.format(p.getItemSelect().getPreco())+" = "+
+                    frm.format(p.getItemSelect().getValor()) ;
+            if (vacomp > 0) {
+                txt = txt +" Add " + frm.format(vacomp) ;
+            }
             textQPrPedidoItem.setText(txt);
-            textIemPrdObs.setText(p.getItenSelect().getObs());
+            String obs = "" ;
+            if (p.getItemSelect().getObs().length() > 0)
+                obs = p.getItemSelect().getObs() ;
+            if (acomp.length()  > 0) {
+                if (obs.length() == 0)
+                    obs = obs + acomp ;
+                 else obs = obs + "\n" + acomp ;
+            }
+            if ( obs.length() == 0) {
+                textIemPrdObs.setVisibility(View.GONE);
+            } else {
+                textIemPrdObs.setVisibility(View.VISIBLE);
+                textIemPrdObs.setText(obs);
+            }
 
         }
 

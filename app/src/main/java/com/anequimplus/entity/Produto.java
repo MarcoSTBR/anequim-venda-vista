@@ -3,7 +3,7 @@ package com.anequimplus.entity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Produto {
+public class Produto extends Entidade{
 
     private int id ;
     private String codBarra ;
@@ -25,20 +25,6 @@ public class Produto {
         this.comissao = comissao ;
     }
 
-    public JSONObject toJson() throws JSONException {
-        JSONObject j = new JSONObject() ;
-        j.put("ID", id) ;
-        j.put("CODBARRA", unidade) ;
-        j.put("UNIDADE", unidade) ;
-        j.put("DESCRICAO", descricao) ;
-        j.put("IMAGEM", imagem) ;
-        j.put("STATUS", status) ;
-        j.put("PRECO", preco) ;
-        j.put("PRECO", comissao) ;
-        return j ;
-    }
-
-
     public Produto(JSONObject j) throws JSONException {
         this.id = j.getInt("id");
         this.codBarra = j.getString("CODBARRA");
@@ -49,6 +35,56 @@ public class Produto {
         this.preco = j.getDouble("PRECO") ;
         this.comissao = j.getDouble("COMISSAO") ;
     }
+
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        if (j.isNull("CODBARRA"))
+            j.put("CODIGO", codBarra) ;
+         else j.put("CODBARRA", codBarra) ;
+        j.put("UNIDADE", unidade) ;
+        j.put("DESCRICAO", descricao) ;
+        j.put("IMAGEM", imagem) ;
+        j.put("STATUS", status) ;
+        j.put("PRECO", preco) ;
+        j.put("COMISSAO", comissao) ;
+        return j ;
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("CODBARRA", codBarra) ;
+        j.put("UNIDADE", unidade) ;
+        j.put("DESCRICAO", descricao) ;
+        j.put("IMAGEM", imagem) ;
+        j.put("STATUS", status) ;
+        j.put("PRECO", preco) ;
+        j.put("COMISSAO", comissao) ;
+        return j ;
+    }
+
+    public JSONObject getJSONBase() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("CODBARRA", codBarra) ;
+        j.put("UNIDADE", unidade) ;
+        j.put("DESCRICAO", descricao) ;
+        j.put("PRECO", preco) ;
+        j.put("COMISSAO", comissao) ;
+        return j ;
+    }
+
+    public JSONObject getJSONRemoto() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("CODIGO", codBarra) ;
+        j.put("UNIDADE", unidade) ;
+        j.put("DESCRICAO", descricao) ;
+        return j ;
+    }
+
 
     @Override
     public String toString() {
@@ -127,4 +163,5 @@ public class Produto {
     public void setComissao(double comissao) {
         this.comissao = comissao;
     }
+
 }

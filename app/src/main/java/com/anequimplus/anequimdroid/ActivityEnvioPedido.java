@@ -9,33 +9,42 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.anequimplus.adapter.EdicaoItem;
 import com.anequimplus.adapter.PedidoEnvioAdapter;
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoEnvioPedido;
-import com.anequimplus.entity.ItenSelect;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.builds.BuildContaPedido;
+import com.anequimplus.builds.BuildEnviarPedido;
+import com.anequimplus.builds.BuildEnvioComandaRemota;
+import com.anequimplus.controler.ControleAcompanhamentoSelecao;
+import com.anequimplus.entity.ContaPedido;
+import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
+import com.anequimplus.entity.ItemSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.PedidoItemAcomp;
 import com.anequimplus.entity.Produto;
+import com.anequimplus.listeners.ListenerAcompanhamentoSelect;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerEnvioComandaRemota;
+import com.anequimplus.listeners.ListenerEnvioPedido;
 import com.anequimplus.utilitarios.DisplaySet;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONException;
-
-import java.net.MalformedURLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityEnvioPedido extends AppCompatActivity {
@@ -47,6 +56,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     private Pedido pedido ;
     private String pedidoSelecionado ;
     private EdicaoItem edicaoItem = null;
+    private final int ACOMPANHAMENTO = 1 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +67,21 @@ public class ActivityEnvioPedido extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setSubtitle("Envio de Pedido");
+/*
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                enviarConexaoPedidos();
+            }
+        });
+*/
+
+        Button pedido_enviar = findViewById(R.id.botao_pedido_enviar);
+        pedido_enviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 enviarConexaoPedidos();
             }
         });
@@ -79,6 +99,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
             }
         });
 
+
         editProdutoPesquisa  = findViewById(R.id.editProdutoPesquisa);
         editProdutoPesquisa.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -95,24 +116,15 @@ public class ActivityEnvioPedido extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void addProduto() {
-        String codigo = editProdutoPesquisa.getText().toString() ;
-        if (codigo.length() > 0) {
-            Produto p = Dao.getProdutoADO(this).getCodigo(codigo) ;
-            if (p != null){
-                Pedido ped = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
-                Double com = p.getComissao() / 100 * p.getPreco() ;
-                PedidoItem pedidoItem = new PedidoItem(0, ped.getId(), new ItenSelect(0, p, 1, p.getPreco(), 0, com, p.getPreco(), "", 1)) ;
-                Dao.getPedidoItemADO(this).incluir(pedidoItem);
-                editProdutoPesquisa.setText("");
-                carregaList() ;
-            } else {
-                editProdutoPesquisa.setText("");
-                Toast.makeText(this, "Código "+codigo+" Não Encontrado!", Toast.LENGTH_SHORT).show();
+        Button botao_produto = findViewById(R.id.botao_pedido_produto) ;
+        botao_produto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProdutoPeloGrupoProduto();
             }
-        }
+        });
+
+
     }
 
     @Override
@@ -122,13 +134,126 @@ public class ActivityEnvioPedido extends AppCompatActivity {
         edicao() ;
         carregaList() ;
         editProdutoPesquisa.setText("");
+        getConta() ;
+    }
+
+
+    /*
+        private void addProduto() {
+            String codigo = editProdutoPesquisa.getText().toString() ;
+            if (codigo.length() > 0) {
+                Produto p = DaoDbTabela.getProdutoADO(this).getCodigo(codigo) ;
+                if (p != null){
+                    Pedido ped = DaoDbTabela.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+                    Double com = p.getComissao() / 100 * p.getPreco() ;
+                    PedidoItem pedidoItem = new PedidoItem(0, ped.getId(), new ItemSelect(0, p, 1, p.getPreco(), 0, com, p.getPreco(), "", 1)) ;
+                    DaoDbTabela.getPedidoItemADO(this).incluir(pedidoItem);
+                    editProdutoPesquisa.setText("");
+                    carregaList() ;
+                } else {
+                    editProdutoPesquisa.setText("");
+                    Toast.makeText(this, "Código "+codigo+" Não Encontrado!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    */
+    private void addProduto() {
+        String codigo = editProdutoPesquisa.getText().toString() ;
+        if (codigo.length() > 0) {
+            Produto p = DaoDbTabela.getProdutoADO(this).getCodigo(codigo) ;
+            if (p != null){
+                addItem(p) ;
+            } else {
+                editProdutoPesquisa.setText("");
+                Toast.makeText(this, "Código "+codigo+" Não Encontrado!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void addItem(Produto p){
+        final Pedido ped = DaoDbTabela.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+        Double com = p.getComissao() / 100 * p.getPreco() ;
+        ItemSelect item = new ItemSelect(0, p, 0, p.getPreco(), 0, com, p.getPreco(), "", 1) ;
+        PedidoItem it = new PedidoItem(0, ped.getId(), item, new ArrayList<PedidoItemAcomp>()) ;
+        DaoDbTabela.getItemSelectADO().getList().clear();
+        DaoDbTabela.getItemSelectADO().getList().add(it) ;
+
+            new ControleAcompanhamentoSelecao(ActivityEnvioPedido.this, it, new ListenerAcompanhamentoSelect() {
+                @Override
+                public void ok(PedidoItem it) {
+                    //PedidoItem it =  DaoDbTabela.getItemSelectADO().get(0) ;
+                    DaoDbTabela.getPedidoItemADO(ActivityEnvioPedido.this).incluir(DaoDbTabela.getItemSelectADO().get(0));
+                    editProdutoPesquisa.setText("");
+                    carregaList();
+                }
+
+                @Override
+                public void setAcompanhamento(PedidoItem it) {
+                    Bundle params = new Bundle();
+                    Intent intent = new Intent(ActivityEnvioPedido.this, ActivityItemSelect.class);
+                    params.putInt("id",it.getId());
+                    intent.putExtras(params);
+                    startActivityForResult(intent, ACOMPANHAMENTO);
+                }
+
+                @Override
+                public void erro(String msg) {
+                    Toast.makeText(ActivityEnvioPedido.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            }).mais();
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACOMPANHAMENTO) {
+            if (resultCode == RESULT_OK){
+                PedidoItem it =  DaoDbTabela.getItemSelectADO().get(0) ;
+                DaoDbTabela.getPedidoItemADO(ActivityEnvioPedido.this).incluir(it);
+                editProdutoPesquisa.setText("");
+                carregaList();
+            }
+        }
+    }
+    private void getConta(){
+        FilterTables filter = new FilterTables() ;
+        filter.add(new FilterTable("PEDIDO", "=", pedidoSelecionado ));
+        filter.add(new FilterTable("STATUS", "=", "1" ));
+        new BuildContaPedido(this, filter.getList(), "", new ListenerContaPedido() {
+            @Override
+            public void ok(List<ContaPedido> l) {
+                if (l.size()>0){
+                    if (l.get(0).getNum_impressao() > 0){
+                        alertAviso("Esta Conta Já Foi Emitida!") ;
+                    }
+                }
+            }
+
+            @Override
+            public void erro(String msg) {
+                Toast.makeText(ActivityEnvioPedido.this, msg, Toast.LENGTH_SHORT).show();
+
+            }
+        }).executar();
+
+    }
+
+    private void alertAviso(String msg){
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_notifications_black_24dp)
+                .setTitle("Aviso:")
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("Ok", null).show();
     }
 
     private void edicao() {
       edicaoItem = new EdicaoItem() {
           @Override
           public void mais(PedidoItem pedidoItem, double q) {
-              pedidoItem.getItenSelect().setQuantidade(q);
+              pedidoItem.getItemSelect().setQuantidade(q);
               setValoresGrade(pedidoItem);
           }
 
@@ -137,7 +262,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
               if (q <= 0) {
                   new AlertDialog.Builder(ActivityEnvioPedido.this)
                           .setIcon(android.R.drawable.presence_busy)
-                          .setTitle(pedidoItem.getItenSelect().getProduto().getDescricao())
+                          .setTitle(pedidoItem.getItemSelect().getProduto().getDescricao())
                           .setMessage("Deseja Excluir o Produto?")
                           .setCancelable(false).setNegativeButton("Não", null)
                           .setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -150,12 +275,12 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                           .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                               @Override
                               public void onClick(DialogInterface dialogInterface, int i) {
-                                  Dao.getPedidoItemADO(ActivityEnvioPedido.this).excluir(pedidoItem);
+                                  DaoDbTabela.getPedidoItemADO(ActivityEnvioPedido.this).excluir(pedidoItem);
                                   carregaList();
                               }
                           }).show();
               } else {
-                  pedidoItem.getItenSelect().setQuantidade(q);
+                  pedidoItem.getItemSelect().setQuantidade(q);
                   setValoresGrade(pedidoItem);
               }
           }
@@ -173,19 +298,33 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     }
 
     private void setValoresGrade(PedidoItem pedidoItem) {
-        double q = pedidoItem.getItenSelect().getQuantidade() ;
-        double prc = pedidoItem.getItenSelect().getPreco() ;
+        double q = pedidoItem.getItemSelect().getQuantidade() ;
+        double prc = pedidoItem.getItemSelect().getPreco() ;
         double vl = q * prc ;
-        double cm = pedidoItem.getItenSelect().getComissao() / 100 * vl ;
-        pedidoItem.getItenSelect().setValor(vl);
-        pedidoItem.getItenSelect().setComissao(cm);
-        Dao.getPedidoItemADO(this).alterar(pedidoItem);
-
+        double cm = pedidoItem.getItemSelect().getComissao() / 100 * vl ;
+        pedidoItem.getItemSelect().setValor(vl);
+        pedidoItem.getItemSelect().setComissao(cm);
+        DaoDbTabela.getPedidoItemADO(this).alterar(pedidoItem);
     }
 
 
     private void enviarConexaoPedidos()  {
-        Pedido ped = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+       // Pedido ped = DaoDbTabela.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+        List<Pedido> lped = DaoDbTabela.getPedidoADO(this).getList(new FilterTables(), "ID") ;
+       // lped.add(ped);
+        new BuildEnviarPedido(this, lped, new ListenerEnvioPedido() {
+            @Override
+            public void envioOK(List<Pedido> l) {
+                comandaRemota(l) ;
+            }
+
+            @Override
+            public void erroEnvio(String msg) {
+                alert(msg);
+
+            }
+        }).executar();
+/*
         try {
             new ConexaoEnvioPedido(this, ped) {
                 @Override
@@ -199,9 +338,6 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                             alert(msg);
                         }
             }.execute();
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alert(e.getMessage());
         } catch (JSONException e) {
             e.printStackTrace();
             alert(e.getMessage());
@@ -209,20 +345,33 @@ public class ActivityEnvioPedido extends AppCompatActivity {
             e.printStackTrace();
             alert(e.getMessage());
         }
+*/
     }
 
-    private void enviado(){
-        new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("OK")
-                .setMessage("Pedido(s) enviado com sucesso!")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }).show();
+    private void comandaRemota(List<Pedido> l){
+        new BuildEnvioComandaRemota(this, l, 0, new ListenerEnvioComandaRemota() {
+            @Override
+            public void ok(String msg) {
+                new AlertDialog.Builder(ActivityEnvioPedido.this)
+                        .setIcon(R.drawable.ic_notifications_black_24dp)
+                        .setTitle("OK")
+                        .setMessage("Pedido(s) enviado com sucesso!")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        }).show();
+
+            }
+
+            @Override
+            public void erro(String msg) {
+                Toast.makeText(ActivityEnvioPedido.this, msg, Toast.LENGTH_SHORT).show();
+
+            }
+        }).executar();
     }
 
     private void addProdutoPeloGrupoProduto() {
@@ -236,18 +385,16 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     }
 
     private void carregaList(){
-        pedido  = Dao.getPedidoADO(this).getPedido(pedidoSelecionado) ;
+        pedido  = DaoDbTabela.getPedidoADO(this).getPedido(pedidoSelecionado) ;
         if (pedido != null) {
-            GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+            //GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
+            StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(DisplaySet.getNumeroDeColunasGrade(this), StaggeredGridLayoutManager.VERTICAL);
             listaPrdPedido.setLayoutManager(layoutManager);
             listaPrdPedido.setAdapter(new PedidoEnvioAdapter(this, pedido.getListPedidoItem(), edicaoItem));
             diplayQuantidade();
             Log.i("listpedidoaberto", " pedido "+pedido.getPedido()+" size "+pedido.getListPedidoItem().size()) ;
 
         } else   Log.i("listpedidoaberto", "pedido.getListPedidoItem() nulo") ;
-
-
-
     }
 
     private void diplayQuantidade(){
@@ -256,34 +403,12 @@ public class ActivityEnvioPedido extends AppCompatActivity {
       Double q = 0.0 ;
       Double v = 0.0 ;
       for (PedidoItem it : pedido.getListPedidoItem()){
-          q = q + it.getItenSelect().getQuantidade() ;
-          v = v + it.getItenSelect().getValor() ;
+          q = q + it.getItemSelect().getQuantidade() ;
+          v = v + it.getItemSelect().getValor() + it.getItemSelect().getComissao();
       }
-      toolbar.setSubtitle("Item(s) "+frmQ.format(q)+" = "+frmV.format(v));
-    }
-/*
-
-    private void perguntar() {
-        new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("Pedido: "+pedido.getPedido())
-                .setMessage("Deseja Incluir Produtos?")
-                .setCancelable(false).setNegativeButton("Não", null)
-                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        addProduto();
-                    }
-                }).show();
+      toolbar.setSubtitle("Item(s) "+frmQ.format(q)+" = "+frmV.format(v))  ;
     }
 
-*/
     private void alert(String txt){
          new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
@@ -307,7 +432,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Dao.getPedidoItemADO(getBaseContext()).excluir(pit);
+                        DaoDbTabela.getPedidoItemADO(getBaseContext()).excluir(pit);
                         carregaList();
 
                     }
@@ -379,7 +504,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
             } else {
                 pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade() - 1);
              //   pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade() * pit.getItenSelect().getProduto().getPreco());
-                Dao.getPedidoItemADO(ctx).alterar(pit) ;
+                DaoDbTabela.getPedidoItemADO(ctx).alterar(pit) ;
             }
         }
 
@@ -401,7 +526,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
         private void setMais(PedidoItem pit) {
             pit.getItenSelect().setQuantidade(pit.getItenSelect().getQuantidade()+1);
 //            pit.getItenSelect().setValor(pit.getItenSelect().getQuantidade()*pit.getItenSelect().getProduto().getPreco());
-            Dao.getPedidoItemADO(ctx).alterar(pit) ;
+            DaoDbTabela.getPedidoItemADO(ctx).alterar(pit) ;
         }
     }
 
@@ -417,6 +542,7 @@ public class ActivityEnvioPedido extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             finish();
+            return true ;
         }
         if (item.getItemId() == R.id.action_envitem_icl_prod){
             addProdutoPeloGrupoProduto();

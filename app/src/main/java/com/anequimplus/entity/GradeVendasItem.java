@@ -3,7 +3,7 @@ package com.anequimplus.entity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GradeVendasItem {
+public class GradeVendasItem extends Entidade{
     private int id ;
     private int gradeVendasId ;
     private int produto_id ;
@@ -23,6 +23,16 @@ public class GradeVendasItem {
         gradeVendasId = j.getInt("GRADE_VENDAS_ID") ;
         produto_id = j.getInt("PRODUTO_ID");
         status = j.getInt("STATUS") ;
+    }
+
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("GRADE_VENDAS_ID", gradeVendasId) ;
+        j.put("PRODUTO_ID", produto_id) ;
+        j.put("STATUS", status) ;
+        return j ;
     }
 
     public int getId() {
@@ -64,4 +74,5 @@ public class GradeVendasItem {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.DaoClass.DBHelper;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.tipos.TipoImpressora;
 

@@ -1,43 +1,34 @@
 package com.anequimplus.conexoes;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.Pedido;
-import com.anequimplus.tipos.Link;
-import com.anequimplus.utilitarios.Configuracao;
-import com.anequimplus.utilitarios.UtilSet;
+import com.anequimplus.listeners.ListenerEnvioPedido;
+import com.anequimplus.listeners.ListerConexao;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ConexaoEnvioPedido extends ConexaoServer {
+public class ConexaoEnvioPedido {
 
+    private Context ctx ;
     private ListerConexao listerConexao ;
     private List<Pedido> list ;
+    private ListenerEnvioPedido listenerEnvioPedido ;
 
-    public ConexaoEnvioPedido(Context ctx, List<Pedido> list) throws MalformedURLException, LinkAcessoADO.ExceptionLinkNaoEncontrado, JSONException {
-        super(ctx);
-        msg = "Enviando Pedido" ;
+    public ConexaoEnvioPedido(Context ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido) throws MalformedURLException, JSONException {
+       // super(ctx);
+       // msg = "Enviando Pedido" ;
+        this.ctx = ctx ;
         this.list = list ;
-        setParametros();
+        this.listenerEnvioPedido = listenerEnvioPedido ;
+       // setParametros();
     }
 
-    public ConexaoEnvioPedido(Context ctx, Pedido pedido) throws LinkAcessoADO.ExceptionLinkNaoEncontrado, JSONException, MalformedURLException {
-        super(ctx);
-        msg = "Enviando Pedido" ;
-       // if (pedido == null) throw new Exception("pedido inválido") ;
-        list = new ArrayList<Pedido>();
-        list.add(pedido) ;
-        setParametros();
-    }
+/*
 
     private JSONArray getList() throws JSONException {
         JSONArray jaa = new JSONArray() ;
@@ -47,35 +38,30 @@ public abstract class ConexaoEnvioPedido extends ConexaoServer {
         return jaa ;
     }
 
-    private void setParametros() throws JSONException, MalformedURLException, LinkAcessoADO.ExceptionLinkNaoEncontrado {
+    private void setParametros() throws JSONException, MalformedURLException  {
         maps.put("class","AfoodContaPedidoItem") ;
         maps.put("method","incluir") ;
         maps.put("loja_id",UtilSet.getLojaId(ctx)) ;
         maps.put("MAC",UtilSet.getMAC(ctx)) ;
         maps.put("system_user_id",UtilSet.getUsuarioId(ctx)) ;
         maps.put("data",getList()) ;
-        url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fIncluirPedido).getUrl();
+        url =  new URL(UtilSet.getServidorMaster(ctx)) ; //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fIncluirPedido).getUrl();
     }
+*/
 
     public void execute(){
-        if (Configuracao.getPedidoCompartilhado(ctx)) {
-            this.execute() ;
-        } else {
-            Dao.getContaPedidoInternoDAO(ctx).atualizar(list) ;
+            DaoDbTabela.getContaPedidoInternoDAO(ctx).atualizar(list) ;
             apagarPedidos() ;
-            envioOK(list);
-        }
-
+            listenerEnvioPedido.envioOK(list);
     }
 
     private void apagarPedidos(){
         for (Pedido p : list) {
-            Dao.getPedidoADO(ctx).excluir(p.getId());
-            Dao.getPedidoItemADO(ctx).excluir(p);
+            DaoDbTabela.getPedidoADO(ctx).excluir(p);
         }
-
     }
 
+/*
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
@@ -84,14 +70,12 @@ public abstract class ConexaoEnvioPedido extends ConexaoServer {
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")) {
                 apagarPedidos() ;
-                envioOK(list) ;
-            } else erroEnvio(j.getString("data")) ;
+                listenerEnvioPedido.envioOK(list) ;
+            } else listenerEnvioPedido.erroEnvio(j.getString("data")) ;
         } catch (Exception e) {
             e.printStackTrace();
-            erroEnvio(e.getMessage()) ;
+            listenerEnvioPedido.erroEnvio(e.getMessage()) ;
         }
     }
-    public abstract void envioOK(List<Pedido> l);
-    public abstract void erroEnvio(String msg) ;
-//    public abstract void ErroImpressao(int status, String msg) ;
+*/
 }

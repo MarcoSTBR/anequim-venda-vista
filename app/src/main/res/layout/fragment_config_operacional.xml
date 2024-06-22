@@ -34,27 +34,14 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="Contas Compartilhadas?" />
-            <CheckBox
-                android:id="@+id/checkedContaCompartilhada"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/conf_vendavistaimpressaor" />
+                android:text="@string/conf_acumular_pedido" />
 
             <CheckBox
-                android:id="@+id/checkedVendaVistaImpressao"
+                android:id="@+id/checked_acumular_pedidos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </TableRow>
@@ -66,10 +53,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/conf_vendavistaNFCe" />
+                android:text="@string/conf_conta_cliente_pergunta_nfce" />
 
             <CheckBox
-                android:id="@+id/checkBoxVendaVistaNFCe"
+                android:id="@+id/conf_conta_cliente_pergunta_nfce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

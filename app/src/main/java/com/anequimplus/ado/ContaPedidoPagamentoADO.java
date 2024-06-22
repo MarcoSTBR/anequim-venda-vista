@@ -5,10 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoPagamento;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Modalidade;
+import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ContaPedidoPagamentoADO {
+public class ContaPedidoPagamentoADO extends TableDao {
 
     private Context ctx ;
     private SQLiteDatabase db = null ;
@@ -45,9 +49,10 @@ public class ContaPedidoPagamentoADO {
                         res.getString(res.getColumnIndexOrThrow("UUID")),
                         dt,
                         res.getInt(res.getColumnIndexOrThrow("CAIXA_ID")),
-                        Dao.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID"))),
+                        DaoDbTabela.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID"))),
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        UtilSet.getTerminalId(ctx))) ;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -66,14 +71,16 @@ public class ContaPedidoPagamentoADO {
         while(res.isAfterLast() == false){
             try {
                 dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
+                Modalidade  m = DaoDbTabela.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID")));
                 l.add(new ContaPedidoPagamento(res.getInt(res.getColumnIndexOrThrow("ID")),
                         res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
                         res.getString(res.getColumnIndexOrThrow("UUID")),
                         dt,
                         res.getInt(res.getColumnIndexOrThrow("CAIXA_ID")),
-                        Dao.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID"))),
+                        m,
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        UtilSet.getTerminalId(ctx))) ;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -82,6 +89,33 @@ public class ContaPedidoPagamentoADO {
         return l ;
     }
 
+    public List<ContaPedidoPagamento> getList(FilterTables filters, String order) {
+        List<ContaPedidoPagamento> l = new ArrayList<ContaPedidoPagamento>() ;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, UUID, DATA, PEDIDO_ID, CAIXA_ID, MODALIDADE_ID, VALOR, STATUS " +
+                " FROM PEDIDO_PG_I "+getWhere(filters, order),null);
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            try {
+                dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
+                Modalidade  m = DaoDbTabela.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID")));
+                l.add(new ContaPedidoPagamento(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
+                        res.getString(res.getColumnIndexOrThrow("UUID")),
+                        dt,
+                        res.getInt(res.getColumnIndexOrThrow("CAIXA_ID")),
+                        m,
+                        res.getDouble(res.getColumnIndexOrThrow("VALOR")),
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        UtilSet.getTerminalId(ctx))) ;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            res.moveToNext();
+        }
+        return l ;
+    }
 
     public List<ContaPedidoPagamento> getCaixaList(Caixa c) {
         List<ContaPedidoPagamento> l = new ArrayList<ContaPedidoPagamento>() ;
@@ -98,9 +132,10 @@ public class ContaPedidoPagamentoADO {
                         res.getString(res.getColumnIndexOrThrow("UUID")),
                         dt,
                         res.getInt(res.getColumnIndexOrThrow("CAIXA_ID")),
-                        Dao.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID"))),
+                        DaoDbTabela.getModalidadeADO(ctx).getModalidade(res.getInt(res.getColumnIndexOrThrow("MODALIDADE_ID"))),
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        UtilSet.getTerminalId(ctx))) ;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -148,10 +183,14 @@ public class ContaPedidoPagamentoADO {
     public List<ContaPedidoPagamento> getList(JSONArray pags) throws JSONException{
         List<ContaPedidoPagamento> l = new ArrayList<ContaPedidoPagamento>() ;
         for (int i=0 ; i < pags.length() ; i++){
-            Modalidade modalidade = Dao.getModalidadeADO(ctx).getModalidade(pags.getJSONObject(i).getInt("MODALIDADE_ID")) ;
+            Modalidade modalidade = DaoDbTabela.getModalidadeADO(ctx).getModalidade(pags.getJSONObject(i).getInt("MODALIDADE_ID")) ;
             l.add(new ContaPedidoPagamento(pags.getJSONObject(i), modalidade)) ;
         }
         return l ;
     }
 
+    public void excluir() {
+        db.delete(BANCO, "ID >= ?", new String[]{"0"}) ;
+
+    }
 }

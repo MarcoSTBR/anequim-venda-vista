@@ -18,15 +18,16 @@
         >
 
         <TextView
-            android:id="@+id/TextViewConta"
+            android:id="@+id/TextViewContaView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/cancelarItemConta"
             android:layout_toLeftOf="@id/transferenciaItemConta"
-            android:paddingTop="5dp"
+            android:layout_toRightOf="@id/cancelarItemConta"
             android:gravity="center"
+            android:paddingTop="5dp"
             android:text="TextViewConta"
-            android:textSize="10sp" />
+            android:textColor="@color/colorPreto"
+            android:textSize="15dp" />
 
         <ImageButton
             android:id="@+id/cancelarItemConta"
@@ -41,13 +42,12 @@
 
         <TextView
             android:id="@+id/textQuantidadeValorContaItem"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/cancelarItemConta"
+            android:layout_below="@id/TextViewContaView"
             android:layout_toLeftOf="@id/transferenciaItemConta"
-            android:layout_alignTop="@id/cancelarItemConta"
+            android:layout_toRightOf="@id/cancelarItemConta"
             android:gravity="center"
-            android:paddingTop="20dp"
             android:text="2 x R$ 4,00 = R$ 25,00" />
 
         <ImageButton

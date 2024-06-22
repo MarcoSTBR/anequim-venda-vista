@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.GradeVendas;
 
 import org.json.JSONArray;
@@ -24,18 +26,14 @@ public class GradeVendasADO {
     }
 
     public void setGradeVendas(JSONArray jarr) throws JSONException {
-        List<GradeVendas>  ll = getGradeVendas() ;
+        excluir() ;
+        DaoDbTabela.getGradeVendasItemADO(ctx).excluir();
+       // List<GradeVendas>  ll = getGradeVendas() ;
         GradeVendas g = null ;
-        GradeVendas resp = null ;
         for (int i = 0 ; i < jarr.length() ; i++) {
             g = new GradeVendas(jarr.getJSONObject(i));
-            resp = getGradeNaList(ll, g.getId()) ;
-            if (resp == null) {
-                    inserir(g);
-                } else {
-                    alterar(g);
-            }
-            Dao.getGradeVendasItemADO(ctx).setGradeVendasItem(jarr.getJSONObject(i).getJSONArray("ITENS")) ;
+            inserir(g);
+            DaoDbTabela.getGradeVendasItemADO(ctx).setGradeVendasItem(jarr.getJSONObject(i).getJSONArray("ITENS")) ;
         }
     }
 
@@ -92,6 +90,10 @@ public class GradeVendasADO {
         contentValues.put("STATUS", g.getStatus());
         contentValues.put("IMAGEM", g.getImagem());
         db.update("GRADE_VENDAS", contentValues, "ID = ?", new String[] {String.valueOf(g.getId())});
+    }
+
+    public void excluir(){
+        db.delete("GRADE_VENDAS", "ID > ?", new String[]{"0"}) ;
     }
 
     public GradeVendas getId(int id) {

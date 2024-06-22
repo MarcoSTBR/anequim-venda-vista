@@ -17,7 +17,7 @@
                   android:id="@+id/titulo_totaldaconta"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="TOTAL CONTA : "
+                  android:text="TOTAL CONTA      : "
                   />
                 <TextView
                   android:id="@+id/totaldaconta"
@@ -35,7 +35,7 @@
                   android:id="@+id/titulo_totalapagar"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="TOTAL A PAGAR : "
+                  android:text="TOTAL A PAGAR   : "
                    />
                 <TextView
                   android:id="@+id/totalapagar"
@@ -52,7 +52,7 @@
                   android:id="@+id/titulo_totalpago"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="TOTAL PAGO        : "
+                  android:text="TOTAL PAGO         : "
                   />
                 <TextView
                   android:id="@+id/totalpago"

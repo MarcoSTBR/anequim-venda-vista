@@ -105,7 +105,7 @@ public abstract class ConexaoPagamentoLio {
                 //.ec(ec) /* Opcional (precisa estar habilitado na LIO) */
                 //.installments(1) /* Opcional */
                 //.email("teste@email.com") /* Opcional */
-                .paymentCode(getPagamentoCode(modalidade.getCod_recebimento())) ;/* Opcional */
+                .paymentCode(getPagamentoCode(Integer.valueOf(modalidade.getCod_recebimento()))) ;/* Opcional */
 
         CheckoutRequest request = requestBuilder.build() ;
 

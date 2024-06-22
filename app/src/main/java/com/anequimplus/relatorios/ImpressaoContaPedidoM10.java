@@ -24,12 +24,13 @@ public class ImpressaoContaPedidoM10 implements IImpressaoContaPedido {
         this.contaPedido = contaPedido;
     }
 
+
     @Override
     public List<ContaPedidoM10.LinhaImpressao> getListLinhas() {
         List<ContaPedidoM10.LinhaImpressao> list = new ArrayList<ContaPedidoM10.LinhaImpressao>() ;
         addCabecalho(list) ;
         addItens(list) ;
-
+        addPagamento(list) ;
         return list;
     }
 
@@ -40,17 +41,96 @@ public class ImpressaoContaPedidoM10 implements IImpressaoContaPedido {
         list.add(new ContaPedidoM10.LinhaImpressao("ABERTURA : "+dt.format(contaPedido.getData()),ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
     }
 
+    @Override
+    public List<ContaPedidoM10.LinhaImpressao> getRecibo() {
+        List<ContaPedidoM10.LinhaImpressao> list = new ArrayList<ContaPedidoM10.LinhaImpressao>() ;
+        String separador = "-" ;
+        SimpleDateFormat dt = new SimpleDateFormat("dd/MM HH:mm") ;
+        list.add(new ContaPedidoM10.LinhaImpressao("RECIBO DA CONTA : "+contaPedido.getPedido(), ContaPedidoM10.EstiloM8_M10.Reverso, ContaPedidoM10.TamanhoM8_M10.A3, ContaPedidoM10.AlinhamentoM8_M10.Center)) ;
+        list.add(new ContaPedidoM10.LinhaImpressao("ABERTURA : "+dt.format(contaPedido.getData()),ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
+        list.add(new ContaPedidoM10.LinhaImpressao("FECHAMENTO : "+dt.format(contaPedido.getData_fechamento()),ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
+        addPagamento(list) ;
+        return list;
+    }
+
+    private void addPagamento(List<ContaPedidoM10.LinhaImpressao> list){
+        String separador = "-" ;
+        list.add(new ContaPedidoM10.LinhaImpressao(repetir(separador, tamColuna), ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
+        DecimalFormat frm = new DecimalFormat("R$ #0.00");
+        DecimalFormat qrm = new DecimalFormat("#0.###");
+        String aux = "" ;
+        String valor = "" ;
+        String auxSubtotal = "" ;
+        String auxDesconto = "" ;
+        String auxServico = "" ;
+        String auxTotal = "" ;
+        int recuo = 8 ;
+        aux =   "Subtotal " ; valor = frm.format(contaPedido.getTotalItens()) ; auxSubtotal = aux+repetir(" ", recuo-valor.length())+valor ;
+        aux =   "Desconto " ; valor = frm.format(contaPedido.getDesconto()) ; auxDesconto = aux+repetir(" ", recuo-valor.length())+valor ;
+        aux =   "Serviço  " ; valor = frm.format(contaPedido.getTotalComissao()) ; auxServico = aux+repetir(" ", recuo-valor.length())+valor ;
+        aux =   "TOTAL    " ; valor = frm.format(contaPedido.getTotal()) ; auxTotal = aux+repetir(" ", recuo-valor.length())+valor ;
+
+
+        ContaPedidoM10.AlinhamentoM8_M10 aling = ContaPedidoM10.AlinhamentoM8_M10.Center ;
+        ContaPedidoM10.TamanhoM8_M10 tam = ContaPedidoM10.TamanhoM8_M10.A3 ;
+        ContaPedidoM10.TamanhoM8_M10 tamMod = ContaPedidoM10.TamanhoM8_M10.A2 ;
+
+        ContaPedidoM10.EstiloM8_M10 estilo = ContaPedidoM10.EstiloM8_M10.FonteB ;
+        ContaPedidoM10.EstiloM8_M10 estilototal = ContaPedidoM10.EstiloM8_M10.Reverso ;
+
+        if (contaPedido.getTotalPagamentos() > 0){
+            if (contaPedido.getTotalItens() == contaPedido.getTotal())
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilo, tam, aling));
+             else list.add(new ContaPedidoM10.LinhaImpressao(auxSubtotal, estilo, tam, aling));
+
+            for (ContaPedidoPagamento pg : contaPedido.getListPagamento()){
+                aux =   pg.getModalidade().getDescricao() ;
+                valor = frm.format(pg.getValor()) ;
+                auxTotal = aux+repetir(" ", recuo-valor.length())+valor ;
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilo, tamMod, aling));
+            }
+            if (contaPedido.getTotalaPagar() > 0) {
+                aux = "A PAGAR ";
+                valor = frm.format(contaPedido.getTotalaPagar());
+                auxTotal = aux + repetir(" ", recuo - valor.length()) + valor;
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilototal, tam, aling));
+            } else {
+
+                aux = "TROCO ";
+                valor = frm.format(-1 * contaPedido.getTotalaPagar());
+                auxTotal = aux + repetir(" ", recuo - valor.length()) + valor;
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilototal, tam, aling));
+            }
+
+
+        } else {
+            if (contaPedido.getTotalItens() == contaPedido.getTotal()) {
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilototal, tam, aling));
+
+            } else {
+                list.add(new ContaPedidoM10.LinhaImpressao(auxSubtotal, estilo, tam, aling));
+                if (contaPedido.getDesconto() > 0)
+                    list.add(new ContaPedidoM10.LinhaImpressao(auxDesconto, estilo, tam, aling));
+                if (contaPedido.getTotalComissao() > 0)
+                    list.add(new ContaPedidoM10.LinhaImpressao(auxServico, estilo, tam, aling));
+                list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilototal, tam, aling));
+            }
+        }
+
+    }
+
     private void addItens(List<ContaPedidoM10.LinhaImpressao> list) {
         String separador = "-" ;
         list.add(new ContaPedidoM10.LinhaImpressao(repetir(separador, tamColuna), ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
         DecimalFormat frm = new DecimalFormat("R$ #0.00");
         DecimalFormat qrm = new DecimalFormat("#0.###");
-        for (ContaPedidoItem it : contaPedido.getListContaPedidoItem()){
+        for (ContaPedidoItem it : contaPedido.getListContaPedidoItemAtivosAgrupados()){
             String txt = it.getProduto().getDescricao() ;
-            String qv = qrm.format(it.getQuantidade())+"   X R$ "+frm.format(it.getPreco())+" = R$ "+frm.format(it.getValor()) ;
+            String qv = qrm.format(it.getQuantidade())+" X "+frm.format(it.getPreco())+" = "+frm.format(it.getValor()) ;
             list.add(new ContaPedidoM10.LinhaImpressao(txt, ContaPedidoM10.EstiloM8_M10.FonteA, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
             list.add(new ContaPedidoM10.LinhaImpressao(qv, ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Right));
         }
+/*
         list.add(new ContaPedidoM10.LinhaImpressao(repetir(separador, tamColuna), ContaPedidoM10.EstiloM8_M10.FonteB, ContaPedidoM10.TamanhoM8_M10.A2, ContaPedidoM10.AlinhamentoM8_M10.Left));
         String aux = "" ;
         String valor = "" ;
@@ -97,6 +177,7 @@ public class ImpressaoContaPedidoM10 implements IImpressaoContaPedido {
                 list.add(new ContaPedidoM10.LinhaImpressao(auxTotal, estilototal, tam, aling));
             }
         }
+*/
     }
 
     private String repetir(String s, int count){

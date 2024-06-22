@@ -5,13 +5,13 @@ import com.anequimplus.tipos.TipoModalidade;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Modalidade {
+public class Modalidade extends Entidade {
 
     private int id ;
     private String codigo ;
     private String descricao ;
     private TipoModalidade tipoModalidade;
-    private int cod_recebimento ;
+    private String cod_recebimento ;
     private String foto ;
     private int status ;
 
@@ -19,23 +19,30 @@ public class Modalidade {
         this.id = j.getInt("id") ;
         this.codigo = j.getString("CODIGO");
         this.descricao = j.getString("DESCRICAO");
-        this.tipoModalidade = TipoModalidade.valueOf(j.getString("TIPO")) ;
-        this.cod_recebimento = j.getInt("COD_RECEBIMENTO");
+        if (j.isNull("TIPO"))
+           this.tipoModalidade = TipoModalidade.valueOf(j.getString("TIPOMODALIDADE")) ;
+          else  this.tipoModalidade = TipoModalidade.valueOf(j.getString("TIPO")) ;
+        this.cod_recebimento = j.getString("COD_RECEBIMENTO");
         this.foto =  j.getString("FOTO");
         this.status =  j.getInt("STATUS") ;
     }
 
-    public JSONObject toJson() throws JSONException {
+    @Override
+    public JSONObject geJSON() throws JSONException {
         JSONObject j = new JSONObject() ;
         j.put("ID", id) ;
         j.put("CODIGO", codigo) ;
         j.put("DESCRICAO", descricao) ;
-        j.put("TIPO", tipoModalidade.valor) ;
+        j.put("TIPOMODALIDADE", tipoModalidade.valor) ;
+        j.put("COD_RECEBIMENTO", cod_recebimento) ;
+        j.put("URL", foto) ;
+        j.put("COD_RECEBIMENTO", cod_recebimento) ;
         j.put("STATUS", status) ;
         return j ;
     }
 
-    public Modalidade(int id, String codigo, String descricao, TipoModalidade tipoModalidade, int cod_recebimento, String foto, int status) {
+
+    public Modalidade(int id, String codigo, String descricao, TipoModalidade tipoModalidade, String cod_recebimento, String foto, int status) {
         this.id = id;
         this.codigo = codigo;
         this.descricao = descricao;
@@ -90,11 +97,11 @@ public class Modalidade {
         this.tipoModalidade = tipoModalidade;
     }
 
-    public int getCod_recebimento() {
+    public String getCod_recebimento() {
         return cod_recebimento;
     }
 
-    public void setCod_recebimento(int cod_recebimento) {
+    public void setCod_recebimento(String cod_recebimento) {
         this.cod_recebimento = cod_recebimento;
     }
 
@@ -113,4 +120,6 @@ public class Modalidade {
     public void setStatus(int status) {
         this.status = status;
     }
+
+
 }

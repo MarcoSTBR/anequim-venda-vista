@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Caixa {
+public class Caixa extends Entidade {
    private int id ;
    private String uuid ;
    private Date data ;
@@ -18,15 +18,15 @@ public class Caixa {
    private int status ;
    private double valor ;
 
-
     public Caixa(JSONObject j) throws JSONException, ParseException {
-        //{"conf_terminal_id":"2","system_user_id":"7","data_movimento":"2021-03-22 23:09:00","valor":"1.5","modalidade_id":"1","status":1,"loja_id":"1","id":1}}
-        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        this.id = j.getInt("CAIXA_ID");
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (j.isNull("id"))
+            id = j.getInt("ID") ;
+        else id = j.getInt("id") ;
         this.uuid = j.getString("UUID");
         this.data = fdate.parse(j.getString("DATA"));
         this.dataFechamento = fdate.parse(j.getString("DATA_FECHAMENTO"));
-        this.usuario_Id = j.getInt("SYSTEM_USER_ID");
+        this.usuario_Id = j.getInt("USUARIO_ID");
         this.status = j.getInt("STATUS");
         this.valor  = j.getDouble("VALOR");
     }
@@ -41,15 +41,16 @@ public class Caixa {
         this.valor = valor;
     }
 
-    public JSONObject getJson()  {
+    public JSONObject getExportacaoJson()  {
         JSONObject j = new JSONObject() ;
-        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             j.put("CAIXA_ID", id) ;
             j.put("UUID", uuid) ;
             j.put("DATA", fdate.format(data)) ;
             j.put("DATA_FECHAMENTO", fdate.format(dataFechamento)) ;
             j.put("SYSTEM_USER_ID", usuario_Id) ;
+            j.put("USUARIO_ID", usuario_Id) ;
             j.put("STATUS", status) ;
             j.put("VALOR", valor) ;
         } catch (JSONException e) {
@@ -61,6 +62,18 @@ public class Caixa {
         return j;
     }
 
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        JSONObject j = new JSONObject() ;
+        j.put("ID", id) ;
+        j.put("UUID", uuid) ;
+        j.put("USUARIO_ID", usuario_Id) ;
+        j.put("DATA", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(data)) ;
+        j.put("DATA_FINAL", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dataFechamento)) ;
+        j.put("VALOR", valor) ;
+        j.put("STATUS", status) ;
+        return j;
+    }
 
     public int getId() {
         return id;
@@ -117,6 +130,5 @@ public class Caixa {
     public void setUsuario_Id(int usuario_Id) {
         this.usuario_Id = usuario_Id;
     }
-
 
 }

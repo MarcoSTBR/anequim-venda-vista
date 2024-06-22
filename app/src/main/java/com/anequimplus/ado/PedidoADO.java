@@ -6,9 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.PedidoItemAcomp;
+
+import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PedidoADO {
+public class PedidoADO extends TableDao{
 
     private Context ctx ;
     private SQLiteDatabase db = null ;
@@ -27,35 +33,25 @@ public class PedidoADO {
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
     }
 
-    public List<Pedido> getList(List<FilterTable> filters){
+    public List<Pedido> getList(FilterTables filters, String order){
         List<Pedido> l = new ArrayList<Pedido>() ;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = null ;
-        String where ="" ;
-        if (filters.size() > 0 ){
-            for (FilterTable f : filters) {
-                if (where.length() == 0)
-                    where = "("+f.getCampo()+" "+f.getOperador()+" "+f.getVariavel()+")" ;
-                 else
-                    where = where + " AND ("+f.getCampo()+" "+f.getOperador()+" "+f.getVariavel()+")" ;
-            }
-            where = " WHERE "+ where ;
-        }
         Cursor res =  db.rawQuery( "SELECT ID, PEDIDO, DATA " +
-                " FROM PEDIDO "+ where, null);
+                " FROM PEDIDO "+ getWhere(filters, order), null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
             try {
-                List<FilterTable> fitersItem = new ArrayList<FilterTable>() ;
+                FilterTables fitersItem = new FilterTables() ;
                 fitersItem.add(new FilterTable("PEDIDO_ID", "=", res.getString(res.getColumnIndexOrThrow("ID")))) ;
                 dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
                 Pedido p = new Pedido(res.getInt(res.getColumnIndexOrThrow("ID")),
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
-                        Dao.getPedidoItemADO(ctx).getList(fitersItem)) ;
+                        DaoDbTabela.getPedidoItemADO(ctx).getList(fitersItem, "ID")) ;
                 l.add(p) ;
-                Log.i("listpedidos", p.toString()) ;
-            } catch (ParseException e) {
+                Log.i("listpedidos", " "+ p.getJsonExportacao().toString()) ;
+            } catch (ParseException | JSONException e) {
                 e.printStackTrace();
             }
             res.moveToNext();
@@ -65,9 +61,9 @@ public class PedidoADO {
 
     public Pedido get(int id){
         Pedido p = null ;
-        List<FilterTable> filters = new ArrayList<FilterTable>() ;
+        FilterTables filters = new FilterTables() ;
         filters.add(new FilterTable("ID", "=", String.valueOf(id))) ;
-        List<Pedido> pedidos = getList(filters) ;
+        List<Pedido> pedidos = getList(filters, "PEDIDO") ;
         if (pedidos.size() > 0)
             p = pedidos.get(0) ;
         return p ;
@@ -85,9 +81,9 @@ public class PedidoADO {
 
     public Pedido getPedido(String pedidoSelecionado) {
         Pedido p = null ;
-        List<FilterTable> filters = new ArrayList<FilterTable>() ;
+        FilterTables filters = new FilterTables() ;
         filters.add(new FilterTable("PEDIDO", "=", pedidoSelecionado)) ;
-        List<Pedido> pedidos = getList(filters) ;
+        List<Pedido> pedidos = getList(filters, "PEDIDO") ;
         if (pedidos.size() > 0)
             p = pedidos.get(0) ;
           else {
@@ -98,17 +94,29 @@ public class PedidoADO {
     }
 
     public void limparPedidosVazios(){
-        List<FilterTable> filters = new ArrayList<FilterTable>() ;
-        List<Pedido> pedidos = getList(filters) ;
+        FilterTables filters = new FilterTables() ;
+        List<Pedido> pedidos = getList(filters, "PEDIDO") ;
         for (Pedido p : pedidos){
             if (p.getListPedidoItem().size() == 0) {
-                excluir(p.getId());
+                excluir(p);
             }
         }
     }
 
 
-    public void excluir(int id) {
-        db.delete(DB_TABLE, "ID = ?", new String[]{String.valueOf(id)}) ;
+    public void excluir(Pedido ped) {
+        for (PedidoItem it : ped.getListPedidoItem()) {
+            for (PedidoItemAcomp ac : it.getAcompanhamentos()){
+                DaoDbTabela.getPedidoItemAcompADO(ctx).excluir(ac);
+            }
+            DaoDbTabela.getPedidoItemADO(ctx).excluir(it);
+        }
+        db.delete(DB_TABLE, "ID = ?", new String[]{String.valueOf(ped.getId())}) ;
+    }
+
+    public void excluir(){
+        DaoDbTabela.getPedidoItemAcompADO(ctx).excluir();
+        DaoDbTabela.getPedidoItemADO(ctx).excluir();
+        db.delete(DB_TABLE, "ID > ?", new String[]{String.valueOf(-1)}) ;
     }
 }

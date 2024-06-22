@@ -16,18 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.anequimplus.adapter.ImpressoraAdapter;
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.conexoes.ConexaoRelatorios;
+import com.anequimplus.listeners.ListenerCaixa;
 import com.anequimplus.entity.Caixa;
+import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.impressao.BuilderControleImp;
 import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ListenerImpressao;
+import com.anequimplus.relatorios.ListenerRelatorio;
 import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.utilitarios.UtilSet;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 public class ActivityImpressao extends AppCompatActivity {
@@ -51,11 +54,11 @@ public class ActivityImpressao extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         opcao          = getIntent().getIntExtra("OPCAO_ID",-1) ;
         int caixa_id   = getIntent().getIntExtra("CAIXA_ID",-1) ;
-        caixa = Dao.getCaixaADO(this).get(caixa_id) ;
         toolbar.setTitle(getIntent().getStringExtra("TITULO"));
         toolbar.setSubtitle(getIntent().getStringExtra("SUBTITULO"));
         textViewImpressao = (TextView) findViewById(R.id.textViewImpressao) ;
         spinnerImp = (Spinner) findViewById(R.id.spinnerImp) ;
+
     }
 
     @Override
@@ -69,16 +72,41 @@ public class ActivityImpressao extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        carregaImp() ;
+        getCaixa() ;
+
+    }
+
+    private void getCaixa(){
+//        caixa = DaoDbTabela.getCaixaADO(this).get(caixa_id) ;
+        FilterTables f = new FilterTables() ;
+        f.add(new FilterTable("USUARIO_ID", "=", String.valueOf(UtilSet.getUsuarioId(this)))) ;
+        f.add(new FilterTable("STATUS", "=", "1")) ;
+        new BuildCaixa(this, f, "", new ListenerCaixa() {
+            @Override
+            public void ok(List<Caixa> l) {
+                if (l.size()>0) {
+                    caixa = l.get(0);
+                    carregaImp() ;
+                }
+                 else alertaErro("Caixa Fechado!");
+
+            }
+
+            @Override
+            public void erro(String msg) {
+                alertaErro(msg) ;
+            }
+        }).executar();
+
     }
 
     private void carregaImp() {
-        ImpressoraAdapter impAdp = new ImpressoraAdapter(getBaseContext(),Dao.getImpressoraADO(getBaseContext()).getList()) ;
+        ImpressoraAdapter impAdp = new ImpressoraAdapter(getBaseContext(), DaoDbTabela.getImpressoraADO(getBaseContext()).getList()) ;
         spinnerImp.setAdapter(impAdp);
         spinnerImp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(i) ;
+                impressoraPadrao = DaoDbTabela.getImpressoraADO(getBaseContext()).getList().get(i) ;
                 UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao()) ;
                 setImpressoraPadrao();
                 //carregaRelatorio() ;
@@ -106,7 +134,7 @@ public class ActivityImpressao extends AppCompatActivity {
             }
         }
         if (impressoraPadrao == null){
-            impressoraPadrao = Dao.getImpressoraADO(getBaseContext()).getList().get(0) ;
+            impressoraPadrao = DaoDbTabela.getImpressoraADO(getBaseContext()).getList().get(0) ;
             UtilSet.setImpPadraoFechamento(getBaseContext(), impressoraPadrao.getDescricao());
             spinnerImp.setSelection(0) ;
             carregaRelatorio() ;
@@ -115,31 +143,20 @@ public class ActivityImpressao extends AppCompatActivity {
 
     private void carregaRelatorio() {
         instanciarImp() ;
-        try {
-            ConexaoRelatorios conexaoRelatorios = new ConexaoRelatorios(this, impressoraPadrao, caixa, opcao) {
-                @Override
-                public void ok(List<RowImpressao> l) {
-                    listImpressao = l ;
-                    display();
-                }
+           new ConexaoRelatorios(this, impressoraPadrao, caixa, opcao, new ListenerRelatorio() {
+               @Override
+               public void ok(List<RowImpressao> l) {
+                   listImpressao = l ;
+                   display();
+               }
 
-                @Override
-                public void erroMensagem(String msg) {
-                    textViewImpressao.setText(msg);
-                    alertaErro(msg);
+               @Override
+               public void erroMensagem(String msg) {
+                   textViewImpressao.setText(msg);
+                   alertaErro(msg);
 
-                }
-            } ;
-
-            conexaoRelatorios.execute();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage());
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            alertaErro(e.getMessage());
-        }
+               }
+           }).executar();
     }
 
     private void display() {
@@ -183,7 +200,8 @@ public class ActivityImpressao extends AppCompatActivity {
     }
 
     private void instanciarImp(){
-        controleImpressora = BuilderControleImp.getImpressora(this, impressoraPadrao.getTipoImpressora()) ;
+        if (controleImpressora != null) controleImpressora.close();
+        controleImpressora = BuilderControleImp.getImpressora(this, impressoraPadrao) ;
         ListenerImpressao listener = new ListenerImpressao() {
             @Override
             public void onImpressao(int status) {

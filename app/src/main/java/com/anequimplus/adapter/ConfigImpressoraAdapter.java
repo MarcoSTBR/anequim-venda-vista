@@ -4,13 +4,20 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.anequimdroid.R;
+import com.anequimplus.entity.ConfiguracaoImpressora;
 import com.anequimplus.entity.Impressora;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -47,6 +54,9 @@ public class ConfigImpressoraAdapter extends RecyclerView.Adapter<ConfigImpresso
         private TextView numCol ;
         private TextView tipoImp ;
         private TextView status ;
+        private EditText endereco_ip ;
+        private EditText porta ;
+        private ImageButton save ;
 
         public ConfigImpressoraHolper(@NonNull View itemView) {
             super(itemView);
@@ -54,6 +64,36 @@ public class ConfigImpressoraAdapter extends RecyclerView.Adapter<ConfigImpresso
             numCol = itemView.findViewById(R.id.textNumeroColunas) ;
             tipoImp = itemView.findViewById(R.id.textTipoImpressora) ;
             status = itemView.findViewById(R.id.textStatusImpressora) ;
+            endereco_ip = itemView.findViewById(R.id.endereco_ip) ;
+            porta       = itemView.findViewById(R.id.porta_impressora) ;
+            save       = itemView.findViewById(R.id.gravar_configuracao_imp) ;
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = getAdapterPosition() ;
+                    ConfiguracaoImpressora imp = DaoDbTabela.getConfiguracaoImpressoraADO(ctx).get(l.get(id).getId()) ;
+                    JSONObject j = new JSONObject() ;
+                    try {
+                        j.put("ENDERECO_IP", endereco_ip.getText()) ;
+                        if (!porta.getText().equals(""))
+                        j.put("PORTA", Integer.valueOf(porta.getText().toString())) ;
+                        if (imp == null)
+                        {
+                            imp = new ConfiguracaoImpressora(l.get(id).getId(), j.toString()) ;
+                            DaoDbTabela.getConfiguracaoImpressoraADO(ctx).incluir(imp);
+                        } else {
+                            imp.setConfig(j.toString());
+                            DaoDbTabela.getConfiguracaoImpressoraADO(ctx).alterar(imp);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+
         }
 
         public void bind(Impressora i){
@@ -65,6 +105,19 @@ public class ConfigImpressoraAdapter extends RecyclerView.Adapter<ConfigImpresso
             } else {
                 status.setText("INATIVO");
             }
+
+            ConfiguracaoImpressora imp = DaoDbTabela.getConfiguracaoImpressoraADO(ctx).get(i.getId()) ;
+            if (imp != null){
+                try {
+                    JSONObject j = new JSONObject(imp.getConfig()) ;
+                    endereco_ip.setText(j.getString("ENDERECO_IP"));
+                    porta.setText(j.getString("PORTA"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         }
     }
 }

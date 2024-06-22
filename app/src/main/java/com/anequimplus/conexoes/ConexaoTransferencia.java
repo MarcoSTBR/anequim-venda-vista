@@ -1,73 +1,75 @@
 package com.anequimplus.conexoes;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.entity.ContaPedido;
+import com.anequimplus.entity.ContaPedidoItem;
+import com.anequimplus.entity.ContaPedidoPagamento;
+import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Transferencia;
-import com.anequimplus.tipos.Link;
-import com.anequimplus.utilitarios.Configuracao;
+import com.anequimplus.listeners.ListenerTransferencia;
+import com.anequimplus.tipos.TipoConexao;
 import com.anequimplus.utilitarios.UtilSet;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import java.net.MalformedURLException;
+public class ConexaoTransferencia {
 
-public abstract class ConexaoTransferencia extends ConexaoServer{
+    private Context ctx ;
+    private Transferencia transferencia;
+    private FilterTables filterTables;
+    private String order ;
+    private ListenerTransferencia listenerTransferencia ;
+    private TipoConexao tipoConexao ;
+    private String pedido ;
 
-    private Transferencia transferencia ;
 
-    public ConexaoTransferencia(Context ctx, Transferencia transferencia) {
-        super(ctx);
+    public ConexaoTransferencia(Context ctx, FilterTables filterTables, String order, ListenerTransferencia listenerTransferencia) {
+        this.ctx = ctx ;
+        this.filterTables = filterTables ;
+        this.order = order ;
+        this.listenerTransferencia = listenerTransferencia ;
+        tipoConexao = TipoConexao.cxConsultar ;
+    }
+
+    public ConexaoTransferencia(Context ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia)  {
+        this.ctx = ctx ;
+        this.pedido = pedido ;
         this.transferencia = transferencia ;
-        msg = "Transferindo ...." ;
-        try {
-            maps.put("class","AfoodTransferencia") ;
-            maps.put("method","transferir") ;
-            maps.put("MAC", UtilSet.getMAC(ctx)) ;
-            maps.put("transferencia", transferencia.getJSON()) ;
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fTransferencia).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            erro(0,e.getMessage());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            erro(0,"Url erro "+e.getMessage());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            erro(0,e.getMessage());
-        }
+        this.listenerTransferencia = listenerTransferencia ;
+        tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public void execute(){
-        if (Configuracao.getPedidoCompartilhado(ctx)) {
-            super.execute() ;
-        } else {
-            Dao.getTransferenciaDAO(ctx).transferir(transferencia);
-            ok() ;
+    public void executar(){
+        switch (tipoConexao) {
+            case cxConsultar: listenerTransferencia.ok(DaoDbTabela.getTransferenciaDAO(ctx).getList(filterTables, order));
+            break;
+            case cxIncluir : {
+                   ContaPedido conta = null ;
+                   FilterTables filter = new FilterTables() ;
+                   filter.add(new FilterTable("PEDIDO", "=", pedido));
+                   filter.add(new FilterTable("STATUS", "=", "1"));
+                   List<ContaPedido> lcontas = DaoDbTabela.getContaPedidoInternoDAO(ctx).getList(filter.getList(), "") ;
+                   if (lcontas.size()>0)
+                       conta = lcontas.get(0);
+                     else {
+                       conta = new ContaPedido(0, UtilSet.getUUID(), pedido, new Date(), 0, new ArrayList<ContaPedidoItem>(), new ArrayList<ContaPedidoPagamento>(),
+                               1,1,0,new Date(),1, UtilSet.getUsuarioId(ctx)) ;
+                       DaoDbTabela.getContaPedidoInternoDAO(ctx).inserir(conta) ;
+                   }
+                    transferencia.setContaPedido_destino_id(conta.getId());
+                    DaoDbTabela.getTransferenciaDAO(ctx).transferir(transferencia);
+                    List<Transferencia> l = new ArrayList<Transferencia>();
+                    l.add(transferencia);
+                    listenerTransferencia.ok(l);
+                }
+             break;
+
         }
     }
-
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        Log.i("transferencia", codInt +" "+ s) ;
-        try {
-            JSONObject j = new JSONObject(s) ;
-            if (j.getString("status").equals("success")) {
-                ok() ;
-            } else {
-                erro(codInt, j.getString("data"));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            erro(codInt, s) ;
-        }
-    }
-
-    public abstract void ok() ;
-    public abstract void erro(int cod, String msg) ;
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.DaoClass.DBHelper;
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.tipos.TipoModalidade;
 
@@ -46,19 +47,64 @@ public class ModalidadeADO {
     public List<Modalidade> getList() {
         List<Modalidade> list = new ArrayList<Modalidade>() ;
         Cursor res =  db.rawQuery( "SELECT ID, CODIGO, DESCRICAO, " +
-                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS FROM MODALIDADE WHERE STATUS = 1", null );
+                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS FROM MODALIDADE ", null );
         res.moveToFirst();
         while(res.isAfterLast() == false){
             list.add(new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
                     res.getString(res.getColumnIndexOrThrow("CODIGO")),
                     res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
                     TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
-                    res.getInt(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
                     res.getString(res.getColumnIndexOrThrow("URL")),
                     res.getInt(res.getColumnIndexOrThrow("STATUS")))) ;
             res.moveToNext();
         }
         return list ;
+    }
+
+    public List<Modalidade> getGradeList() {
+        List<Modalidade> list = new ArrayList<Modalidade>() ;
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, DESCRICAO, " +
+                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS "+
+                "FROM MODALIDADE WHERE STATUS = 1 ORDER BY CODIGO ", null );
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            Modalidade m = new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
+                    res.getString(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("URL")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS"))) ;
+            if (m.getTipoModalidade() != TipoModalidade.pgDesconto)
+            list.add(m) ;
+            res.moveToNext();
+        }
+        return list ;
+    }
+
+    public Modalidade getModalidadeDesconto(){
+        Modalidade m = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, DESCRICAO, " +
+                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS "+
+                "FROM MODALIDADE "+
+                "WHERE STATUS = 1 AND TIPOMODALIDADE = ?"+
+                "ORDER BY CODIGO ", new String[]{"pgDesconto"});
+        res.moveToFirst();
+        if (res.isAfterLast() == false) {
+                    m = new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
+                    res.getString(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("URL")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")));
+        }
+        return m ;
+    }
+
+    public boolean ifDesconto(){
+        return getModalidadeDesconto() != null ? true : false;
     }
 
     public Modalidade getModalidade(int modalidade_id) {
@@ -67,7 +113,8 @@ public class ModalidadeADO {
             if (m.getId() == modalidade_id)
                return m;
         }
-        return null ;
+        return new Modalidade(0,"Não encontrado ","Não encontrado "+modalidade_id, TipoModalidade.pgTroco,"00", "", 1) ;
+        //return null ;
     }
 
     public Modalidade getModalidade(List<Modalidade> list, Modalidade md) {
@@ -108,6 +155,46 @@ public class ModalidadeADO {
 
     private void excluir(){
         db.delete(DB_TABLE, null, null) ;
+    }
+
+    public Modalidade getModalidadeTroco() {
+        Modalidade m = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, DESCRICAO, " +
+                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS "+
+                "FROM MODALIDADE "+
+                "WHERE TIPOMODALIDADE = ?"+
+                "ORDER BY CODIGO ", new String[]{"pgTroco"});
+        res.moveToFirst();
+        if (res.isAfterLast() == false) {
+            m = new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
+                    res.getString(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("URL")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")));
+        }
+        return m ;
+    }
+
+    public Modalidade getModalidadeDinheiro() {
+        Modalidade m = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, CODIGO, DESCRICAO, " +
+                "TIPOMODALIDADE, COD_RECEBIMENTO, URL, PARAM, STATUS "+
+                "FROM MODALIDADE "+
+                "WHERE TIPOMODALIDADE = ?"+
+                "ORDER BY CODIGO ", new String[]{"pgDinheiro"});
+        res.moveToFirst();
+        if (res.isAfterLast() == false) {
+            m = new Modalidade(res.getInt(res.getColumnIndexOrThrow("ID")),
+                    res.getString(res.getColumnIndexOrThrow("CODIGO")),
+                    res.getString(res.getColumnIndexOrThrow("DESCRICAO")),
+                    TipoModalidade.valueOf(res.getString(res.getColumnIndexOrThrow("TIPOMODALIDADE"))),
+                    res.getString(res.getColumnIndexOrThrow("COD_RECEBIMENTO")),
+                    res.getString(res.getColumnIndexOrThrow("URL")),
+                    res.getInt(res.getColumnIndexOrThrow("STATUS")));
+        }
+        return m ;
     }
 
 }

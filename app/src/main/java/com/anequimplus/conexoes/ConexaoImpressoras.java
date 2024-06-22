@@ -3,14 +3,14 @@ package com.anequimplus.conexoes;
 import android.content.Context;
 import android.util.Log;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.tipos.Link;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class ConexaoImpressoras extends ConexaoServer {
 
@@ -24,10 +24,7 @@ public abstract class ConexaoImpressoras extends ConexaoServer {
     //        maps.put("chave", UtilSet.getChave(ctx)) ;
 //            maps.put("loja_id", UtilSet.getLojaId(ctx)) ;
 //            maps.put("MAC", UtilSet.getMAC(ctx)) ;
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImpressoras).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            erroMensagem(e.getMessage());
+            url =  new URL(UtilSet.getServidorMaster(ctx)) ; //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImpressoras).getUrl() ;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             erroMensagem(e.getMessage());
@@ -43,7 +40,7 @@ public abstract class ConexaoImpressoras extends ConexaoServer {
         try {
             JSONObject j = new JSONObject(s);
             if (j.getString("status").equals("success")) {
-                Dao.getImpressoraADO(ctx).ImpressoraADD(j.getJSONArray("data"));
+                DaoDbTabela.getImpressoraADO(ctx).ImpressoraADD(j.getJSONArray("data"));
                 Ok() ;
             } else erroMensagem(j.getString("data"));
         } catch (JSONException e) {

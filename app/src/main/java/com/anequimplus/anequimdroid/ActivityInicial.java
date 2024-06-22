@@ -36,13 +36,13 @@ public class ActivityInicial extends AppCompatActivity {
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logar() ;
+              startActivity(new Intent(ActivityInicial.this, ActivityPrincipal.class));
             }
         });
     }
 
     private void registrarCnpj() {
-        startActivity(new Intent(getBaseContext(), ActivityAutenticacao.class));
+        startActivity(new Intent(this, ActivityAutenticacao.class));
     }
 
     @Override
@@ -51,17 +51,13 @@ public class ActivityInicial extends AppCompatActivity {
         iniciar() ;
     }
 
-    private void logar() {
-        startActivityForResult(new Intent(getBaseContext(), ActivityLogin.class), LOGAR);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGAR) {
             if (resultCode == RESULT_OK) {
                 flagEntrada = true ;
-                startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+                startActivity(new Intent(this, ActivityPrincipal.class));
             }
         }
     }
@@ -73,7 +69,6 @@ public class ActivityInicial extends AppCompatActivity {
         } else {
            entrar.setVisibility(View.VISIBLE);
            registrar.setVisibility(View.GONE);
-
         }
        if (flagEntrada) {
 
@@ -85,19 +80,17 @@ public class ActivityInicial extends AppCompatActivity {
                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                        @Override
                        public void onClick(DialogInterface dialog, int which) {
+                          flagEntrada = false ;
                           finish();
                        }
                    }).
                    setNegativeButton("Não", new DialogInterface.OnClickListener() {
                                @Override
                                public void onClick(DialogInterface dialog, int which) {
-                                   startActivity(new Intent(getBaseContext(), ActivityPrincipal.class));
+                                   startActivity(new Intent(ActivityInicial.this, ActivityPrincipal.class));
                                }
                            }
                    ).show();
        }
     }
-
-
-
 }

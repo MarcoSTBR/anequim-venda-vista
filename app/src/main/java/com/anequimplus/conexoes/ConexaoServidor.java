@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.anequimplus.utilitarios.UtilSet;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +11,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 public abstract class ConexaoServidor extends AsyncTask<Context, String, Integer> {
@@ -35,10 +32,12 @@ public abstract class ConexaoServidor extends AsyncTask<Context, String, Integer
 
     @Override
     protected Integer doInBackground(Context... contexts) {
+/*
         if (!UtilSet.seInternet(ctx)){
             jsonDeResposta = "Sem conexão com servidor!" ;
             return null ;
         }
+*/
         //PrintStream printStream;
         try {
             //URL url2 = new URL(UtilSet.getServidor(ctx) + "/incluirpedido/" + nParm);
@@ -77,14 +76,12 @@ public abstract class ConexaoServidor extends AsyncTask<Context, String, Integer
             Log.e("IOException",e.getMessage()) ;
         }
         return null;
-
     }
 
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
     }
 
     @Override

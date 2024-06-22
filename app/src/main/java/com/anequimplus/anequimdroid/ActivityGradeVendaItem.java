@@ -1,5 +1,6 @@
 package com.anequimplus.anequimdroid;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,22 +10,24 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.adapter.GradeVendasItensAdapter;
-import com.anequimplus.ado.Dao;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.entity.GradeVendasItem;
-import com.anequimplus.entity.ItenSelect;
+import com.anequimplus.entity.ItemSelect;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.PedidoItemAcomp;
+import com.anequimplus.listeners.ListenerAcompanhamentoSelect;
 import com.anequimplus.utilitarios.DisplaySet;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ActivityGradeVendaItem extends AppCompatActivity {
@@ -33,8 +36,9 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     private EditText editTextFiltroProduto ;
     private Toolbar toolbar ;
     private GradeVendas gradeVendas ;
-    private List<ItenSelect> itensList ;
+    private List<PedidoItem> itensList ;
     private String pedido ;
+    private final int ACOMPANHAMENTO = 1 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,8 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextFiltroProduto = findViewById(R.id.editTextFiltroProduto );
         gradeProduto = findViewById(R.id.gradeProdutoSelct);
-        gradeVendas =  Dao.getGradeVendasADO(this).getId(getIntent().getIntExtra("GRADE_ID",0)) ;
+        gradeVendas =  DaoDbTabela.getGradeVendasADO(this).getId(getIntent().getIntExtra("GRADE_ID",0)) ;
+        carregarInicial();
     }
 
     @Override
@@ -60,23 +65,21 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home){
             finish();
+            return true ;
         }
         if (item.getItemId() == R.id.action_produto_ok){
             finalizar() ;
+            return true ;
         }
         return true;
     }
 
     private void finalizar(){
-        for (ItenSelect i : itensList){
-            if (i.getQuantidade() > 0){
-                Pedido p = Dao.getPedidoADO(this).getPedido(pedido) ;
-                if (p == null) {
-                    p = new Pedido(0, pedido, new Date(), new ArrayList<PedidoItem>()) ;
-                    Dao.getPedidoADO(this).incluir(p); ;
-                }
-                PedidoItem item = new PedidoItem(0, p.getId(), i) ;
-                Dao.getPedidoItemADO(this).incluir(item);
+        Pedido p = DaoDbTabela.getPedidoADO(this).getPedido(pedido) ;
+        for (PedidoItem it : DaoDbTabela.getItemSelectADO().getList()){
+            if (it.getItemSelect().getQuantidade() > 0){
+                it.setPedido_id(p.getId());
+                DaoDbTabela.getPedidoItemADO(this).incluir(it);
             }
         }
         finish();
@@ -85,7 +88,7 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        carregarInicial();
+
         toolbar.setTitle(gradeVendas.getDescricao());
         editTextFiltroProduto.addTextChangedListener(new TextWatcher() {
             @Override
@@ -107,10 +110,11 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
     }
 
     private void carregarInicial(){
-        itensList = new ArrayList<ItenSelect>() ;
-        for (GradeVendasItem it : Dao.getGradeVendasItemADO(this).getGradeVendasItem(gradeVendas)) {
-            if (it.getStatus() == 1){
-                itensList.add(new ItenSelect(it.getId(), it.getProduto(), 0,it.getProduto().getPreco(),0,0,0, "",1));
+        DaoDbTabela.getItemSelectADO().getList().clear();
+        for (GradeVendasItem it : DaoDbTabela.getGradeVendasItemADO(this).getGradeVendasItem(gradeVendas)) {
+            if ((it.getStatus() == 1) && (it.getProduto().getPreco() > 0)) {
+                ItemSelect its = new ItemSelect(it.getId(), it.getProduto(), 0,it.getProduto().getPreco(),0,0,0, "",1) ;
+                DaoDbTabela.getItemSelectADO().getList().add(new PedidoItem(it.getId(), 0, its, new ArrayList<PedidoItemAcomp>()));
             }
         }
     }
@@ -119,162 +123,54 @@ public class ActivityGradeVendaItem extends AppCompatActivity {
         GridLayoutManager layoutManager=new GridLayoutManager(this, DisplaySet.getNumeroDeColunasGrade(this));
         // at last set adapter to recycler view.
         gradeProduto.setLayoutManager(layoutManager);
-        gradeProduto.setAdapter(new GradeVendasItensAdapter(this, getList()));
+        gradeProduto.setAdapter(new GradeVendasItensAdapter(this, getList(), new ListenerAcompanhamentoSelect() {
+            @Override
+            public void ok(PedidoItem it) {
+
+            }
+
+            @Override
+            public void setAcompanhamento(PedidoItem it) {
+                Bundle params = new Bundle();
+                Intent intent = new Intent(ActivityGradeVendaItem.this, ActivityItemSelect.class);
+                params.putInt("id",it.getId());
+                intent.putExtras(params);
+                startActivityForResult(intent, ACOMPANHAMENTO);
+
+            }
+
+            @Override
+            public void erro(String msg) {
+
+            }
+        }));
     }
 
-    private List<ItenSelect> getList(){
-        List<ItenSelect> l = new ArrayList<ItenSelect>() ;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACOMPANHAMENTO) {
+            if (resultCode == RESULT_OK){
+                display();
+            }
+        }
+    }
+
+
+    private List<PedidoItem> getList(){
+        List<PedidoItem> l = new ArrayList<PedidoItem>() ;
         String filtro = editTextFiltroProduto.getText().toString().toUpperCase() ;
         if (filtro.equals("")) {
-            l = itensList ;
+            l = DaoDbTabela.getItemSelectADO().getList() ;
         } else {
-            for (ItenSelect it : itensList) {
-                if (it.getProduto().getDescricao().toUpperCase().indexOf(filtro) > -1)
+            for (PedidoItem it : DaoDbTabela.getItemSelectADO().getList()) {
+                if (it.getItemSelect().getProduto().getDescricao().toUpperCase().indexOf(filtro) > -1)
                     l.add(it);
             }
         }
         return l ;
     }
-/*
-
-
-    private void setValor(){
-        DecimalFormat frm = new DecimalFormat("R$ #0.00");
-        String tv = gradeVendas.getDescricao()+"  "+frm.format(valorPedidos()) ;
-        toolbar.setSubtitle(tv) ;
-    }
-
-    private double quantidadePedidos(){
-        double v = 0 ;
-        for (ItenSelect it : Dao.getItemSelectADO(this).getList()){
-            v = v + it.getQuantidade() ;
-        }
-        return v ;
-    }
-
-    private double valorPedidos(){
-        double v = 0 ;
-        for (ItenSelect it : Dao.getItemSelectADO(this).getList()){
-//            v = v + it.getQuantidade() * it.getProduto().getPreco();
-        }
-        return v ;
-
-    }
-
-
-    private void alerta(String txt){
-        AlertDialog alert = new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_notifications_black_24dp)
-                .setTitle("Erro:")
-                .setMessage(txt)
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }).show();
-    }
-
-    public class getProdutoAdapter extends BaseAdapter {
-
-        private Context ctx ;
-        private List<Produto> listProduto ;
-        private DecimalFormat frmQ = new DecimalFormat("#0.###");
-
-
-        public getProdutoAdapter(Context ctx, List<Produto> listProduto) {
-            this.ctx = ctx;
-            this.listProduto = listProduto;
-        }
-
-        @Override
-        public int getCount() {
-            return listProduto.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return listProduto.get(i);
-        }
-
-
-        @Override
-        public long getItemId(int i) {
-            return listProduto.get(i).getId() ;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
-            final View  row  = inflater.inflate(R.layout.layout_grade_grade_venda_item, null) ;
-            final Produto prod = listProduto.get(i) ;
-            final ItenSelect pit = getItemSelect(prod);
-            setValores(row, pit, prod);
-
-            ImageButton bmais = row.findViewById(R.id.ib_maisS);
-            bmais.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    pit.setQuantidade(pit.getQuantidade()+1);
-                    pit.setValor(pit.getQuantidade() * pit.getPreco());
-                    setValores(row, pit, prod) ;
-                }
-            });
-
-            ImageButton ib_menos = row.findViewById(R.id.ib_menosS);
-            ib_menos.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (pit.getQuantidade() > 0){
-                        pit.setQuantidade(pit.getQuantidade() - 1);
-                        pit.setValor(pit.getQuantidade() * pit.getPreco());
-                    }
-                    setValores(row, pit, prod) ;
-                }
-            });
-
-            return row;
-        }
-
-        private void setValores(View row, ItenSelect pit, Produto prd){
-            DecimalFormat frm = new DecimalFormat("R$ #0.00");
-            DecimalFormat qrm = new DecimalFormat("#0.###");
-            LinearLayout grade = row.findViewById(R.id.grade_produto_layout);
-
-            TextView descricao = row.findViewById(R.id.textViewPedidoItemS);
-            TextView q = row.findViewById(R.id.textQPrPedidoItemS);
-            TextView obs  = row.findViewById(R.id.textViewPedidoItemOBS);
-            descricao.setText(prd.getDescricao()+" ( "+frm.format(prd.getPreco())+" )");
-            if (pit.getObs().equals("")) {
-                obs.setVisibility(View.GONE);
-            } else {
-                obs.setVisibility(View.VISIBLE);
-                obs.setText(pit.getObs());
-            }
-
-            q.setText(qrm.format(pit.getQuantidade()));
-            setValor() ;
-
-        }
-
-        private ItenSelect getItemSelect(Produto prd){
-            ItenSelect it = null ;
-
-            for (ItenSelect pp : Dao.getItemSelectADO(ctx).getList()){
-                if (pp.getProduto().getId() == prd.getId())
-                    it = pp ;
-            }
-            if (it == null) {
-                it = new ItenSelect(Dao.getItemSelectADO(ctx).getList().size() ,prd,0,prd.getPreco(),0,0,"") ;
-                Dao.getItemSelectADO(ctx).getList().add(it) ;
-            }
-            return it ;
-        }
-
-    }
-
-*/
 
 
     @Override

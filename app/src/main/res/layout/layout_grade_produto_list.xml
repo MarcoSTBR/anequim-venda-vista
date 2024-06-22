@@ -16,11 +16,11 @@
             android:id="@+id/imageViewProdutoList"
             android:layout_width="90dp"
             android:layout_height="90dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
             android:background="@drawable/botao_customizado"
-            app:srcCompat="@mipmap/ic_produto_foreground" />
+            app:srcCompat="@drawable/produto_padrao" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,10 +34,10 @@
                 android:id="@+id/textProdutoCodigo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
-                android:textSize="10dp"
-                android:text="TextView" />
+                android:layout_marginTop="10dp"
+                android:text="TextView"
+                android:textSize="10dp" />
 
             <TextView
                 android:id="@+id/textProdutoDescricao"
@@ -55,8 +55,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:textAlignment="textStart"
-                android:textSize="20sp"
+                android:textSize="10sp"
                 tools:text="R$ 1.000,00" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                >
+                <ImageButton
+                    android:id="@+id/ib_prdmenos"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/botao_customizado"
+                    app:srcCompat="@drawable/ic_baseline_remove_24" />
+
+                <TextView
+                    android:id="@+id/qPrdPedidoItemS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/ib_prdmais"
+                    android:layout_toEndOf="@id/ib_prdmenos"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    tools:text="999910" />
+
+                <ImageButton
+                    android:id="@+id/ib_prdmais"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/botao_customizado"
+                    app:srcCompat="@android:drawable/ic_input_add" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/acomp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="8dp"
+                android:textAlignment="textStart"
+                android:text="TextView" />
         </LinearLayout>
+
     </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

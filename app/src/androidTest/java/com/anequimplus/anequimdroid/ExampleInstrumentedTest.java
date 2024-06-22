@@ -1,14 +1,16 @@
 package com.anequimplus.anequimdroid;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.anequimplus.utilitarios.ConfiguracaoCloudNFceNFCe;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -24,4 +26,15 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.anequim.anequimdroid", appContext.getPackageName());
     }
+
+    @Test
+    public void testeNumeroNFce(){
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+
+        assertEquals(ConfiguracaoCloudNFceNFCe.getLinkCloudNFce(appContext), 3);
+
+    }
+
+
 }

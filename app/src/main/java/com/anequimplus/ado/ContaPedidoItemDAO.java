@@ -6,8 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Produto;
 
 import java.text.ParseException;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ContaPedidoItemDAO {
+public class ContaPedidoItemDAO extends TableDao{
 
     private Context ctx ;
     private SQLiteDatabase db = null ;
@@ -25,21 +28,32 @@ public class ContaPedidoItemDAO {
     public ContaPedidoItemDAO(android.content.Context ctx){
         this.ctx = ctx ;
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
+
+        verificaStrutura() ;
     }
 
-    public List<ContaPedidoItem> listItens(int id_conta){
+    private void verificaStrutura() {
+        try {
+            db.execSQL("ALTER TABLE PEDIDO_ITEM_I ADD COLUMN USUARIO_ID INTEGER ");
+        } catch (Exception e) {
+            Log.i("exception", e.getMessage()) ;
+        }
+    }
+
+    public List<ContaPedidoItem> geList(FilterTables filters, String order) {
         List<ContaPedidoItem> l = new ArrayList<ContaPedidoItem>();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = null ;
         Cursor res =  db.rawQuery( "SELECT ID, UUID, DATA, PEDIDO_ID, " +
                 " PRODUTO_ID, QUANTIDADE, PRECO, DESCONTO, COMISSAO, VALOR, " +
-                " STATUS, OBS FROM PEDIDO_ITEM_I WHERE  PEDIDO_ID = ? ", new String[]{String.valueOf(id_conta)});
+                " STATUS, OBS, USUARIO_ID FROM PEDIDO_ITEM_I "+getWhere(filters, order),null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
             try {
                 dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
-                Produto p = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
+                Produto p = DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
                 ContaPedidoItem it = new ContaPedidoItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        dt,
                         res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
                         res.getString(res.getColumnIndexOrThrow("UUID")),
                         p,
@@ -49,7 +63,48 @@ public class ContaPedidoItemDAO {
                         res.getDouble(res.getColumnIndexOrThrow("COMISSAO")),
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")),
                         res.getString(res.getColumnIndexOrThrow("OBS")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS"))
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        res.getInt(res.getColumnIndexOrThrow("USUARIO_ID"))
+
+                );
+                l.add(it) ;
+                Log.i("listContasItens", it.toString()) ;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            res.moveToNext();
+        }
+        return l ;
+    }
+
+
+    public List<ContaPedidoItem> listItens(int id_conta){
+        List<ContaPedidoItem> l = new ArrayList<ContaPedidoItem>();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = null ;
+        Cursor res =  db.rawQuery( "SELECT ID, UUID, DATA, PEDIDO_ID, " +
+                " PRODUTO_ID, QUANTIDADE, PRECO, DESCONTO, COMISSAO, VALOR, " +
+                " STATUS, OBS, USUARIO_ID FROM PEDIDO_ITEM_I WHERE  PEDIDO_ID = ? ", new String[]{String.valueOf(id_conta)});
+        res.moveToFirst();
+        while(res.isAfterLast() == false){
+            try {
+                dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
+                Produto p = DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
+                ContaPedidoItem it = new ContaPedidoItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        dt,
+                        res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
+                        res.getString(res.getColumnIndexOrThrow("UUID")),
+                        p,
+                        res.getDouble(res.getColumnIndexOrThrow("QUANTIDADE")),
+                        res.getDouble(res.getColumnIndexOrThrow("PRECO")),
+                        res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
+                        res.getDouble(res.getColumnIndexOrThrow("COMISSAO")),
+                        res.getDouble(res.getColumnIndexOrThrow("VALOR")),
+                        res.getString(res.getColumnIndexOrThrow("OBS")),
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        res.getInt(res.getColumnIndexOrThrow("USUARIO_ID"))
+
                 );
                 l.add(it) ;
                 Log.i("listContasItens", it.toString()) ;
@@ -68,13 +123,14 @@ public class ContaPedidoItemDAO {
         Date dt = null ;
         Cursor res =  db.rawQuery( "SELECT ID, UUID, DATA, PEDIDO_ID, " +
                 " PRODUTO_ID, QUANTIDADE, PRECO, DESCONTO, COMISSAO, VALOR, " +
-                " STATUS, OBS FROM PEDIDO_ITEM_I WHERE  ID = ? ", new String[]{String.valueOf(id)});
+                " STATUS, OBS, USUARIO_ID FROM PEDIDO_ITEM_I WHERE  ID = ? ", new String[]{String.valueOf(id)});
         res.moveToFirst();
         while(res.isAfterLast() == false){
             try {
                 dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
-                Produto p = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
+                Produto p = DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
                 it = new ContaPedidoItem(res.getInt(res.getColumnIndexOrThrow("ID")),
+                        dt,
                         res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
                         res.getString(res.getColumnIndexOrThrow("UUID")),
                         p,
@@ -84,7 +140,9 @@ public class ContaPedidoItemDAO {
                         res.getDouble(res.getColumnIndexOrThrow("COMISSAO")),
                         res.getDouble(res.getColumnIndexOrThrow("VALOR")),
                         res.getString(res.getColumnIndexOrThrow("OBS")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS"))
+                        res.getInt(res.getColumnIndexOrThrow("STATUS")),
+                        res.getInt(res.getColumnIndexOrThrow("USUARIO_ID"))
+
                 );
                 Log.i("listContasItens", it.getProduto().getDescricao()) ;
 
@@ -94,46 +152,6 @@ public class ContaPedidoItemDAO {
             res.moveToNext();
         }
         return it ;
-    }
-
-
-    public List<ContaPedidoItem> listItensGroup(ContaPedido cp){
-        List<ContaPedidoItem> l = new ArrayList<ContaPedidoItem>();
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dt = null ;
-        Cursor res =  db.rawQuery( "SELECT MAX(ID) ID, MAX(UUID) UUID, MAX(DATA) DATA, PEDIDO_ID, " +
-                " PRODUTO_ID, SUM(QUANTIDADE) QUANTIDADE, PRECO, SUM(DESCONTO) DESCONTO, " +
-                "SUM(COMISSAO) COMISSAO, SUM(VALOR) VALOR, " +
-                " STATUS, OBS " +
-                " FROM PEDIDO_ITEM_I WHERE  PEDIDO_ID = ? " +
-                " GROUP BY PRODUTO_ID, PRECO, STATUS, OBS ", new String[]{String.valueOf(cp.getId())});
-        res.moveToFirst();
-        while(res.isAfterLast() == false){
-            try {
-                dt = (Date) df.parse(res.getString(res.getColumnIndexOrThrow("DATA")));
-                Produto p = Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
-                ContaPedidoItem it = new ContaPedidoItem(res.getInt(res.getColumnIndexOrThrow("ID")),
-                        res.getInt(res.getColumnIndexOrThrow("PEDIDO_ID")),
-                        res.getString(res.getColumnIndexOrThrow("UUID")),
-                        p,
-                        res.getDouble(res.getColumnIndexOrThrow("QUANTIDADE")),
-                        res.getDouble(res.getColumnIndexOrThrow("PRECO")),
-                        res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        res.getDouble(res.getColumnIndexOrThrow("COMISSAO")),
-                        res.getDouble(res.getColumnIndexOrThrow("VALOR")),
-                        res.getString(res.getColumnIndexOrThrow("OBS")),
-                        res.getInt(res.getColumnIndexOrThrow("STATUS"))
-                );
-                l.add(it) ;
-                Log.i("listContasItens", it.toString()) ;
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            res.moveToNext();
-        }
-        return l ;
     }
 
 
@@ -147,9 +165,11 @@ public class ContaPedidoItemDAO {
         contentValues.put("QUANTIDADE", p.getQuantidade());
         contentValues.put("PRECO", p.getPreco());
         contentValues.put("DESCONTO", p.getDesconto());
+        contentValues.put("COMISSAO", p.getComissao());
         contentValues.put("VALOR", p.getValor());
         contentValues.put("OBS", p.getObs());
         contentValues.put("STATUS", p.getStatus());
+        contentValues.put("USUARIO_ID", p.getUsuario_id());
         Log.i("contapedidoitem", p.getProduto().getDescricao());
         p.setId((int)db.insert(DB_TABLE, null, contentValues)) ;
     }
@@ -158,15 +178,17 @@ public class ContaPedidoItemDAO {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ContentValues contentValues = new ContentValues();
         contentValues.put("UUID", p.getUUID());
-        contentValues.put("DATA", df.format(new Date()));
-        contentValues.put("PEDIDO_ID", p.getId());
+        contentValues.put("DATA", df.format(p.getData()));
+        contentValues.put("PEDIDO_ID", p.getContaPedido_id());
         contentValues.put("PRODUTO_ID", p.getProduto().getId());
         contentValues.put("QUANTIDADE", p.getQuantidade());
         contentValues.put("PRECO", p.getPreco());
         contentValues.put("DESCONTO", p.getDesconto());
+        contentValues.put("COMISSAO", p.getComissao());
         contentValues.put("VALOR", p.getValor());
         contentValues.put("OBS", p.getObs());
         contentValues.put("STATUS", p.getStatus());
+        contentValues.put("USUARIO_ID", p.getUsuario_id());
         db.update(DB_TABLE, contentValues, "ID = ?", new String[]{String.valueOf(p.getId())});
 
     }
@@ -176,11 +198,11 @@ public class ContaPedidoItemDAO {
     }
 
     public void excluir(){
-        db.delete(DB_TABLE, null, null) ;
+        db.delete(DB_TABLE, "ID >= ?", new String[]{"0"}) ;
     }
 
 
-    public void cancelar(int id) {
+    public void cancelar(int id, Double q) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("STATUS", 0);
         db.update(DB_TABLE, contentValues, "ID = ?", new String[]{String.valueOf(id)});
@@ -197,4 +219,6 @@ public class ContaPedidoItemDAO {
         db.update(DB_TABLE, contentValues, "ID = ?", new String[]{String.valueOf(item.getId())});
 
     }
+
+
 }

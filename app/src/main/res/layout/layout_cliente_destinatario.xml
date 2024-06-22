@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/fundo_pedido_aberto"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/cpf_cnpj_dest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CPF/CNPJ"
+        android:gravity="center"
+        android:inputType="number"
+        />
+    <EditText
+        android:id="@+id/nome_dest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nome"
+        android:gravity="center"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/cancelar_dest"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:text="Voltar"
+            android:background="@drawable/botao_inicial_customizado"
+            />
+        <Button
+            android:id="@+id/ok_dest"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentEnd="true"
+            android:text="Continuar"
+            android:background="@drawable/botao_inicial_customizado"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -5,47 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ActivityProdutoList">
-    <RelativeLayout
-        android:background="@drawable/botao_customizado"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/textNomeImpressora"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
         android:layout_height="wrap_content"
-        android:text="NOME IMPRESSORA" />
+        android:orientation="vertical"
+        android:background="@drawable/botao_customizado">
+        <RelativeLayout
+            android:background="@drawable/botao_customizado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textNumeroColunas"
+            android:id="@+id/textNomeImpressora"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:text="Número de Colunas" />
-
-        <TextView
-            android:id="@+id/textTipoImpressora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textNomeImpressora"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:text="Tipo de Impressora" />
-
-        <TextView
-            android:id="@+id/textStatusImpressora"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textNumeroColunas"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="5dp"
-            android:text="Status Impressora" />
-    </RelativeLayout>
+            android:text="NOME IMPRESSORA" />
+
+            <TextView
+                android:id="@+id/textNumeroColunas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:text="Número de Colunas" />
+
+            <TextView
+                android:id="@+id/textTipoImpressora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textNomeImpressora"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:text="Tipo de Impressora" />
+
+            <TextView
+                android:id="@+id/textStatusImpressora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textNumeroColunas"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="5dp"
+                android:text="Status Impressora" />
+
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/endereco_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Endereço IP">
+        </EditText>
+        <EditText
+            android:id="@+id/porta_impressora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Porta">
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/gravar_configuracao_imp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_save"
+            android:background="@drawable/botao_customizado"
+            >
+
+        </ImageButton>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

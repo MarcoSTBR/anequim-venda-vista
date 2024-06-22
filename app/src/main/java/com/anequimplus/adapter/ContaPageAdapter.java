@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.anequimplus.anequimdroid.fragment_conta_list.Fragment_conta_aberta;
 import com.anequimplus.anequimdroid.fragment_conta_list.Fragment_conta_fechada;
+import com.anequimplus.anequimdroid.fragment_conta_list.Fragment_pedidos;
 
 public class ContaPageAdapter extends FragmentPagerAdapter {
     private String[] list ;
@@ -22,8 +23,9 @@ public class ContaPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Log.i("position", "position "+position);
         switch (position) {
-            case 0: return new Fragment_conta_aberta() ;
-            case 1 : return new Fragment_conta_fechada() ;
+            case 0: return new Fragment_pedidos() ;
+            case 1: return new Fragment_conta_aberta() ;
+            case 2 : return new Fragment_conta_fechada() ;
             default: return new Fragment_conta_aberta() ;
         }
     }

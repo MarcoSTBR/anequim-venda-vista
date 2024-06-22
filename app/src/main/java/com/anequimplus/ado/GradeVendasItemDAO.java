@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.GradeVendas;
 import com.anequimplus.entity.GradeVendasItem;
@@ -26,12 +28,14 @@ public class GradeVendasItemDAO {
         db = DBHelper.getDB(ctx).getWritableDatabase() ;
     }
 
+/*
    public void setGradeVendasItem(JSONArray jarr) throws JSONException {
        List<GradeVendasItem> ll = getGradeVendasItem() ;
        GradeVendasItem gi = null ;
        GradeVendasItem resp = null ;
        for (int i = 0 ; i < jarr.length() ; i++) {
            gi = new GradeVendasItem(jarr.getJSONObject(i)) ;
+
            resp = getGradeItemNaList(ll, gi.getId()) ;
            if (resp == null) {
                inserir(gi);
@@ -40,6 +44,25 @@ public class GradeVendasItemDAO {
            }
        }
    }
+*/
+
+    public void setGradeVendasItem(JSONArray jarr) throws JSONException {
+      //  List<GradeVendasItem> ll = getGradeVendasItem() ;
+      //  GradeVendasItem gi = null ;
+      //GradeVendasItem resp = null ;
+        for (int i = 0 ; i < jarr.length() ; i++) {
+            GradeVendasItem gi = new GradeVendasItem(jarr.getJSONObject(i)) ;
+            inserir(gi);
+/*
+            resp = getGradeItemNaList(ll, gi.getId()) ;
+            if (resp == null) {
+               inserir(gi);
+            } else {
+                alterar(gi);
+            }
+             */
+         }
+    }
 
    private GradeVendasItem getGradeItemNaList(List<GradeVendasItem>  l, int i){
         GradeVendasItem resp = null ;
@@ -60,7 +83,7 @@ public class GradeVendasItemDAO {
                     res.getInt(res.getColumnIndexOrThrow("GRADE_VENDAS_ID")),
                     res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")),
                     res.getInt(res.getColumnIndexOrThrow("STATUS")),
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))))
+                    DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))))
             );
             res.moveToNext();
         }
@@ -73,12 +96,12 @@ public class GradeVendasItemDAO {
                         "FROM GRADE_VENDAS_ITEM ORDER BY GRADE_VENDAS_ID  ",null);
         res.moveToFirst();
         while(res.isAfterLast() == false){
+            Produto p = DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))) ;
             list.add(new GradeVendasItem(res.getInt(res.getColumnIndexOrThrow("ID")),
                     res.getInt(res.getColumnIndexOrThrow("GRADE_VENDAS_ID")),
                     res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")),
                     res.getInt(res.getColumnIndexOrThrow("STATUS")),
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID"))))
-            );
+                    p));
             res.moveToNext();
         }
         return list ;
@@ -92,7 +115,7 @@ public class GradeVendasItemDAO {
         res.moveToFirst();
         while(res.isAfterLast() == false){
             list.add(
-                    Dao.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")))
+                    DaoDbTabela.getProdutoADO(ctx).getProdutoId(res.getInt(res.getColumnIndexOrThrow("PRODUTO_ID")))
             );
             res.moveToNext();
         }
@@ -120,5 +143,10 @@ public class GradeVendasItemDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put("STATUS", 0);
         db.update("GRADE_VENDAS_ITEM", contentValues, "ID = ?", new String[] {String.valueOf(item.getId())});
+    }
+
+    public void excluir(){
+        db.delete("GRADE_VENDAS_ITEM", "ID > ?", new String[]{"0"}) ;
+       // db.delete("GRADE_VENDAS_ITEM", null, null) ;
     }
 }

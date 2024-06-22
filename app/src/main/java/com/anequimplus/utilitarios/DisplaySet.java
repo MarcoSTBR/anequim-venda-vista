@@ -33,11 +33,15 @@ public class DisplaySet {
         Log.i("getNumeroDeColunasGrade", " y "+ size.y) ;
 
         int colunas = 1 ;
-        int divisor = 1080 ;
+        int divisor = 1000 ;
+
         colunas = Math.abs(size.x / divisor) ;
         Log.i("getNumeroDeColunasGrade", " "+ size.x+"/"+divisor+" = "+ colunas) ;
 
+        colunas = v ;
+
         if (colunas < 1) colunas = 1 ;
+
 
         Log.i("getNumeroDeColunasGrade", "  colunas "+  colunas) ;
 

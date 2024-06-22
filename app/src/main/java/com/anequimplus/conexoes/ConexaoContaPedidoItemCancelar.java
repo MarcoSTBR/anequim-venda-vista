@@ -3,78 +3,67 @@ package com.anequimplus.conexoes;
 import android.content.Context;
 import android.util.Log;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.ContaPedidoItemCancelamento;
-import com.anequimplus.tipos.Link;
-import com.anequimplus.utilitarios.Configuracao;
-import com.anequimplus.utilitarios.UtilSet;
+import com.anequimplus.entity.FilterTables;
+import com.anequimplus.listeners.ListenerItemCancelamento;
+import com.anequimplus.tipos.TipoConexao;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class ConexaoContaPedidoItemCancelar extends ConexaoServer {
+public class ConexaoContaPedidoItemCancelar  {
 
+    private Context ctx ;
     private ContaPedidoItemCancelamento contaPedidoItemCancelamento ;
+    private FilterTables filters ;
+    private String order ;
+    private ListenerItemCancelamento listenerItemCancelamento ;
+    private TipoConexao tipoConexao ;
 
-    public ConexaoContaPedidoItemCancelar(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento) {
-        super(ctx);
+    public ConexaoContaPedidoItemCancelar(Context ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) {
+        this.ctx = ctx ;
+        this.filters = filters ;
+        this.order = order ;
+        this.listenerItemCancelamento = listenerItemCancelamento ;
+        tipoConexao = TipoConexao.cxConsultar ;
+
+    }
+
+    public ConexaoContaPedidoItemCancelar(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ListenerItemCancelamento listenerItemCancelamento ) throws MalformedURLException, JSONException {
+        this.ctx = ctx ;
         this.contaPedidoItemCancelamento = contaPedidoItemCancelamento ;
-        msg = "Cancelando Item...";
-//        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        try {
-            Log.i("jsoncancelar", contaPedidoItemCancelamento.getJSON().toString()) ;
-            maps.put("class","AfoodContaPedidoCancel") ;
-            maps.put("method","cancelar") ;
-            maps.put("MAC", UtilSet.getMAC(ctx)) ;
-            maps.put("cancelamento", contaPedidoItemCancelamento.getJSON().toString()) ;
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fCancelarPedidoItem).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            erro(0, e.getMessage()) ;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            erro(0, e.getMessage()) ;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            erro(0, e.getMessage()) ;
-        }
+        this.listenerItemCancelamento = listenerItemCancelamento ;
+        tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public void execute(){
-        if (Configuracao.getPedidoCompartilhado(ctx)) {
-            this.execute() ;
-        } else {
-            Dao.getContaPedidoItemCancelamentoDAO(ctx).incluir(contaPedidoItemCancelamento);
-            Log.i("execute", contaPedidoItemCancelamento.toString());
-            Dao.getContaPedidoItemInternoDAO(ctx).cancelar(contaPedidoItemCancelamento.getContaPedidoItem().getId());
-            Ok();
-        }
 
-    }
-
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        Log.i("cancelamento", codInt +" "+ s) ;
-        try {
-            JSONObject j = new JSONObject(s) ;
-            if (j.getString("status").equals("success")) {
-               // Caixa caixa = new Caixa(j.getJSONObject("data")) ;
-               //  Dao.getCaixaADO(ctx).caixa_recebido(caixa.getId(), caixa.getGerezim_id());
-                Ok() ;
-            } else {
-                erro(codInt, j.getString("data"));
+    public void executar(){
+        switch (tipoConexao) {
+            case cxConsultar: listenerItemCancelamento.ok(DaoDbTabela.getContaPedidoItemCancelamentoDAO(ctx).getList(filters, order));
+            break;
+            case cxIncluir: {
+                DaoDbTabela.getContaPedidoItemCancelamentoDAO(ctx).incluir(contaPedidoItemCancelamento);
+                Log.i("execute", contaPedidoItemCancelamento.toString());
+                ContaPedidoItem contaItem = DaoDbTabela.getContaPedidoItemInternoDAO(ctx).get(contaPedidoItemCancelamento.getContaPedidoItem_id());
+                if (contaItem.getQuantidade() == contaPedidoItemCancelamento.getQuantidade()) {
+                    contaItem.setStatus(0);
+                } else {
+                    Double quantRestante = contaItem.getQuantidade() - contaPedidoItemCancelamento.getQuantidade();
+                    contaItem.setQuantidade(quantRestante);
+                    contaItem.setValor(quantRestante * contaItem.getPreco());
+                    contaItem.setComissao(contaItem.getProduto().getComissao() / 100 * contaItem.getValor());
+                }
+                DaoDbTabela.getContaPedidoItemInternoDAO(ctx).alterar(contaItem);
+                List<ContaPedidoItemCancelamento> j = new ArrayList<ContaPedidoItemCancelamento>();
+                j.add(contaPedidoItemCancelamento);
+                listenerItemCancelamento.ok(j);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            erro(codInt, s) ;
-            //  Toast.makeText(ctx, "JSON "+e.getMessage(), Toast.LENGTH_LONG).show();
+            break;
         }
-
     }
-    public abstract void Ok() ;
-    public abstract void erro(int cod, String msg) ;
 }

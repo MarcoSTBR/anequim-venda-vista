@@ -1,48 +1,104 @@
 package com.anequimplus.entity;
 
+import com.anequimplus.utilitarios.UtilSet;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Transferencia {
+public class Transferencia extends Entidade{
 
     private int id ;
     private String uuid ;
     private Date data ;
     private int usuario_id ;
-    private ContaPedido contaPedido_origem ;
-    private ContaPedido contaPedido_destino ;
-    private ContaPedidoItem contaPedidoItem ;
+    private int contaPedido_origem_id ;
+    private int contaPedido_destino_id ;
+    private int contaPedidoItem_id ;
     private double quantidade ;
     private int status ;
+    private int conf_terminal_id ;
 
-    public Transferencia(int id, String uuid, Date data, ContaPedido contaPedido_origem, ContaPedido contaPedido_destino, ContaPedidoItem contaPedidoItem, double quantidade, int status, int usuario) {
+
+    public Transferencia(int id, String uuid, Date data, int contaPedido_origem_id, int contaPedido_destino_id, int contaPedidoItem_id, double quantidade, int status, int usuario, int caixa_id, int conf_terminal_id) {
         this.id = id;
         this.uuid = uuid ;
         this.data = data;
-        this.contaPedido_origem = contaPedido_origem;
-        this.contaPedido_destino = contaPedido_destino;
-        this.contaPedidoItem = contaPedidoItem;
+        this.contaPedido_origem_id = contaPedido_origem_id;
+        this.contaPedido_destino_id = contaPedido_destino_id;
+        this.contaPedidoItem_id = contaPedidoItem_id;
         this.quantidade = quantidade;
         this.status = status;
         this.usuario_id = usuario ;
+        this.conf_terminal_id = conf_terminal_id ;
     }
 
+    public Transferencia(JSONObject j) throws JSONException {
+        if (j.isNull("id"))
+            this.id = j.getInt("ID") ;
+          else this.id = j.getInt("id") ;
+        this.uuid = j.getString("UUID") ;
+        this.data = UtilSet.getData(j.getString("DATA"));
+        this.contaPedido_origem_id =  j.getInt("CONTA_PED_ORIGEM_ID") ;
+        this.contaPedido_destino_id = j.getInt("CONTA_PED_DESTINO_ID") ;
+        this.contaPedidoItem_id = j.getInt("CONTA_PED_ITEM_ID") ;
+        this.quantidade = j.getDouble("QUANTIDADE");
+        this.status =  j.getInt("STATUS");
+        if (j.isNull("USUARIO_ID"))
+           this.usuario_id = j.getInt("SYSTEM_USER_ID") ;
+         else this.usuario_id = j.getInt("USUARIO_ID") ;
+        this.conf_terminal_id = j.getInt("CONF_TERMINAL_ID") ;
 
-    public JSONObject getJSON() throws JSONException {
-        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    }
+
+    @Override
+    public JSONObject geJSON() throws JSONException {
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JSONObject j = new JSONObject();
+        j.put("ID", id) ;
+        j.put("UUID", uuid) ;
+        j.put("CONTA_PED_ITEM_ID", contaPedidoItem_id) ;
+        j.put("CONTA_PED_ORIGEM_ID", contaPedido_origem_id) ;
+        j.put("CONTA_PED_DESTINO_ID", contaPedido_destino_id) ;
+        j.put("DATA", fdate.format(data)) ;
+        j.put("USUARIO_ID", usuario_id) ;
+        j.put("QUANTIDADE", quantidade) ;
+        j.put("STATUS", status) ;
+        //j.put("CONF_TERMINAL_ID", conf_terminal_id) ;
+        return j ;
+    }
+
+    public JSONObject getExportacaoJSON() throws JSONException {
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject j = new JSONObject();
         j.put("UUID", uuid) ;
-        j.put("CONTA_PEDIDO_ITEM_ID", contaPedidoItem.getId()) ;
-        j.put("CONTA_PEDIDO_ITEM_UUID", contaPedidoItem.getUUID()) ;
-        j.put("CONTA_PEDIDO_ORIGEM_ID", contaPedido_origem.getId()) ;
-        j.put("CONTA_PEDIDO_DESTINO_ID", contaPedido_destino.getId()) ;
+        j.put("CONTA_PED_ITEM_ID", contaPedidoItem_id) ;
+        j.put("CONTA_PED_ORIGEM_ID", contaPedido_origem_id) ;
+        j.put("CONTA_PED_DESTINO_ID", contaPedido_destino_id) ;
         j.put("DATA", fdate.format(data)) ;
         j.put("SYSTEM_USER_ID", usuario_id) ;
         j.put("QUANTIDADE", quantidade) ;
         j.put("STATUS", status) ;
+        j.put("CONF_TERMINAL_ID", conf_terminal_id) ;
+        return j ;
+    }
+
+    public JSONObject getEXPJSON() throws JSONException {
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JSONObject j = new JSONObject();
+        j.put("UUID", uuid) ;
+/*
+        j.put("CONTA_PED_ITEM_ID", contaPedidoItem_id) ;
+        j.put("CONTA_PED_ORIGEM_ID", contaPedido_origem_id) ;
+        j.put("CONTA_PED_DESTINO_ID", contaPedido_destino_id) ;
+*/
+        j.put("DATA", fdate.format(data)) ;
+        j.put("SYSTEM_USER_ID", usuario_id) ;
+        j.put("QUANTIDADE", quantidade) ;
+        j.put("STATUS", status) ;
+        j.put("CONF_TERMINAL_ID", conf_terminal_id) ;
         return j ;
     }
 
@@ -70,28 +126,36 @@ public class Transferencia {
         this.data = data;
     }
 
-    public ContaPedido getContaPedido_origem() {
-        return contaPedido_origem;
+    public int getUsuario_id() {
+        return usuario_id;
     }
 
-    public void setContaPedido_origem(ContaPedido contaPedido_origem) {
-        this.contaPedido_origem = contaPedido_origem;
+    public void setUsuario_id(int usuario_id) {
+        this.usuario_id = usuario_id;
     }
 
-    public ContaPedido getContaPedido_destino() {
-        return contaPedido_destino;
+    public int getContaPedido_origem_id() {
+        return contaPedido_origem_id;
     }
 
-    public void setContaPedido_destino(ContaPedido contaPedido_destino) {
-        this.contaPedido_destino = contaPedido_destino;
+    public void setContaPedido_origem_id(int contaPedido_origem_id) {
+        this.contaPedido_origem_id = contaPedido_origem_id;
     }
 
-    public ContaPedidoItem getContaPedidoItem() {
-        return contaPedidoItem;
+    public int getContaPedido_destino_id() {
+        return contaPedido_destino_id;
     }
 
-    public void setContaPedidoItem(ContaPedidoItem contaPedidoItem) {
-        this.contaPedidoItem = contaPedidoItem;
+    public void setContaPedido_destino_id(int contaPedido_destino_id) {
+        this.contaPedido_destino_id = contaPedido_destino_id;
+    }
+
+    public int getContaPedidoItem_id() {
+        return contaPedidoItem_id;
+    }
+
+    public void setContaPedidoItem_id(int contaPedidoItem_id) {
+        this.contaPedidoItem_id = contaPedidoItem_id;
     }
 
     public double getQuantidade() {
@@ -110,11 +174,13 @@ public class Transferencia {
         this.status = status;
     }
 
-    public int getUsuario_id() {
-        return usuario_id;
+    public int getConf_terminal_id() {
+        return conf_terminal_id;
     }
 
-    public void setUsuario_id(int usuario_id) {
-        this.usuario_id = usuario_id;
+    public void setConf_terminal_id(int conf_terminal_id) {
+        this.conf_terminal_id = conf_terminal_id;
     }
+
+
 }

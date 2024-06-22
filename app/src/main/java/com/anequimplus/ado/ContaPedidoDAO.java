@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.anequimplus.DaoClass.DBHelper;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.ContaPedidoPagamento;
@@ -13,6 +15,7 @@ import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.entity.Pedido;
 import com.anequimplus.entity.PedidoItem;
+import com.anequimplus.entity.PedidoItemAcomp;
 import com.anequimplus.entity.Produto;
 import com.anequimplus.utilitarios.UtilSet;
 
@@ -45,12 +48,20 @@ public class ContaPedidoDAO {
             cp = new ContaPedido(UtilSet.getUUID(), p.getPedido(), p.getData(), UtilSet.getUsuarioId(ctx));
             cp = store(cp) ;
             for (PedidoItem it : p.getListPedidoItem()) {
-                Produto prd = it.getItenSelect().getProduto() ;
-                double comissao = prd.getComissao() / 100 * it.getItenSelect().getValor() ;
-                ContaPedidoItem cpi = new ContaPedidoItem(0, cp.getId(), UtilSet.getUUID(), prd, it.getItenSelect().getQuantidade(),
-                        it.getItenSelect().getPreco(), it.getItenSelect().getDesconto(), comissao,
-                        it.getItenSelect().getValor(), it.getItenSelect().getObs(), 1) ;
-                Dao.getContaPedidoItemInternoDAO(ctx).inserir(cp, cpi);
+                Produto prd = it.getItemSelect().getProduto() ;
+                double comissao = prd.getComissao() / 100 * it.getItemSelect().getValor() ;
+                ContaPedidoItem cpi = new ContaPedidoItem(0, new Date(), cp.getId(), UtilSet.getUUID(), prd, it.getItemSelect().getQuantidade(),
+                        it.getItemSelect().getPreco(), it.getItemSelect().getDesconto(), comissao,
+                        it.getItemSelect().getValor(), it.getItemSelect().getObs(), 1, UtilSet.getUsuarioId(ctx)) ;
+                DaoDbTabela.getContaPedidoItemInternoDAO(ctx).inserir(cp, cpi);
+                for (PedidoItemAcomp ac : it.getAcompanhamentos()){
+                    Produto pra = ac.getItemSelect().getProduto() ;
+                    double comissaoa = pra.getComissao() / 100 * ac.getItemSelect().getValor() ;
+                    ContaPedidoItem ita = new ContaPedidoItem(0, new Date(), cp.getId(), UtilSet.getUUID(), pra, ac.getItemSelect().getQuantidade(),
+                            ac.getItemSelect().getPreco(), ac.getItemSelect().getDesconto(), comissaoa,
+                            ac.getItemSelect().getValor(), ac.getItemSelect().getObs(), 1, UtilSet.getUsuarioId(ctx)) ;
+                     DaoDbTabela.getContaPedidoItemInternoDAO(ctx).inserir(cp, ita);
+                }
             }
         }
     }
@@ -83,8 +94,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -129,6 +140,7 @@ public class ContaPedidoDAO {
                 " FROM PEDIDO_I "+
                 select +
                 ord , null);
+
         res.moveToFirst();
         while(res.isAfterLast() == false){
             try {
@@ -139,8 +151,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -174,8 +186,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -208,8 +220,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -243,8 +255,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -278,8 +290,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -312,8 +324,8 @@ public class ContaPedidoDAO {
                         res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                         dt,
                         res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                        Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                        Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                        DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                        DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                         res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -346,8 +358,8 @@ public class ContaPedidoDAO {
                     res.getString(res.getColumnIndexOrThrow("PEDIDO")),
                     dt,
                     res.getDouble(res.getColumnIndexOrThrow("DESCONTO")),
-                    Dao.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
-                    Dao.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
+                    DaoDbTabela.getContaPedidoItemInternoDAO(ctx).listItens(res.getInt(res.getColumnIndexOrThrow("ID"))) ,
+                    DaoDbTabela.getContaPedidoPagamentoADO(ctx).getPagamentos(res.getInt(res.getColumnIndexOrThrow("ID"))),
                     res.getInt(res.getColumnIndexOrThrow("STATUS")),
                     res.getInt(res.getColumnIndexOrThrow("STATUS_COMISSAO")),
                     res.getInt(res.getColumnIndexOrThrow("STATUS")),
@@ -363,7 +375,7 @@ public class ContaPedidoDAO {
     }
 
 
-    private void inserir(ContaPedido p){
+    public void inserir(ContaPedido p){
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ContentValues contentValues = new ContentValues();
         contentValues.put("PEDIDO", p.getPedido());
@@ -401,24 +413,27 @@ public class ContaPedidoDAO {
     }
 
     public void excluir(){
-        db.delete(DB_TABLE, null, null) ;
+        db.delete(DB_TABLE, "ID >= ?", new String[]{"0"}) ;
     }
 
     public List<ContaPedido> getJSON(JSONArray data) throws JSONException {
+        Log.i("V14", "REcebido "+data.toString()) ;
         List<ContaPedido> l = new ArrayList<ContaPedido>() ;
         for (int i = 0 ; i < data.length() ; i++){
             ContaPedido cp = new ContaPedido(data.getJSONObject(i), new ArrayList<ContaPedidoItem>(), new ArrayList<ContaPedidoPagamento>()) ;
-            for (int ii=0 ; ii < data.getJSONObject(i).getJSONArray("ITENS").length() ; i++){
+            for (int ii=0 ; ii < data.getJSONObject(i).getJSONArray("ITENS").length() ; ii++){
                 JSONObject itj = data.getJSONObject(i).getJSONArray("ITENS").getJSONObject(ii) ;
-                Produto prd = Dao.getProdutoADO(ctx).getProdutoId(itj.getInt("PRODUTO_ID")) ;
+                Produto prd = DaoDbTabela.getProdutoADO(ctx).getProdutoId(itj.getInt("PRODUTO_ID")) ;
                 cp.getListContaPedidoItem().add(new ContaPedidoItem(itj, prd)) ;
             }
-            for (int ii=0 ; ii < data.getJSONObject(i).getJSONArray("PAGAMENTOS").length() ; i++){
+            for (int ii=0 ; ii < data.getJSONObject(i).getJSONArray("PAGAMENTOS").length() ; ii++){
                 JSONObject itj = data.getJSONObject(i).getJSONArray("PAGAMENTOS").getJSONObject(ii) ;
-                Modalidade m = Dao.getModalidadeADO(ctx).getModalidade(itj.getInt("MODALIDADE_ID")) ;
+                Modalidade m = DaoDbTabela.getModalidadeADO(ctx).getModalidade(itj.getInt("MODALIDADE_ID")) ;
                 cp.getListPagamento().add(new ContaPedidoPagamento(itj, m)) ;
             }
+            l.add(cp) ;
         }
+        Log.i("V14", "l "+l.size()) ;
         return l ;
     }
 }

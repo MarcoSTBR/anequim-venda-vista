@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -15,12 +16,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.adapter.OpcoesFechamentoAdapter;
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.conexoes.ConexaoCaixa;
+import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.builds.BuildCaixa;
+import com.anequimplus.builds.BuildContaPedido;
+import com.anequimplus.builds.BuildControleAcesso;
+import com.anequimplus.conexoes.ConexaoExportarCaixa;
 import com.anequimplus.conexoes.ConexaoOpFechamento;
 import com.anequimplus.entity.Caixa;
+import com.anequimplus.entity.ContaPedido;
+import com.anequimplus.entity.FilterTable;
+import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.OpcoesFechamento;
+import com.anequimplus.listeners.ListenerCaixa;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerControleAcesso;
+import com.anequimplus.utilitarios.Configuracao;
 import com.anequimplus.utilitarios.UtilSet;
 
 import java.net.MalformedURLException;
@@ -66,6 +76,29 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
     }
 
     private void setFechar() {
+       if (!Configuracao.getPedidoCompartilhado(this)) {
+           FilterTables f = new FilterTables();
+           f.add(new FilterTable("STATUS", "=", "1"));
+           new BuildContaPedido(this, f.getList(), "", new ListenerContaPedido() {
+               @Override
+               public void ok(List<ContaPedido> l) {
+                   if (l.size() >0)
+                      alertaErro(l.size()+" Conta(s) Aberta(s)!");
+                    else ifFecha();
+               }
+
+               @Override
+               public void erro(String msg) {
+                   alertaErro(msg);
+
+               }
+           }).executar();
+       } else {
+           ifFecha();
+       }
+    }
+
+    private void ifFecha(){
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_black_24dp)
                 .setTitle("Atenção")
@@ -80,6 +113,7 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
                 }).show();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -89,24 +123,64 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
         //carregaImpressora();
 
     }
+
     public void setCaixa(){
-        List<Caixa> l = new ArrayList<Caixa>() ;
+       if (caixa.getStatus() == 1) {
+           new BuildControleAcesso(this, 12, new ListenerControleAcesso() {
+               @Override
+               public void ok(int usuario_id) {
+                   alterarCaixa() ;
+               }
+
+               @Override
+               public void erro(String msg) {
+                   alertaErro(msg); ;
+               }
+           }).executar();
+
+       } else Toast.makeText(ActivityFechamentoCaixa.this, "Caixa Fechado!", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void alterarCaixa(){
         caixa.setStatus(2);
-        caixa.setData(new Date());
+        caixa.setDataFechamento(new Date());
+        new BuildCaixa(this, caixa, new ListenerCaixa() {
+            @Override
+            public void ok(List<Caixa> l) {
+                caixa = l.get(0);
+               // if (!Configuracao.getPedidoCompartilhado(ActivityFechamentoCaixa.this)) {
+               //     setExpotacao();
+              //  } else
+              Toast.makeText(ActivityFechamentoCaixa.this, "Caixa Fechado!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void erro(String msg) {
+                alertaErro(msg);
+            }
+        }).executar();
+
+    }
+
+    public void setExpotacao(){
+        List<Caixa> l = new ArrayList<Caixa>() ;
+        //caixa.setStatus(2);
+        //caixa.setData(new Date());
         l.add(caixa) ;
 
         try {
-            new ConexaoCaixa(this, l){
+            new ConexaoExportarCaixa(this, l){
 
                 @Override
-                public void Ok(List<Caixa> l) {
+                public void ok(List<Caixa> l) {
+                    Toast.makeText(ActivityFechamentoCaixa.this, "Exportação OK", Toast.LENGTH_SHORT).show();
+                    /*
                     for (Caixa c : l){
                         if (c.getUuid().equals(caixa.getUuid())){
-                            Dao.getCaixaADO(getBaseContext()).alterar(caixa);
+                            DaoDbTabela.getCaixaADO(getBaseContext()).alterar(caixa);
                         }
-                    }
-
-
+                    }*/
                 }
 
                 @Override
@@ -119,30 +193,52 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             alertaErro(e.getMessage());
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            alertaErro(e.getMessage());
-            e.printStackTrace();
         }
-
-
     }
+
+
     private void getCaixa() {
-        caixa = Dao.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this));
-        if (caixa  == null){
-            new AlertDialog.Builder(this)
-                    .setIcon(R.drawable.ic_notifications_black_24dp)
-                    .setTitle("Atenção")
-                    .setMessage("Caixa Fechado!")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    }).show();
-        } else {
-            getMenuFechamento() ;
-        }
+        FilterTables f = new FilterTables() ;
+        f.add(new FilterTable("USUARIO_ID", "=", String.valueOf(UtilSet.getUsuarioId(this)))) ;
+        f.add(new FilterTable("STATUS", "=", "1")) ;
+        //caixa = DaoDbTabela.getCaixaADO(this).getCaixaAberto(UtilSet.getUsuarioId(this));
+        new BuildCaixa(this, f, "", new ListenerCaixa() {
+            @Override
+            public void ok(List<Caixa> l) {
+                if (l.size()>0) caixa = l.get(0) ;
+                if (caixa  == null){
+                    new AlertDialog.Builder(ActivityFechamentoCaixa.this)
+                            .setIcon(R.drawable.ic_notifications_black_24dp)
+                            .setTitle("Atenção")
+                            .setMessage("Caixa Fechado!")
+                            .setCancelable(false)
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }).show();
+                } else {
+                    getMenuFechamento() ;
+                }
+            }
+
+            @Override
+            public void erro(String msg) {
+                new AlertDialog.Builder(ActivityFechamentoCaixa.this)
+                        .setIcon(R.drawable.ic_notifications_black_24dp)
+                        .setTitle("Atenção")
+                        .setMessage(msg)
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        }).show();
+            }
+        }).executar();
+
     }
 
     private void getMenuFechamento(){
@@ -175,7 +271,7 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
                 }
 
             }.execute() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado | MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
             alertaErro(e.getMessage()) ;
 
@@ -186,8 +282,8 @@ public class ActivityFechamentoCaixa extends AppCompatActivity {
 
     private void setVisualizarRelatorio(int position) {
         Log.i("setVisualizarRelatorio", "position "+position) ;
-        opcoesFechamento = Dao.getOpcoesFechamentoADO(getBaseContext()).getList().get(position) ;
-        Intent intent = new Intent(getBaseContext(), ActivityImpressao.class);
+        opcoesFechamento = DaoDbTabela.getOpcoesFechamentoADO(getBaseContext()).getList().get(position) ;
+        Intent intent = new Intent(ActivityFechamentoCaixa.this, ActivityImpressao.class);
         Bundle params = new Bundle();
         SimpleDateFormat dt = new SimpleDateFormat("E, dd/MM/yy hh:mm");
         params.putInt("OPCAO_ID", opcoesFechamento.getId());

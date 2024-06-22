@@ -1,5 +1,6 @@
 package com.anequimplus.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -15,17 +16,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.anequimdroid.R;
-import com.anequimplus.entity.Pedido;
+import com.anequimplus.entity.ContaPedidoView;
+import com.anequimplus.entity.FilterTables;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public abstract class PedidoAdapterView extends RecyclerView.Adapter<PedidoAdapterView.PedidoAdapterHolder>{
 
-    private final List<Pedido> list ;
+    private Context ctx ;
+    private final List<ContaPedidoView> list ;
 
-    public PedidoAdapterView(List<Pedido> list) {
+    public PedidoAdapterView(Context ctx, List<ContaPedidoView> list) {
+        this.ctx = ctx ;
         this.list = list;
+        FilterTables f = new FilterTables() ;
     }
 
     @NonNull
@@ -66,13 +71,16 @@ public abstract class PedidoAdapterView extends RecyclerView.Adapter<PedidoAdapt
             obs = itemView.findViewById(R.id.textViewGradePedidoQ);
         }
 
-        public void bind(Pedido p){
+        public void bind(final ContaPedidoView p){
             Log.i("RecyclerView", p.getPedido()) ;
             txt.setText(" Conta: "+p.getPedido());
-            obs.setText("Iten(s) ("+frmQ.format(p.getQuantidadeTotalItens())+")\nValor de R$ "+frmV.format(p.getValorTotalItens()));
+            obs.setText("Iten(s) ("+frmQ.format(p.getQuantidade())+")\nValor de R$ "+frmV.format(p.getValor()));
 
-            if (p.getStatus() == 1) {
+            if (p.getStatus() == 2) {
                 Abrir.setBackground(getNegativo(Color.GREEN, bt));
+            } else {
+                //#C5EAEE 500084 ;
+                Abrir.setBackground(getNegativo(Color.BLUE, bt));
             }
             Abrir.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,9 +105,10 @@ public abstract class PedidoAdapterView extends RecyclerView.Adapter<PedidoAdapt
             return shapeDrawable;
         }
 
+
     }
 
-    public abstract void setConta(Pedido p) ;
-    public abstract void setContaAbrir(Pedido p) ;
+    public abstract void setConta(ContaPedidoView p) ;
+    public abstract void setContaAbrir(ContaPedidoView p) ;
 
 }

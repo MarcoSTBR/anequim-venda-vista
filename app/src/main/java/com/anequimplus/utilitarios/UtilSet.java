@@ -4,33 +4,24 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class UtilSet {
-
-
-    public static void setToken(Context ctx, String token){
-        gravaParamString(ctx, "TOKEN",token) ;
-    }
-
-    public static String getToken(Context ctx){
-        return lerParamString(ctx, "TOKEN") ;
-    }
-
-    public static String getNome_Usuario(Context ctx ) {
-        return lerParamString(ctx,"NOME_USUARIO");
-    }
 
     public static String getChave(Context ctx) {
         return lerParamString(ctx,"CHAVE") ;
@@ -148,12 +139,29 @@ public class UtilSet {
 
     }
 
+    public static String repetir(String s, int count){
+        String r = "" ;
+        for (int i = 0; i < count; i++) {
+            r = r + s ;
+        }
+        return r ;
+    }
     public static void setImpPadraoContaPedido(Context ctx, String descricao) {
         gravaParamString(ctx, "IMP_CONTA",descricao) ;
     }
 
     public static String getImpPadraoContaPedido(Context ctx) {
         String t = lerParamString(ctx, "IMP_CONTA") ;
+        if (t == null) t = "" ;
+        return t ;
+    }
+
+    public static void setImpPadraoSuprimentoSangria(Context ctx, String descricao) {
+        gravaParamString(ctx, "IMP_SUP_SAN",descricao) ;
+    }
+
+    public static String getImpPadraoSuprimentoSangria(Context ctx) {
+        String t = lerParamString(ctx, "IMP_SUP_SAN") ;
         if (t == null) t = "" ;
         return t ;
     }
@@ -179,7 +187,7 @@ public class UtilSet {
     }
 
     public static Date getData(String data) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = null;
         try {
             d = dateFormat.parse(data);
@@ -208,7 +216,6 @@ public class UtilSet {
 
     public static void setLogin(Context ctx, String login) {
         gravaParamString(ctx, "LOGIN", login) ;
-
     }
 
     public static String getLogin(Context ctx) {
@@ -221,7 +228,13 @@ public class UtilSet {
     }
 
     public static int getUsuarioId(Context ctx) {
-      return Integer.parseInt(lerParamString(ctx, "USUARIO_ID")) ;
+        try {
+            return Integer.parseInt(lerParamString(ctx, "USUARIO_ID"));
+        } catch (Exception e){
+            e.printStackTrace();
+            return 0 ;
+        }
+
     }
 
     public static void setUsuarioNome(Context ctx, String usuario_nome) {
@@ -260,7 +273,15 @@ public class UtilSet {
     }
 
     public static String getServidorMaster(Context ctx) {
-        return lerParamString(ctx, "SERVIDOR_MASTER") ;
+        // String u =  "http://gerezim.com.br/anequimfood/rest.php" ;
+        // String u =  "http://gerezim.com.br/company/rest.php" ; //foi
+        // String u =  "http://pampofood.com.br/company/rest.php" ; //foi
+        // String u =  "https://www.gileade.com.br/anequimfood/rest.php" ;
+        // String u =  "http://gerezim.com.br/company/rest.php" ;
+        // return lerParamString(ctx, "SERVIDOR_MASTER")
+        //String u =  "https://viacep.com.br/ws/01001000/json/" ;
+        String u =  "http://201.73.1.230/anequimfood/rest.php" ;
+        return u ;
 
     }
 
@@ -269,8 +290,42 @@ public class UtilSet {
     }
 
     public static int getTerminalId(Context ctx){
-        return Integer.valueOf(lerParamString(ctx, "TERMINAL_ID")) ;
+        try {
+            return Integer.valueOf(lerParamString(ctx, "TERMINAL_ID"));
+        } catch (Exception e){
+            return 0 ;
+        }
     }
 
+    public static String getDiaSemana(Date data){
+        SimpleDateFormat dt = new SimpleDateFormat("EEE", new Locale("pt", "BR")) ;
+        return dt.format(data) ;
+        /*
+        int dia = Integer.parseInt(dt.format(data)) ;
+        switch (dia){
+            case 1 : return "Dom" ;
+            case 2 : return "Seg" ;
+            case 3 : return "Ter" ;
+            case 4 : return "Qua" ;
+            case 5 : return "Qui" ;
+            case 6 : return "Sex" ;
+            case 7 : return "Sab" ;
+            default: return dt.format(data) ;
+        }*/
+    }
 
+    private static BigDecimal truncateDecimal(final double x, final int numberofDecimals) {
+        BigDecimal v = new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_UP);
+        //Log.i("BigDecimal", "Valor "+v) ;
+        //Math.round(x) ;
+        return v ;
+    }
+
+    public static Double truncate(double value) {
+      //  return truncateDecimal(value, 2).doubleValue() ;
+        DecimalFormat df = new DecimalFormat("00000000.00");
+        String v = df.format(value).replace(",",".") ;
+        Log.i("truncate", "Valor "+v) ;
+        return Double.valueOf(v);
+    }
 }

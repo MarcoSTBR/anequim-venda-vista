@@ -3,23 +3,22 @@ package com.anequimplus.conexoes;
 import android.content.Context;
 import android.util.Log;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ImpressaoA7;
 import com.anequimplus.impressao.ImpressaoLio;
 import com.anequimplus.impressao.ListenerImpressao;
-import com.anequimplus.tipos.Link;
 import com.anequimplus.tipos.TipoImpressora;
 import com.anequimplus.utilitarios.RowImpressao;
+import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +37,7 @@ public abstract class ConexaoImpressaoContaPedido extends ConexaoServer {
         maps.put("method", "imprimir") ;
         maps.put("pedido", contaPedido.getId()) ;
         try {
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImprimirConta).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
+            url =  new URL(UtilSet.getServidorMaster(ctx)) ; //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fImprimirConta).getUrl() ;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

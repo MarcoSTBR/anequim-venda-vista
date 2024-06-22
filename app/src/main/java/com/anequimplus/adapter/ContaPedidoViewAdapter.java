@@ -50,13 +50,14 @@ public abstract class ContaPedidoViewAdapter extends RecyclerView.Adapter<ContaP
 
         public ContaPedidoViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtDescricao = itemView.findViewById(R.id.TextViewConta) ;
+            txtDescricao = itemView.findViewById(R.id.TextViewContaView) ;
             txtQPreco = itemView.findViewById(R.id.textQuantidadeValorContaItem) ;
             bCancelar  = itemView.findViewById(R.id.cancelarItemConta) ;
             bTransferencia = itemView.findViewById(R.id.transferenciaItemConta) ;
         }
 
         public void bind(final ContaPedidoItem it){
+
             DecimalFormat q = new DecimalFormat("#0.###") ;
             DecimalFormat v = new DecimalFormat("#0.00") ;
             txtDescricao.setText(it.getProduto().getDescricao());
@@ -74,7 +75,6 @@ public abstract class ContaPedidoViewAdapter extends RecyclerView.Adapter<ContaP
                     transferir(it) ;
                 }
             });
-
 
         }
     }

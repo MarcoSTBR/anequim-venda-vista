@@ -4,15 +4,14 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.anequimplus.ado.Dao;
-import com.anequimplus.ado.LinkAcessoADO;
-import com.anequimplus.tipos.Link;
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public abstract class ConexaoProdutos extends ConexaoServer{
 
@@ -23,10 +22,7 @@ public abstract class ConexaoProdutos extends ConexaoServer{
             maps.put("class","AfoodProduto") ;
             maps.put("method","consultar") ;
             maps.put("MAC", UtilSet.getMAC(ctx)) ;
-            url = Dao.getLinkAcessoADO(ctx).getLinkAcesso(Link.fConsultaProduto).getUrl() ;
-        } catch (LinkAcessoADO.ExceptionLinkNaoEncontrado e) {
-            e.printStackTrace();
-            erro(e.getMessage());
+            url =  new URL(UtilSet.getServidorMaster(ctx)) ; //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fConsultaProduto).getUrl() ;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             erro(e.getMessage());
@@ -40,7 +36,7 @@ public abstract class ConexaoProdutos extends ConexaoServer{
         try {
             JSONObject j = new JSONObject(s) ;
             if (j.getString("status").equals("success")) {
-               Dao.getProdutoADO(ctx).setJSON(j.getJSONArray("data"));
+               DaoDbTabela.getProdutoADO(ctx).setJSON(j.getJSONArray("data"));
                 Ok() ;
             } else {
                 erro(j.getString("data"));
