@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -27,7 +27,7 @@ public class ConexaoContaPedidoPagamentoCompartilhado extends ConexaoServer{
     private String order ;
     private ListenerContaPedidoPagamento listenerContaPedidoPagamento ;
 
-    public ConexaoContaPedidoPagamentoCompartilhado(Context ctx, FilterTables filters, String order, ListenerContaPedidoPagamento listenerContaPedidoPagamento) throws MalformedURLException {
+    public ConexaoContaPedidoPagamentoCompartilhado(Activity ctx, FilterTables filters, String order, ListenerContaPedidoPagamento listenerContaPedidoPagamento) throws MalformedURLException {
         super(ctx);
         msg = "Pagamentos..." ;
         method = "GET" ;
@@ -39,7 +39,7 @@ public class ConexaoContaPedidoPagamentoCompartilhado extends ConexaoServer{
         url =  new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/conta_pedidopagamento") ;
     }
 
-    public ConexaoContaPedidoPagamentoCompartilhado(Context ctx, ContaPedidoPagamento contaPedidoPagamento, ListenerContaPedidoPagamento listenerContaPedidoPagamento) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoPagamentoCompartilhado(Activity ctx, ContaPedidoPagamento contaPedidoPagamento, ListenerContaPedidoPagamento listenerContaPedidoPagamento) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Pagamentos..." ;
         method = "POST" ;

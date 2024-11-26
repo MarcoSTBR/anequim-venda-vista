@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoContaPedidoDest;
@@ -18,14 +18,14 @@ import java.util.List;
 
 public class BuildContaPedidoDest {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order  ;
     private ContaPedidoDest contaPedidoDest ;
     private ListenerContaPedidoDest listenerContaPedidoDest ;
     private TipoConexao tipoConexao ;
 
-    public BuildContaPedidoDest(Context ctx, FilterTables filters, String order, ListenerContaPedidoDest listenerContaPedidoDest) {
+    public BuildContaPedidoDest(Activity ctx, FilterTables filters, String order, ListenerContaPedidoDest listenerContaPedidoDest) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order;
@@ -33,7 +33,7 @@ public class BuildContaPedidoDest {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildContaPedidoDest(Context ctx, ContaPedidoDest contaPedidoDest, ListenerContaPedidoDest listenerContaPedidoDest) {
+    public BuildContaPedidoDest(Activity ctx, ContaPedidoDest contaPedidoDest, ListenerContaPedidoDest listenerContaPedidoDest) {
         this.ctx = ctx;
         this.contaPedidoDest = contaPedidoDest;
         this.listenerContaPedidoDest = listenerContaPedidoDest;

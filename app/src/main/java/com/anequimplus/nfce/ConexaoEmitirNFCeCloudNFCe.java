@@ -1,5 +1,6 @@
 package com.anequimplus.nfce;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -33,7 +34,7 @@ public class ConexaoEmitirNFCeCloudNFCe extends ConexaoCloudNFCe{
     private ContaPedidoDest contaPedidoDest ;
     private Date data_emit ;
 
-    public ConexaoEmitirNFCeCloudNFCe(Context ctx, ContaPedido contaPedido, ContaPedidoDest contaPedidoDest, List<ProdutoImposto> listImpostos, ListenerEmitirNFce listenerEmitirNFce) throws MalformedURLException {
+    public ConexaoEmitirNFCeCloudNFCe(Activity ctx, ContaPedido contaPedido, ContaPedidoDest contaPedidoDest, List<ProdutoImposto> listImpostos, ListenerEmitirNFce listenerEmitirNFce) throws MalformedURLException {
         super(ctx);
         //msg = "Emitindo NFce...";
         method = "POST" ;

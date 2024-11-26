@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.ContaPedidoNFCe;
@@ -24,7 +24,7 @@ public class ConexaoContaPedidoNFCeCompartilhado extends ConexaoServer{
     private ListenerContaPedidoNfce listenerEmissaoNfce ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoContaPedidoNFCeCompartilhado(Context ctx, FilterTables filter, String order, ListenerContaPedidoNfce listenerEmissaoNfce) throws MalformedURLException {
+    public ConexaoContaPedidoNFCeCompartilhado(Activity ctx, FilterTables filter, String order, ListenerContaPedidoNfce listenerEmissaoNfce) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         msg = "Consultando NFCe.." ;
@@ -34,7 +34,7 @@ public class ConexaoContaPedidoNFCeCompartilhado extends ConexaoServer{
         url =  new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/conta_pedido_nfce") ;
     }
 
-    public ConexaoContaPedidoNFCeCompartilhado(Context ctx, ContaPedidoNFCe contaPedidoNFCe, TipoConexao tipoConexao, ListenerContaPedidoNfce listenerEmissaoNfce) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoNFCeCompartilhado(Activity ctx, ContaPedidoNFCe contaPedidoNFCe, TipoConexao tipoConexao, ListenerContaPedidoNfce listenerEmissaoNfce) throws MalformedURLException, JSONException {
         super(ctx);
         this.method = "POST" ;
         this.listenerEmissaoNfce = listenerEmissaoNfce;

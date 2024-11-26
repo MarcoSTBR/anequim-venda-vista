@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoEnvioPedido;
 import com.anequimplus.conexoes.ConexaoEnvioPedidoCompartilhado;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class BuildEnviarPedido {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ListenerEnvioPedido listenerEnvioPedido ;
     private List<Pedido> list ;
 
-    public BuildEnviarPedido(Context ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido){
+    public BuildEnviarPedido(Activity ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido){
         this.ctx = ctx ;
         this.list= list ;
         this.listenerEnvioPedido = listenerEnvioPedido ;

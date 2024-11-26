@@ -20,21 +20,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.ModalidadeAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.ModalidadeAdapter;
 import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildContaPedidoPagamento;
 import com.anequimplus.conexoes.ConexaoModalidade;
-import com.anequimplus.listeners.ListenerContaPedido;
-import com.anequimplus.listeners.ListenerContaPedidoPagamento;
-import com.anequimplus.listeners.ListenerCaixa;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoPagamento;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Modalidade;
+import com.anequimplus.listeners.ListenerCaixa;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerContaPedidoPagamento;
 import com.anequimplus.utilitarios.DisplaySet;
 import com.anequimplus.utilitarios.UtilSet;
 

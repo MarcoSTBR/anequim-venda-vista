@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.entity.ContaPedidoNFCe;
 import com.anequimplus.utilitarios.Configuracao;
@@ -11,11 +11,11 @@ import java.net.MalformedURLException;
 
 public class BuildImprimirNfce {
 
-    private Context ctx;
+    private Activity ctx;
     private ContaPedidoNFCe contaPedidoNFCe ;
     private ListenerImprimirNFCe listenerImprimirNFCe ;
 
-    public BuildImprimirNfce(Context ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe) {
+    public BuildImprimirNfce(Activity ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe) {
         this.ctx = ctx;
         this.contaPedidoNFCe = contaPedidoNFCe;
         this.listenerImprimirNFCe = listenerImprimirNFCe;

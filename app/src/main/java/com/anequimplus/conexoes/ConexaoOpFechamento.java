@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -19,7 +19,7 @@ public abstract class ConexaoOpFechamento extends ConexaoServer {
 
     private Caixa caixa ;
 
-    public ConexaoOpFechamento(Context ctx, Caixa caixa) throws  MalformedURLException {
+    public ConexaoOpFechamento(Activity ctx, Caixa caixa) throws  MalformedURLException {
         super(ctx);
         msg = "Consultando Opçoes" ;
 

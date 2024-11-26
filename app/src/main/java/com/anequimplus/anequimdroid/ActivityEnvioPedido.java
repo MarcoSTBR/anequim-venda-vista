@@ -22,9 +22,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.adapter.EdicaoItem;
 import com.anequimplus.adapter.PedidoEnvioAdapter;
-import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildEnviarPedido;
 import com.anequimplus.builds.BuildEnvioComandaRemota;

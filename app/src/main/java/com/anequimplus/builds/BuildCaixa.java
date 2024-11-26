@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoCaixaCompartilhado;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class BuildCaixa {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private Caixa caixa ;
@@ -24,7 +24,7 @@ public class BuildCaixa {
     private TipoConexao tipoConexao ;
 
 
-    public BuildCaixa(Context ctx, FilterTables filters, String order, ListenerCaixa listenercaixa) {
+    public BuildCaixa(Activity ctx, FilterTables filters, String order, ListenerCaixa listenercaixa) {
         this.ctx = ctx;
         this.filters = filters;
         this.listenercaixa = listenercaixa;
@@ -32,7 +32,7 @@ public class BuildCaixa {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildCaixa(Context ctx, Caixa caixa, ListenerCaixa listenercaixa) {
+    public BuildCaixa(Activity ctx, Caixa caixa, ListenerCaixa listenercaixa) {
         this.ctx = ctx;
         this.caixa = caixa;
         this.listenercaixa = listenercaixa;

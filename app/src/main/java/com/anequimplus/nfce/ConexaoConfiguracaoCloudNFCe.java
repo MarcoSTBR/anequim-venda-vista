@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.conexoes.ConexaoServer;
@@ -18,7 +18,7 @@ public class ConexaoConfiguracaoCloudNFCe extends ConexaoServer {
     private FilterTables filters ;
     private ListenerConfiguracaoCloudNFCe listenerConfiguracaoCloudNFCe ;
 
-    public ConexaoConfiguracaoCloudNFCe(Context ctx, FilterTables filters, ListenerConfiguracaoCloudNFCe listenerConfiguracaoCloudNFCe) throws MalformedURLException {
+    public ConexaoConfiguracaoCloudNFCe(Activity ctx, FilterTables filters, ListenerConfiguracaoCloudNFCe listenerConfiguracaoCloudNFCe) throws MalformedURLException {
         super(ctx);
         this.listenerConfiguracaoCloudNFCe = listenerConfiguracaoCloudNFCe ;
         msg = "Recuperando Token" ;

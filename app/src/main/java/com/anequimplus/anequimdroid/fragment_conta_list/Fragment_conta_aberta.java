@@ -24,9 +24,9 @@ import com.anequimplus.anequimdroid.ActivityConta;
 import com.anequimplus.anequimdroid.ActivityImprimirConta;
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.builds.BuildContaPedido;
-import com.anequimplus.listeners.ListenerContaPedido;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.FilterTable;
+import com.anequimplus.listeners.ListenerContaPedido;
 import com.anequimplus.utilitarios.DisplaySet;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class Fragment_conta_aberta extends Fragment {
         if (filtro.getText().length() > 0)
             filters.add(new FilterTable("PEDIDO", "=", filtro.getText().toString())) ;
         filters.add(new FilterTable("STATUS", "=", "1")) ;
-        new BuildContaPedido(getContext(), filters, "", new ListenerContaPedido() {
+        new BuildContaPedido(getActivity(), filters, "", new ListenerContaPedido() {
             @Override
             public void ok(List<ContaPedido> l) {
                 StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(DisplaySet.getNumeroDeColunasGrade(ctx), StaggeredGridLayoutManager.VERTICAL);

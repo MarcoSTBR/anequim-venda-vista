@@ -20,14 +20,14 @@ import com.anequimplus.builds.BuildSetorImpTerminal;
 import com.anequimplus.conexoes.ConexaoServerSetorImp;
 import com.anequimplus.conexoes.ConexaoServerSetorImpItens;
 import com.anequimplus.conexoes.ConexaoServerSetorImpTerminal;
-import com.anequimplus.listeners.ListenerSetorImp;
-import com.anequimplus.listeners.ListenerSetorImpItens;
-import com.anequimplus.listeners.ListenerSetorImpTerminal;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.SetorImp;
 import com.anequimplus.entity.SetorImpItens;
 import com.anequimplus.entity.SetorImpTerminal;
+import com.anequimplus.listeners.ListenerSetorImp;
+import com.anequimplus.listeners.ListenerSetorImpItens;
+import com.anequimplus.listeners.ListenerSetorImpTerminal;
 import com.anequimplus.utilitarios.Configuracao;
 
 import java.net.MalformedURLException;
@@ -91,7 +91,7 @@ public class FragmentComandaRemota extends Fragment {
         FilterTables filter = new FilterTables() ;
         filter.add(new FilterTable("STATUS", "=", "1"));
         try {
-            new ConexaoServerSetorImp(getContext(), filter, "", new ListenerSetorImp() {
+            new ConexaoServerSetorImp(getActivity(), filter, "", new ListenerSetorImp() {
                 @Override
                 public void ok(List<SetorImp> l) {
                     lSetorImp = l ;
@@ -113,7 +113,7 @@ public class FragmentComandaRemota extends Fragment {
 
     private void setExcluirImpLocal() {
         FilterTables filters = new FilterTables() ;
-        new BuildSetorImp(getContext(), filters, new ListenerSetorImp() {
+        new BuildSetorImp(getActivity(), filters, new ListenerSetorImp() {
             @Override
             public void ok(List<SetorImp> l) {
                 setSetorImpLocal() ;
@@ -128,7 +128,7 @@ public class FragmentComandaRemota extends Fragment {
     }
 
     private void setSetorImpLocal() {
-        new BuildSetorImp(getContext(), lSetorImp, new ListenerSetorImp() {
+        new BuildSetorImp(getActivity(), lSetorImp, new ListenerSetorImp() {
             @Override
             public void ok(List<SetorImp> l) {
                 getSetorImpItens();
@@ -145,7 +145,7 @@ public class FragmentComandaRemota extends Fragment {
         FilterTables filter = new FilterTables() ;
         filter.add(new FilterTable("STATUS", "=", "1"));
         try {
-            new ConexaoServerSetorImpItens(getContext(), filter, "", new ListenerSetorImpItens() {
+            new ConexaoServerSetorImpItens(getActivity(), filter, "", new ListenerSetorImpItens() {
                 @Override
                 public void ok(List<SetorImpItens> l) {
                     lSetorImpItens = l ;
@@ -166,7 +166,7 @@ public class FragmentComandaRemota extends Fragment {
 
     private void setExcluirImpItensLocal() {
         FilterTables filters = new FilterTables() ;
-        new BuildSetorImpItens(getContext(), filters, new ListenerSetorImpItens() {
+        new BuildSetorImpItens(getActivity(), filters, new ListenerSetorImpItens() {
             @Override
             public void ok(List<SetorImpItens> l) {
                 setSetorImpItensLocal();
@@ -181,7 +181,7 @@ public class FragmentComandaRemota extends Fragment {
     }
 
     private void setSetorImpItensLocal() {
-        new BuildSetorImpItens(getContext(), lSetorImpItens, new ListenerSetorImpItens() {
+        new BuildSetorImpItens(getActivity(), lSetorImpItens, new ListenerSetorImpItens() {
             @Override
             public void ok(List<SetorImpItens> l) {
                 getSetorImpTerminais() ;
@@ -199,7 +199,7 @@ public class FragmentComandaRemota extends Fragment {
         FilterTables filter = new FilterTables() ;
         filter.add(new FilterTable("STATUS", "=", "1"));
         try {
-            new ConexaoServerSetorImpTerminal(getContext(), filter, "", new ListenerSetorImpTerminal() {
+            new ConexaoServerSetorImpTerminal(getActivity(), filter, "", new ListenerSetorImpTerminal() {
                 @Override
                 public void ok(List<SetorImpTerminal> l) {
                     lSetorImpTerminais = l ;
@@ -220,7 +220,7 @@ public class FragmentComandaRemota extends Fragment {
 
     private void setExcluirSetorImpTerminal(){
         FilterTables filters = new FilterTables() ;
-        new BuildSetorImpTerminal(getContext(), filters, new ListenerSetorImpTerminal() {
+        new BuildSetorImpTerminal(getActivity(), filters, new ListenerSetorImpTerminal() {
             @Override
             public void ok(List<SetorImpTerminal> l) {
                 setSetorImpTerminalLocal() ;
@@ -235,7 +235,7 @@ public class FragmentComandaRemota extends Fragment {
     }
 
     private void setSetorImpTerminalLocal(){
-        new BuildSetorImpTerminal(getContext(), lSetorImpTerminais, new ListenerSetorImpTerminal() {
+        new BuildSetorImpTerminal(getActivity(), lSetorImpTerminais, new ListenerSetorImpTerminal() {
             @Override
             public void ok(List<SetorImpTerminal> l) {
                 alert("Importação OK") ;

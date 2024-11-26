@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -26,7 +26,7 @@ public class ConexaoContaPeditoItemCompartilhado extends ConexaoServer{
     private ContaPedidoItem contaPedidoItem ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoContaPeditoItemCompartilhado(Context ctx, FilterTables filters, String order, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException {
+    public ConexaoContaPeditoItemCompartilhado(Activity ctx, FilterTables filters, String order, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         msg = "Consultando Item da Conta" ;
@@ -37,7 +37,7 @@ public class ConexaoContaPeditoItemCompartilhado extends ConexaoServer{
         url =  new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/conta_pedidoitem") ;
     }
 
-    public ConexaoContaPeditoItemCompartilhado(Context ctx, ContaPedidoItem contaPedidoItem, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException, JSONException {
+    public ConexaoContaPeditoItemCompartilhado(Activity ctx, ContaPedidoItem contaPedidoItem, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException, JSONException {
         super(ctx);
         method = "POST" ;
         msg = "Alteração do Item da Conta" ;
@@ -51,7 +51,7 @@ public class ConexaoContaPeditoItemCompartilhado extends ConexaoServer{
            url =  new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/conta_pedidoitem/"+contaPedidoItem.getId()) ;
     }
 
-    public ConexaoContaPeditoItemCompartilhado(Context ctx, int id_delecao, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException, JSONException {
+    public ConexaoContaPeditoItemCompartilhado(Activity ctx, int id_delecao, ListenerContaPedidoItem listenerContaPedidoItem) throws MalformedURLException, JSONException {
         super(ctx);
         method = "DELETE" ;
         msg = "Alteração do Item da Conta" ;

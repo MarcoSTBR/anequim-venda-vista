@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Base64;
 import android.util.Log;
 
@@ -19,7 +19,7 @@ public class ConexaoImprimirNFCeCloudNFCe extends ConexaoCloudNFCe{
     private ContaPedidoNFCe contaPedidoNFCe ;
     private ListenerImprimirNFCe listenerImprimirNFCe ;
 
-    public ConexaoImprimirNFCeCloudNFCe(Context ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe)  throws MalformedURLException, JSONException {
+    public ConexaoImprimirNFCeCloudNFCe(Activity ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe)  throws MalformedURLException, JSONException {
         super(ctx);
         method = "GET" ;
         this.contaPedidoNFCe = contaPedidoNFCe;

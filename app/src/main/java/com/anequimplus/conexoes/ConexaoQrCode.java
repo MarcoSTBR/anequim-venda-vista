@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -14,13 +14,13 @@ import java.net.URL;
 
 public abstract class ConexaoQrCode extends AsyncTask<String, Void, Bitmap> {
 
-    private Context ctx ;
+    private Activity ctx ;
     private String msg ;
     private String chave ;
     private URL url ;
     private String param ;
 
-    public ConexaoQrCode(Context ctx, String chave) {
+    public ConexaoQrCode(Activity ctx, String chave) {
         this.ctx = ctx ;
         this.chave = chave ;
       //  setParametros() ;

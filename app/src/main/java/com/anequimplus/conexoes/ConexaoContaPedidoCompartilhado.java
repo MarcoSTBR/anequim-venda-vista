@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.builds.BuildTranformacaoVersao;
@@ -28,7 +28,7 @@ public class ConexaoContaPedidoCompartilhado extends ConexaoServer {
     private ListenerContaPedido listenerContaPedido ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoContaPedidoCompartilhado(Context ctx, List<FilterTable> filterTables, String orders, ListenerContaPedido listenerContaPedido) throws MalformedURLException {
+    public ConexaoContaPedidoCompartilhado(Activity ctx, List<FilterTable> filterTables, String orders, ListenerContaPedido listenerContaPedido) throws MalformedURLException {
         super(ctx);
         msg  = "Consultando Contas" ;
         method = "GET" ;
@@ -43,7 +43,7 @@ public class ConexaoContaPedidoCompartilhado extends ConexaoServer {
         url =  new URL(nurl) ;
     }
 
-    public ConexaoContaPedidoCompartilhado(Context ctx, ContaPedido contaPedido, ListenerContaPedido listenerContaPedido) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoCompartilhado(Activity ctx, ContaPedido contaPedido, ListenerContaPedido listenerContaPedido) throws MalformedURLException, JSONException {
         super(ctx);
         method = "POST" ;
         msg  = "Alterar Contas" ;

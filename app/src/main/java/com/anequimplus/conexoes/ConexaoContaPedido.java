@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedido;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ConexaoContaPedido  {
 
-    private Context ctx ;
+    private Activity ctx ;
     private List<FilterTable> filterTables = null ;
     private ContaPedido contaPedido = null ;
     private List<ContaPedido> listContaPedido = null ;
@@ -24,7 +24,7 @@ public class ConexaoContaPedido  {
     private ListenerContaPedido listenerContaPedido ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoContaPedido(Context ctx, List<FilterTable> filterTables, String orders, ListenerContaPedido listenerContaPedido){
+    public ConexaoContaPedido(Activity ctx, List<FilterTable> filterTables, String orders, ListenerContaPedido listenerContaPedido){
        // super(ctx);
 //        msg  = "Consultat Contas" ;
         this.ctx = ctx ;
@@ -49,7 +49,7 @@ public class ConexaoContaPedido  {
         }
         return jaa ;
     }
-    public ConexaoContaPedido(Context ctx, ContaPedido contaPedido, ListenerContaPedido listenerContaPedido) {
+    public ConexaoContaPedido(Activity ctx, ContaPedido contaPedido, ListenerContaPedido listenerContaPedido) {
         this.ctx = ctx ;
         this.contaPedido = contaPedido ;
         this.listenerContaPedido = listenerContaPedido ;

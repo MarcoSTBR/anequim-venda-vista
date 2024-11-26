@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -27,7 +27,7 @@ public class ConexaoSetorImpCompartilhado extends ConexaoServer{
     private ListenerSetorImp listenerSetorImp ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoSetorImpCompartilhado(Context ctx, FilterTables filter, String order, ListenerSetorImp listenerSetorImp) throws MalformedURLException {
+    public ConexaoSetorImpCompartilhado(Activity ctx, FilterTables filter, String order, ListenerSetorImp listenerSetorImp) throws MalformedURLException {
         super(ctx);
         msg = "Consultando Setor Impressora...." ;
         method = "GET" ;
@@ -38,7 +38,7 @@ public class ConexaoSetorImpCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp") ;
     }
 
-    public ConexaoSetorImpCompartilhado(Context ctx, List<SetorImp> setorImps, ListenerSetorImp listenerSetorImp) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpCompartilhado(Activity ctx, List<SetorImp> setorImps, ListenerSetorImp listenerSetorImp) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores..." ;
         method= "POST" ;
@@ -49,7 +49,7 @@ public class ConexaoSetorImpCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp") ;
     }
 
-    public ConexaoSetorImpCompartilhado(Context ctx, SetorImp setorImp, ListenerSetorImp listenerSetorImp) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpCompartilhado(Activity ctx, SetorImp setorImp, ListenerSetorImp listenerSetorImp) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores..." ;
         method= "POST" ;
@@ -59,7 +59,7 @@ public class ConexaoSetorImpCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkComandaRemota(ctx)+"/setor_imp") ;
     }
 
-    public ConexaoSetorImpCompartilhado(Context ctx, FilterTables filter, ListenerSetorImp listenerSetorImp) throws MalformedURLException {
+    public ConexaoSetorImpCompartilhado(Activity ctx, FilterTables filter, ListenerSetorImp listenerSetorImp) throws MalformedURLException {
         super(ctx);
         msg = "Excluindo Setor Impressora...";
         method = "DELETE" ;

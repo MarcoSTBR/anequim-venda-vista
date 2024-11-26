@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.builds.BuildContaPedidoItem;
@@ -37,7 +37,7 @@ public class ConexaoContaPedidoItemCancelamentoCompartinlhado extends ConexaoSer
 
 
 
-    public ConexaoContaPedidoItemCancelamentoCompartinlhado(Context ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) throws MalformedURLException {
+    public ConexaoContaPedidoItemCancelamentoCompartinlhado(Activity ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         msg = "Consulta de Cancelamentos.." ;
@@ -49,7 +49,7 @@ public class ConexaoContaPedidoItemCancelamentoCompartinlhado extends ConexaoSer
 
     }
 
-    public ConexaoContaPedidoItemCancelamentoCompartinlhado(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ContaPedido conta, ContaPedidoItem item, ListenerItemCancelamento listenerItemCancelamento) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoItemCancelamentoCompartinlhado(Activity ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ContaPedido conta, ContaPedidoItem item, ListenerItemCancelamento listenerItemCancelamento) throws MalformedURLException, JSONException {
         super(ctx);
         method = "POST" ;
         msg = "Cancelamento de Item..." ;

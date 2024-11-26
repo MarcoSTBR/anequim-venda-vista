@@ -18,21 +18,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.PedidoAdapterView;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.PedidoAdapterView;
 import com.anequimplus.anequimdroid.ActivityConta;
 import com.anequimplus.anequimdroid.ActivityEnvioPedido;
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.builds.BuildContaPedidoView;
 import com.anequimplus.builds.BuildEnviarPedido;
 import com.anequimplus.builds.BuildEnvioComandaRemota;
+import com.anequimplus.entity.ContaPedidoView;
+import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
+import com.anequimplus.entity.Pedido;
 import com.anequimplus.listeners.ListenerContaPedidoView;
 import com.anequimplus.listeners.ListenerEnvioComandaRemota;
 import com.anequimplus.listeners.ListenerEnvioPedido;
-import com.anequimplus.entity.ContaPedidoView;
-import com.anequimplus.entity.FilterTable;
-import com.anequimplus.entity.Pedido;
 import com.anequimplus.utilitarios.Configuracao;
 import com.anequimplus.utilitarios.DisplaySet;
 
@@ -150,7 +150,7 @@ public class Fragment_pedidos extends Fragment {
         DaoDbTabela.getPedidoADO(getContext()).limparPedidosVazios() ;
         List<Pedido> list = DaoDbTabela.getPedidoADO(getContext()).getList(new FilterTables(), "PEDIDO") ;
         if (list.size() > 0) {
-            new BuildEnviarPedido(getContext(), list, new ListenerEnvioPedido() {
+            new BuildEnviarPedido(getActivity(), list, new ListenerEnvioPedido() {
                 @Override
                 public void envioOK(List<Pedido> l) {
                     comandaRemota(l) ;
@@ -167,7 +167,7 @@ public class Fragment_pedidos extends Fragment {
 
     private void comandaRemota(List<Pedido> l){
 
-        new BuildEnvioComandaRemota(getContext(), l, 0, new ListenerEnvioComandaRemota() {
+        new BuildEnvioComandaRemota(getActivity(), l, 0, new ListenerEnvioComandaRemota() {
             @Override
             public void ok(String msg) {
                 display();
@@ -197,7 +197,7 @@ public class Fragment_pedidos extends Fragment {
         Log.i("display", "acionou") ;
         List<FilterTable> filters = new ArrayList<FilterTable>() ;
         filters.add(new FilterTable("STATUS", "=", "1")) ;
-        new BuildContaPedidoView(getContext(), filters, "", new ListenerContaPedidoView() {
+        new BuildContaPedidoView(getActivity(), filters, "", new ListenerContaPedidoView() {
             @Override
             public void ok(List<ContaPedidoView> l) {
                addPedidoView();

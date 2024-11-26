@@ -1,8 +1,9 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
+import com.anequimplus.utilitarios.TokenSet;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONException;
@@ -13,7 +14,7 @@ import java.net.URL;
 
 public abstract class ConexaoRefheshToken extends ConexaoServer {
 
-    public ConexaoRefheshToken(Context ctx) {
+    public ConexaoRefheshToken(Activity ctx) {
         super(ctx);
         try {
             msg = "Refhesh Token";
@@ -30,6 +31,7 @@ public abstract class ConexaoRefheshToken extends ConexaoServer {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        Log.e("RefreshToken", "token " + TokenSet.getToken(ctx));
         Log.e("RefreshToken", "Cod " + codInt + " " + s);
         try {
             JSONObject j = new JSONObject(s);

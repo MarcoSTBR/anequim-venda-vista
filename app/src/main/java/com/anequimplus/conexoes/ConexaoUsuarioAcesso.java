@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -23,7 +23,7 @@ public class ConexaoUsuarioAcesso extends ConexaoServer{
     private ListenerUsuarioAcesso listenerUsuarioAcesso ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoUsuarioAcesso(Context ctx, FilterTables filters, String order, ListenerUsuarioAcesso listenerUsuarioAcesso) throws MalformedURLException {
+    public ConexaoUsuarioAcesso(Activity ctx, FilterTables filters, String order, ListenerUsuarioAcesso listenerUsuarioAcesso) throws MalformedURLException {
         super(ctx);
         msg = "Consulta Acessos" ;
         this.listenerUsuarioAcesso = listenerUsuarioAcesso;

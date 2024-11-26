@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.Pedido;
@@ -14,12 +14,12 @@ import java.util.List;
 
 public class ConexaoEnvioPedido {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ListerConexao listerConexao ;
     private List<Pedido> list ;
     private ListenerEnvioPedido listenerEnvioPedido ;
 
-    public ConexaoEnvioPedido(Context ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido) throws MalformedURLException, JSONException {
+    public ConexaoEnvioPedido(Activity ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido) throws MalformedURLException, JSONException {
        // super(ctx);
        // msg = "Enviando Pedido" ;
         this.ctx = ctx ;

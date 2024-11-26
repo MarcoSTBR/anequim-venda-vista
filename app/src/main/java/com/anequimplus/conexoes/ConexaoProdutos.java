@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,7 +15,7 @@ import java.net.URL;
 
 public abstract class ConexaoProdutos extends ConexaoServer{
 
-    public ConexaoProdutos(Context ctx){
+    public ConexaoProdutos(Activity ctx){
         super(ctx);
         try {
             msg = "Atualizando Produtos...";

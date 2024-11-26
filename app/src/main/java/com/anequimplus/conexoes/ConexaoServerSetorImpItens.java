@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -23,7 +23,7 @@ public class ConexaoServerSetorImpItens extends ConexaoServer{
     private String order ;
     private ListenerSetorImpItens listenerSetorImpItens ;
 
-    public ConexaoServerSetorImpItens(Context ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
+    public ConexaoServerSetorImpItens(Activity ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
         super(ctx);
         msg = "Consultando Setores Itens..." ;
         this.filter = filter;

@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -25,7 +25,7 @@ public class ConexaoSangriaCompartilhada extends ConexaoServer{
     private TipoConexao tipoConexao ;
     private ListenerSangria listenerSangria ;
 
-    public ConexaoSangriaCompartilhada(Context ctx, FilterTables filters, ListenerSangria listenerSangria) throws MalformedURLException {
+    public ConexaoSangriaCompartilhada(Activity ctx, FilterTables filters, ListenerSangria listenerSangria) throws MalformedURLException {
         super(ctx);
         msg = "Sangria..." ;
         method = "GET" ;
@@ -36,7 +36,7 @@ public class ConexaoSangriaCompartilhada extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/sangria") ;
     }
 
-    public ConexaoSangriaCompartilhada(Context ctx, Sangria sangria, ListenerSangria listenerSangria) throws MalformedURLException, JSONException {
+    public ConexaoSangriaCompartilhada(Activity ctx, Sangria sangria, ListenerSangria listenerSangria) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Sangria..." ;
         method = "POST" ;

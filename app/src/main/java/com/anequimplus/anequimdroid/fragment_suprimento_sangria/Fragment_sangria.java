@@ -17,18 +17,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.adapter.ModalidadeSupSanAdapter;
 import com.anequimplus.adapter.SangriaAdapter;
-import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.anequimdroid.ActivityValor;
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.builds.BuildControleAcesso;
 import com.anequimplus.builds.BuildSangria;
-import com.anequimplus.listeners.ListenerCaixa;
-import com.anequimplus.listeners.ListenerControleAcesso;
-import com.anequimplus.listeners.ListenerSangria;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
@@ -38,6 +35,9 @@ import com.anequimplus.entity.Sangria;
 import com.anequimplus.impressao.BuilderControleImp;
 import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ListenerImpressao;
+import com.anequimplus.listeners.ListenerCaixa;
+import com.anequimplus.listeners.ListenerControleAcesso;
+import com.anequimplus.listeners.ListenerSangria;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.utilitarios.DisplaySet;
 import com.anequimplus.utilitarios.RowImpressao;
@@ -106,7 +106,7 @@ public class Fragment_sangria extends Fragment {
         FilterTables f = new FilterTables() ;
         f.add(new FilterTable("USUARIO_ID", "=", String.valueOf(UtilSet.getUsuarioId(getContext())))) ;
         f.add(new FilterTable("STATUS", "=", "1")) ;
-        new BuildCaixa(getContext(), f, "", new ListenerCaixa() {
+        new BuildCaixa(getActivity(), f, "", new ListenerCaixa() {
             @Override
             public void ok(List<Caixa> l) {
                 if (l.size()>0){
@@ -193,7 +193,7 @@ public class Fragment_sangria extends Fragment {
         String order = "ID" ;
         Log.i("sangria", "id caixa "+caixa.getId());
         f.add(new FilterTable("CAIXA_ID", "=", String.valueOf(caixa.getId())));
-        new BuildSangria(getContext(), f, order, new ListenerSangria() {
+        new BuildSangria(getActivity(), f, order, new ListenerSangria() {
             @Override
             public void ok(List<Sangria> l) {
                 StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(DisplaySet.getNumeroDeColunasGrade(getContext()), StaggeredGridLayoutManager.VERTICAL);
@@ -249,7 +249,7 @@ public class Fragment_sangria extends Fragment {
     }
     private void addSangria(){
         Sangria it = new Sangria(0, edit.getText().toString(), new Date(), caixa.getId(), modalidade.getId(), valor, UtilSet.getUUID(), 1) ;
-        new BuildSangria(getContext(), it, new ListenerSangria() {
+        new BuildSangria(getActivity(), it, new ListenerSangria() {
             @Override
             public void ok(List<Sangria> l) {
                 imprimir(it) ;

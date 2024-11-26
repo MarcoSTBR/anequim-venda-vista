@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoSuprimentoCompartilhado;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuildSuprimento {
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private Suprimento suprimento ;
     private ListenerSuprimento listenerSuprimento ;
     private TipoConexao tipoConexao ;
 
-    public BuildSuprimento(Context ctx, FilterTables filters, String order, ListenerSuprimento listenerSuprimento) {
+    public BuildSuprimento(Activity ctx, FilterTables filters, String order, ListenerSuprimento listenerSuprimento) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order ;
@@ -32,7 +32,7 @@ public class BuildSuprimento {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildSuprimento(Context ctx, Suprimento suprimento, ListenerSuprimento listenerSuprimento) {
+    public BuildSuprimento(Activity ctx, Suprimento suprimento, ListenerSuprimento listenerSuprimento) {
         this.ctx = ctx;
         this.suprimento = suprimento;
         this.listenerSuprimento = listenerSuprimento;

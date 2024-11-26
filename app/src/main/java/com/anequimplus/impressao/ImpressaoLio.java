@@ -4,19 +4,22 @@ import android.content.Context;
 
 import com.anequimplus.utilitarios.RowImpressao;
 
-import java.util.HashMap;
 import java.util.List;
 
+/*
 import cielo.orders.domain.PrinterAttributes;
 import cielo.sdk.order.PrinterListener;
 import cielo.sdk.printer.PrinterManager;
+*/
 
 public class ImpressaoLio {
     private Context ctx ;
     private ListenerImpressao listenerImpressao ;
     private List<RowImpressao> listLinhas ;
+/*
     private PrinterListener printerListener ;
     private PrinterManager printerManager ;
+*/
     private int status ;
 
     public ImpressaoLio(Context ctx, ListenerImpressao listenerImpressao, List<RowImpressao> listLinhas) {
@@ -27,6 +30,7 @@ public class ImpressaoLio {
     }
 
     private void imprimir(){
+/*
         printerManager = new PrinterManager(ctx) ;
         status = 1 ;
 
@@ -56,8 +60,10 @@ public class ImpressaoLio {
             if (status != 1) break;
         }
 
+*/
     }
 
+/*
     private void sendString(RowImpressao linha, PrinterListener printerListener){
         HashMap<String, Integer> alinhamento =  new HashMap<>() ;
         //TipoAlinhamento.ptCenter
@@ -65,7 +71,9 @@ public class ImpressaoLio {
             case 0 :
                 alinhamento.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_LEFT);
                 alinhamento.put(PrinterAttributes.KEY_TYPEFACE, 0);
-                alinhamento.put(PrinterAttributes.KEY_TEXT_SIZE, linha.getTamFont() /*20*/);
+                alinhamento.put(PrinterAttributes.KEY_TEXT_SIZE, linha.getTamFont() */
+/*20*//*
+);
                 break ;
             case 1 :
                 alinhamento.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_CENTER);
@@ -81,4 +89,5 @@ public class ImpressaoLio {
         };
         printerManager.printText(linha.getLinha(), alinhamento, printerListener) ;
     }
+*/
 }

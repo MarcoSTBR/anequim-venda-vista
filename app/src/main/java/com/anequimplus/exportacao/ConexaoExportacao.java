@@ -1,6 +1,6 @@
 package com.anequimplus.exportacao;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.conexoes.ConexaoServer;
@@ -19,7 +19,7 @@ public abstract class ConexaoExportacao extends ConexaoServer {
     private JSONArray l ;
     protected RegExport regExport ;
 
-    public ConexaoExportacao(Context ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
+    public ConexaoExportacao(Activity ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
         super(ctx);
         msg = "Exportando...." ;
         this.listenerExportacao = listenerExportacao ;

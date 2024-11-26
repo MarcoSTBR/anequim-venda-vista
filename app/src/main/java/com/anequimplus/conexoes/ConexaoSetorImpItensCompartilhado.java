@@ -1,5 +1,6 @@
 package com.anequimplus.conexoes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -23,7 +24,7 @@ public class ConexaoSetorImpItensCompartilhado extends ConexaoServer{
     private ListenerSetorImpItens listenerSetorImpItens ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoSetorImpItensCompartilhado(Context ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
+    public ConexaoSetorImpItensCompartilhado(Activity ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
         super(ctx);
         msg = "Consultando Setor Impressora...." ;
         method = "GET" ;
@@ -34,7 +35,7 @@ public class ConexaoSetorImpItensCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp_itens") ;
     }
 
-    public ConexaoSetorImpItensCompartilhado(Context ctx, List<SetorImpItens> setorImps, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpItensCompartilhado(Activity ctx, List<SetorImpItens> setorImps, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores..." ;
         method= "POST" ;
@@ -44,7 +45,7 @@ public class ConexaoSetorImpItensCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp_itens") ;
     }
 
-    public ConexaoSetorImpItensCompartilhado(Context ctx, SetorImpItens setorImp, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpItensCompartilhado(Activity ctx, SetorImpItens setorImp, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores..." ;
         method= "POST" ;
@@ -54,7 +55,7 @@ public class ConexaoSetorImpItensCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkComandaRemota(ctx)+"/setor_imp_itens") ;
     }
 
-    public ConexaoSetorImpItensCompartilhado(Context ctx, FilterTables filter, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
+    public ConexaoSetorImpItensCompartilhado(Activity ctx, FilterTables filter, ListenerSetorImpItens listenerSetorImpItens) throws MalformedURLException {
         super(ctx);
         msg = "Excluindo Setores..." ;
         method = "DELETE" ;

@@ -6,8 +6,8 @@ import android.widget.Toast;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
 import com.anequimplus.entity.Impressora;
-import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.tipos.TipoAlinhamento;
+import com.anequimplus.utilitarios.RowImpressao;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -16,16 +16,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/*
 
 import cielo.orders.domain.PrinterAttributes;
 import cielo.sdk.order.PrinterListener;
 import cielo.sdk.printer.PrinterManager;
+*/
 
 public class ContaPedidoLIO extends CorpoRelatorio {
 
     private Context ctx ;
+/*
     private PrinterManager printerManager ;
     private PrinterListener printerListener ;
+*/
     private ListenerImpressao listenerImpressao;
     private ContaPedido contaPedido ;
     private int status ;
@@ -38,10 +42,11 @@ public class ContaPedidoLIO extends CorpoRelatorio {
         this.ctx = ctx;
         this.listenerImpressao = listenerImpressao;
         this.contaPedido = contaPedido;
-        printerManager = new PrinterManager(ctx) ;
+//        printerManager = new PrinterManager(ctx) ;
     }
 
     public void executar(){
+/*
         printerListener = new PrinterListener() {
             @Override
             public void onPrintSuccess() {
@@ -68,6 +73,7 @@ public class ContaPedidoLIO extends CorpoRelatorio {
         };
         //imprimirContaPedido() ;
      execute() ;
+*/
     }
 
     private void imprimirContaPedido() {
@@ -107,29 +113,36 @@ public class ContaPedidoLIO extends CorpoRelatorio {
         String litp = "( "+frmQ.format(it.getQuantidade())+" ) "+frmV.format(it.getValor()) ;
         String[] linha = {litd, litp}  ;
         HashMap<String, Integer> alDesc =  new HashMap<>() ;
+/*
         alDesc.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_LEFT);
         alDesc.put(PrinterAttributes.KEY_TYPEFACE, 0);
         alDesc.put(PrinterAttributes.KEY_TEXT_SIZE, 10);
         alDesc.put(PrinterAttributes.KEY_WEIGHT, 2);
+*/
         HashMap<String, Integer> alVal =  new HashMap<>() ;
+/*
         alVal.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_LEFT);
         alVal.put(PrinterAttributes.KEY_TYPEFACE, 1);
         alVal.put(PrinterAttributes.KEY_TEXT_SIZE, 10);
         alVal.put(PrinterAttributes.KEY_WEIGHT, 1);
+*/
         List<Map<String, Integer>> stylesMap =  new ArrayList<>();
         stylesMap.add(alDesc);
         stylesMap.add(alVal);
-        printerManager.printMultipleColumnText(linha, stylesMap, printerListener);
+//        printerManager.printMultipleColumnText(linha, stylesMap, printerListener);
     }
 
     private void sendString(RowImpressao l){
         if (status == 1) {
             HashMap<String, Integer> alinhamento = new HashMap<>();
+/*
             switch (l.getTipoAlinhamento().valor) {
                 case 0:
                     alinhamento.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_LEFT);
                     alinhamento.put(PrinterAttributes.KEY_TYPEFACE, 0);
-                    alinhamento.put(PrinterAttributes.KEY_TEXT_SIZE, l.getTamFont() /*20*/);
+                    alinhamento.put(PrinterAttributes.KEY_TEXT_SIZE, l.getTamFont() */
+/*20*//*
+);
                     break;
                 case 1:
                     alinhamento.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_CENTER);
@@ -145,6 +158,7 @@ public class ContaPedidoLIO extends CorpoRelatorio {
             }
             ;
             printerManager.printText(l.getLinha(), alinhamento, printerListener);
+*/
         }
     }
 

@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.utilitarios.ConfiguracaoCloudNFceNFCe;
@@ -16,7 +16,7 @@ public class ConexaoCloudNFceCertificado extends ConexaoCloudNFCe{
 
     private ListenerCloudNFCeCertificado listenerCloudNFCeCertificado ;
 
-    public ConexaoCloudNFceCertificado(Context ctx, ListenerCloudNFCeCertificado listenerCloudNFCeCertificado) throws MalformedURLException {
+    public ConexaoCloudNFceCertificado(Activity ctx, ListenerCloudNFCeCertificado listenerCloudNFCeCertificado) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         this.listenerCloudNFCeCertificado = listenerCloudNFCeCertificado ;

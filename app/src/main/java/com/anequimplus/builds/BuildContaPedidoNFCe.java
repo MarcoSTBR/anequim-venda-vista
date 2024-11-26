@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoContaPedidoNFCeCompartilhado;
@@ -18,14 +18,14 @@ import java.util.List;
 
 public class BuildContaPedidoNFCe {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ContaPedidoNFCe contaPedidoNfce = null;
     private FilterTables filter ;
     private String order ;
     private ListenerContaPedidoNfce listenerEmissaoNfce ;
     private TipoConexao tipoConexao ;
 
-    public BuildContaPedidoNFCe(Context ctx, FilterTables filter, String order, ListenerContaPedidoNfce listenerEmissaoNfce) {
+    public BuildContaPedidoNFCe(Activity ctx, FilterTables filter, String order, ListenerContaPedidoNfce listenerEmissaoNfce) {
         this.ctx = ctx;
         this.filter = filter;
         this.order = order;
@@ -33,7 +33,7 @@ public class BuildContaPedidoNFCe {
         this.tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildContaPedidoNFCe(Context ctx, ContaPedidoNFCe contaPedidoNfce, TipoConexao tipoConexao, ListenerContaPedidoNfce listenerEmissaoNfce) {
+    public BuildContaPedidoNFCe(Activity ctx, ContaPedidoNFCe contaPedidoNfce, TipoConexao tipoConexao, ListenerContaPedidoNfce listenerEmissaoNfce) {
         this.ctx = ctx;
         this.contaPedidoNfce = contaPedidoNfce;
         this.listenerEmissaoNfce = listenerEmissaoNfce;

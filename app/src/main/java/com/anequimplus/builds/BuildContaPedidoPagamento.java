@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoContaPedidoPagamento;
 import com.anequimplus.conexoes.ConexaoContaPedidoPagamentoCompartilhado;
@@ -16,14 +16,14 @@ import java.net.MalformedURLException;
 
 public class BuildContaPedidoPagamento {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private ContaPedidoPagamento contaPedidoPagamento ;
     private ListenerContaPedidoPagamento listenerContaPedidoPagamento ;
     private TipoConexao tipoConexao ;
 
-    public BuildContaPedidoPagamento(Context ctx, FilterTables filters, String order, ListenerContaPedidoPagamento listenerContaPedidoPagamento) {
+    public BuildContaPedidoPagamento(Activity ctx, FilterTables filters, String order, ListenerContaPedidoPagamento listenerContaPedidoPagamento) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order ;
@@ -31,7 +31,7 @@ public class BuildContaPedidoPagamento {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildContaPedidoPagamento(Context ctx, ContaPedidoPagamento contaPedidoPagamento, ListenerContaPedidoPagamento listenerContaPedidoPagamento) {
+    public BuildContaPedidoPagamento(Activity ctx, ContaPedidoPagamento contaPedidoPagamento, ListenerContaPedidoPagamento listenerContaPedidoPagamento) {
         this.ctx = ctx;
         this.contaPedidoPagamento = contaPedidoPagamento;
         this.listenerContaPedidoPagamento = listenerContaPedidoPagamento;

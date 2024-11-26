@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.ContaPedido;
@@ -23,7 +23,7 @@ public abstract class ConexaoExportarCancelamentos extends ConexaoServer{
    private List<ContaPedidoItemCancelamento> listContaPedidocancelamento ;
    private List<ContaPedidoItemCancelamento> listCancelamentoEnviados ;
 
-   public ConexaoExportarCancelamentos(Context ctx, List<ContaPedidoItemCancelamento> listContaPedidocancelamento, List<ContaPedido> contaPedidoList) throws MalformedURLException {
+   public ConexaoExportarCancelamentos(Activity ctx, List<ContaPedidoItemCancelamento> listContaPedidocancelamento, List<ContaPedido> contaPedidoList) throws MalformedURLException {
      super(ctx);
      this.listContaPedidocancelamento = listContaPedidocancelamento ;
      this.contaPedidoList = contaPedidoList ;

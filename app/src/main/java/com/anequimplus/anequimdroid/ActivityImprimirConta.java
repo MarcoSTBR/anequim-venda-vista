@@ -19,8 +19,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildControleAcesso;
 import com.anequimplus.entity.ContaPedido;

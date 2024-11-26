@@ -15,8 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.OpcoesFechamentoAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.OpcoesFechamentoAdapter;
 import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildControleAcesso;

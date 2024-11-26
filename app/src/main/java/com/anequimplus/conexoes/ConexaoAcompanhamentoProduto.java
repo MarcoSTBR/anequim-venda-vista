@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -21,12 +21,12 @@ import java.util.List;
 
 public class ConexaoAcompanhamentoProduto extends ConexaoServer{
 
-    private Context ctx ;
+    private Activity ctx ;
     private ListenerAcompanhamentoProduto listenerAcompanhamentoProduto ;
     private TipoConexao tipoConexao ;
 
 
-    public ConexaoAcompanhamentoProduto(Context ctx, FilterTables filters, String order, ListenerAcompanhamentoProduto listenerAcompanhamentoProduto) throws MalformedURLException {
+    public ConexaoAcompanhamentoProduto(Activity ctx, FilterTables filters, String order, ListenerAcompanhamentoProduto listenerAcompanhamentoProduto) throws MalformedURLException {
         super(ctx);
         method = "POST" ;
         msg = "Acompanhamentos de Produtos..." ;

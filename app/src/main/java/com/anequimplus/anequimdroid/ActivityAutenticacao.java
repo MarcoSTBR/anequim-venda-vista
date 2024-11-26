@@ -189,7 +189,7 @@ public class ActivityAutenticacao extends AppCompatActivity {
 
     private void setQRCode(){
         IntentIntegrator integrator = new IntentIntegrator(this) ;
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES) ;
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE) ;
         integrator.setPrompt("Autenticação") ;
         integrator.setCameraId(0) ;
         integrator.initiateScan();

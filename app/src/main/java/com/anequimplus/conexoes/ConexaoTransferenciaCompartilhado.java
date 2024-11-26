@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.builds.BuildContaPedido;
@@ -38,7 +38,7 @@ public class ConexaoTransferenciaCompartilhado extends ConexaoServer{
     private ContaPedidoItem contaPedidoItem ;
     private ContaPedidoItem contaPedidoItemDestino ;
 
-    public ConexaoTransferenciaCompartilhado(Context ctx, FilterTables filterTables, String order, ListenerTransferencia listenerTransferencia) throws MalformedURLException {
+    public ConexaoTransferenciaCompartilhado(Activity ctx, FilterTables filterTables, String order, ListenerTransferencia listenerTransferencia) throws MalformedURLException {
         super(ctx);
         msg = "Consultando Transfencias ...." ;
         method = "GET" ;
@@ -50,7 +50,7 @@ public class ConexaoTransferenciaCompartilhado extends ConexaoServer{
 
     }
 
-    public ConexaoTransferenciaCompartilhado(Context ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia) throws MalformedURLException{
+    public ConexaoTransferenciaCompartilhado(Activity ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia) throws MalformedURLException{
         super(ctx);
         method = "POST" ;
         msg = "Transferindo ...." ;

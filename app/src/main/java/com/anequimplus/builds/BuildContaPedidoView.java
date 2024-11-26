@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoContaPedidoView;
@@ -16,12 +16,12 @@ import java.util.List;
 
 public class BuildContaPedidoView {
 
-    private Context ctx ;
+    private Activity ctx ;
     private List<FilterTable> filters ;
     private String order ;
     private ListenerContaPedidoView listenerContaPedidoView ;
 
-    public BuildContaPedidoView(Context ctx, List<FilterTable> filters, String order, ListenerContaPedidoView listenerContaPedidoView) {
+    public BuildContaPedidoView(Activity ctx, List<FilterTable> filters, String order, ListenerContaPedidoView listenerContaPedidoView) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order;

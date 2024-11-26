@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.utilitarios.UtilSet;
@@ -14,7 +14,7 @@ import java.net.URL;
 public abstract class ConexaoConfiguracaoLio extends ConexaoServer {
 
 
-    public ConexaoConfiguracaoLio(Context  ctx) throws MalformedURLException {
+    public ConexaoConfiguracaoLio(Activity ctx) throws MalformedURLException {
         super(ctx);
         msg = "Configuração LIO" ;
         maps.put("class","AfoodConfiguracaoLio") ;

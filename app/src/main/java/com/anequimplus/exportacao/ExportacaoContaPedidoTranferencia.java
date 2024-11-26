@@ -1,6 +1,6 @@
 package com.anequimplus.exportacao;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedido;
@@ -22,7 +22,7 @@ public class ExportacaoContaPedidoTranferencia extends ConexaoExportacao impleme
     private List<Transferencia> list ;
     private ListenerExportacao listenerExportacao ;
 
-    public ExportacaoContaPedidoTranferencia(Context ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
+    public ExportacaoContaPedidoTranferencia(Activity ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
         super(ctx, regExport, listenerExportacao);
         this.listenerExportacao = listenerExportacao ;
     }

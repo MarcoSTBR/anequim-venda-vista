@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoEnvioContaPedidoComandaRemota;
 import com.anequimplus.entity.Pedido;
@@ -21,12 +21,12 @@ import java.util.List;
 
 public class BuildEnvioComandaRemota {
 
-    private Context ctx ;
+    private Activity ctx ;
     private List<Pedido> list ;
     private ListenerEnvioComandaRemota listenerEnvioComandaRemota ;
     private int cancelamento ;
 
-    public BuildEnvioComandaRemota(Context ctx, List<Pedido> list, int cancelamento, ListenerEnvioComandaRemota listenerEnvioComandaRemota) {
+    public BuildEnvioComandaRemota(Activity ctx, List<Pedido> list, int cancelamento, ListenerEnvioComandaRemota listenerEnvioComandaRemota) {
         this.ctx = ctx;
         this.list = list;
         this.cancelamento = cancelamento ;

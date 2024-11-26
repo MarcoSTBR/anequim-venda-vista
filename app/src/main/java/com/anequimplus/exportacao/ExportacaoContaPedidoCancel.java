@@ -1,6 +1,6 @@
 package com.anequimplus.exportacao;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedidoItem;
@@ -20,7 +20,7 @@ public class ExportacaoContaPedidoCancel extends ConexaoExportacao implements Pa
     private List<ContaPedidoItemCancelamento> list ;
     private ListenerExportacao listenerExportacao ;
 
-    public ExportacaoContaPedidoCancel(Context ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
+    public ExportacaoContaPedidoCancel(Activity ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
         super(ctx, regExport, listenerExportacao);
         this.listenerExportacao = listenerExportacao ;
     }

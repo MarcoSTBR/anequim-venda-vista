@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.anequimdroid.R;
-import com.anequimplus.valores.ControlePeso;
 import com.anequimplus.entity.Acompanhamento_produto;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
@@ -31,6 +30,7 @@ import com.anequimplus.entity.PedidoItem;
 import com.anequimplus.entity.PedidoItemAcomp;
 import com.anequimplus.entity.Produto;
 import com.anequimplus.listeners.ListenerAcompanhamentoSelect;
+import com.anequimplus.valores.ControlePeso;
 
 import java.text.DecimalFormat;
 import java.util.List;

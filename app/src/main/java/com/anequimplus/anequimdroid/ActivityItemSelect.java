@@ -12,8 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.anequimplus.adapter.AcompanhamentoAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.AcompanhamentoAdapter;
 import com.anequimplus.entity.Acompanhamento;
 import com.anequimplus.entity.Acompanhamento_Item;
 import com.anequimplus.entity.Acompanhamento_produto;

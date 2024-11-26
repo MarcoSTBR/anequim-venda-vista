@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoSetorImpItensCompartilhado;
 import com.anequimplus.entity.FilterTables;
@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 public class BuildSetorImpItens {
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filter ;
     private String order ;
     private SetorImpItens setorImpItens ;
@@ -23,7 +23,7 @@ public class BuildSetorImpItens {
     private TipoConexao tipoConexao ;
     private List<SetorImpItens> listsetorImpItens ;
 
-    public BuildSetorImpItens(Context ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) {
+    public BuildSetorImpItens(Activity ctx, FilterTables filter, String order, ListenerSetorImpItens listenerSetorImpItens) {
         this.ctx = ctx;
         this.filter = filter;
         this.order = order;
@@ -31,7 +31,7 @@ public class BuildSetorImpItens {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildSetorImpItens(Context ctx, SetorImpItens setorImpItens, ListenerSetorImpItens listenerSetorImpItens) {
+    public BuildSetorImpItens(Activity ctx, SetorImpItens setorImpItens, ListenerSetorImpItens listenerSetorImpItens) {
         this.ctx = ctx;
         this.setorImpItens = setorImpItens;
         this.listenerSetorImpItens = listenerSetorImpItens;
@@ -40,14 +40,14 @@ public class BuildSetorImpItens {
         else tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImpItens(Context ctx, List<SetorImpItens> listsetorImpItens, ListenerSetorImpItens listenerSetorImpItens) {
+    public BuildSetorImpItens(Activity ctx, List<SetorImpItens> listsetorImpItens, ListenerSetorImpItens listenerSetorImpItens) {
         this.ctx = ctx;
         this.listsetorImpItens = listsetorImpItens;
         this.listenerSetorImpItens = listenerSetorImpItens;
         tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImpItens(Context ctx, FilterTables filter, ListenerSetorImpItens listenerSetorImpItens) {
+    public BuildSetorImpItens(Activity ctx, FilterTables filter, ListenerSetorImpItens listenerSetorImpItens) {
         this.ctx = ctx;
         this.filter = filter;
         this.order = order;

@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.ContaPedidoDest;
@@ -24,7 +24,7 @@ public class ConexaoContaPedidoDest extends ConexaoServer{
     private TipoConexao tipoConexao ;
 
 
-    public ConexaoContaPedidoDest(Context ctx, FilterTables filters, String order, ListenerContaPedidoDest listenerContaPedidoDest) throws MalformedURLException {
+    public ConexaoContaPedidoDest(Activity ctx, FilterTables filters, String order, ListenerContaPedidoDest listenerContaPedidoDest) throws MalformedURLException {
         super(ctx);
         msg = "Destinatário..." ;
         method = "GET" ;
@@ -35,7 +35,7 @@ public class ConexaoContaPedidoDest extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/conta_pedido_dest") ;
     }
 
-    public ConexaoContaPedidoDest(Context ctx, ContaPedidoDest contaPedidoDest, ListenerContaPedidoDest listenerContaPedidoDest) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoDest(Activity ctx, ContaPedidoDest contaPedidoDest, ListenerContaPedidoDest listenerContaPedidoDest) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Destinatário..." ;
         method = "POST" ;

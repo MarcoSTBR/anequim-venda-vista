@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.ConfigImpressoraAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.ConfigImpressoraAdapter;
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.utilitarios.DisplaySet;
 

@@ -70,7 +70,7 @@ public class FragmentNFCe extends Fragment implements RadioGroup.OnCheckedChange
                 FilterTables f = new FilterTables() ;
                 f.add(new FilterTable("CNPJ", "=", UtilSet.getCnpj(getContext())));
                 try {
-                    new ConexaoConfiguracaoCloudNFCe(getContext(), f, new ListenerConfiguracaoCloudNFCe() {
+                    new ConexaoConfiguracaoCloudNFCe(getActivity(), f, new ListenerConfiguracaoCloudNFCe() {
                         @Override
                         public void ok(String token) {
                             //Toast.makeText(getContext(), token, Toast.LENGTH_LONG).show();
@@ -144,7 +144,7 @@ public class FragmentNFCe extends Fragment implements RadioGroup.OnCheckedChange
 
     private void getCertificado() {
         try {
-            new ConexaoCloudNFceCertificado(getContext(), new ListenerCloudNFCeCertificado() {
+            new ConexaoCloudNFceCertificado(getActivity(), new ListenerCloudNFCeCertificado() {
                 @Override
                 public void ok(String msg, Date validade) {
                     ConfiguracaoCloudNFceNFCe.setCertificadoValidade(getContext(), validade) ;

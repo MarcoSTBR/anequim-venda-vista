@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -24,7 +24,7 @@ public class ConexaoEnvioPedidoCompartilhado extends ConexaoServer {
     private List<Pedido> list ;
     private ListenerEnvioPedido listenerEnvioPedido ;
 
-    public ConexaoEnvioPedidoCompartilhado(Context ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido) throws MalformedURLException, JSONException {
+    public ConexaoEnvioPedidoCompartilhado(Activity ctx, List<Pedido> list, ListenerEnvioPedido listenerEnvioPedido) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Enviando Pedido" ;
         method = "POST" ;

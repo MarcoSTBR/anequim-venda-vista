@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.listeners.ListenerEnvioComandaRemota;
@@ -18,7 +18,7 @@ public class ConexaoEnvioContaPedidoComandaRemota extends ConexaoServer{
     private JSONArray json ;
     private ListenerEnvioComandaRemota listenerEnvioComandaRemota ;
 
-    public ConexaoEnvioContaPedidoComandaRemota(Context ctx, JSONArray json, ListenerEnvioComandaRemota listenerEnvioComandaRemota) throws MalformedURLException {
+    public ConexaoEnvioContaPedidoComandaRemota(Activity ctx, JSONArray json, ListenerEnvioComandaRemota listenerEnvioComandaRemota) throws MalformedURLException {
         super(ctx);
         method = "POST" ;
         msg = "Comanda Remota" ;

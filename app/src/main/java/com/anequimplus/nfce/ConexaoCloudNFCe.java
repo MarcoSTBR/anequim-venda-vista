@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class ConexaoCloudNFCe extends AsyncTask<String, Void, String> {
 
-    protected Context ctx ;
+    protected Activity ctx ;
     protected URL url ;
     protected String method = "GET" ;
     protected String token  ;
@@ -22,7 +22,7 @@ public class ConexaoCloudNFCe extends AsyncTask<String, Void, String> {
     protected int codigoStatus = 0 ;
 
 
-    public ConexaoCloudNFCe(Context ctx){
+    public ConexaoCloudNFCe(Activity ctx){
         this.ctx = ctx;
         token = ConfiguracaoCloudNFceNFCe.getCloudNfce_token(ctx) ;
     }

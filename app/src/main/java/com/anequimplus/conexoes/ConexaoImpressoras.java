@@ -1,5 +1,6 @@
 package com.anequimplus.conexoes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,7 +16,7 @@ import java.net.URL;
 public abstract class ConexaoImpressoras extends ConexaoServer {
 
 
-    public ConexaoImpressoras(Context ctx) {
+    public ConexaoImpressoras(Activity ctx) {
         super(ctx);
         msg = "Impressoras" ;
         try {

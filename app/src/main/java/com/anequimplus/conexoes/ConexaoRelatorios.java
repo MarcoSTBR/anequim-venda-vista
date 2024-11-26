@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.Impressora;
@@ -18,14 +18,14 @@ import java.util.List;
 
 public class ConexaoRelatorios  {
 
-    private Context ctx ;
+    private Activity ctx ;
     private List<RowImpressao> list ;
     private Impressora impressora ;
     private Caixa caixa ;
     private int opcao_id ;
     private ListenerRelatorio listenerRelatorio ;
 
-    public ConexaoRelatorios(Context ctx, Impressora impressora, Caixa caixa, int opcao_id, ListenerRelatorio listenerRelatorio)  {
+    public ConexaoRelatorios(Activity ctx, Impressora impressora, Caixa caixa, int opcao_id, ListenerRelatorio listenerRelatorio)  {
         this.ctx = ctx;
         this.impressora = impressora ;
         this.caixa = caixa ;

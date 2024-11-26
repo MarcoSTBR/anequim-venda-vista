@@ -1,15 +1,12 @@
 package com.anequimplus.relatorios;
 
-import android.content.Context;
+import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.builds.BuildContaPedidoPagamento;
 import com.anequimplus.builds.BuildSangria;
 import com.anequimplus.builds.BuildSuprimento;
-import com.anequimplus.listeners.ListenerContaPedidoPagamento;
-import com.anequimplus.listeners.ListenerSangria;
-import com.anequimplus.listeners.ListenerSuprimento;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedidoPagamento;
 import com.anequimplus.entity.FilterTable;
@@ -18,6 +15,9 @@ import com.anequimplus.entity.Impressora;
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.entity.Sangria;
 import com.anequimplus.entity.Suprimento;
+import com.anequimplus.listeners.ListenerContaPedidoPagamento;
+import com.anequimplus.listeners.ListenerSangria;
+import com.anequimplus.listeners.ListenerSuprimento;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.tipos.TipoEstiloFont;
 import com.anequimplus.tipos.TipoModalidade;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class RelatorioDemostrativo {
 
-    private Context ctx;
+    private Activity ctx;
     private Impressora impressora ;
     private Caixa caixa ;
     private Double totalDinheiro = 0.0 ;
@@ -44,7 +44,7 @@ public class RelatorioDemostrativo {
     private SQLiteDatabase db = null;
     private List<RegMod> listMod ;
 
-    public RelatorioDemostrativo(Context ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
+    public RelatorioDemostrativo(Activity ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
         this.ctx = ctx;
         this.impressora = impressora ;
         this.caixa = caixa ;

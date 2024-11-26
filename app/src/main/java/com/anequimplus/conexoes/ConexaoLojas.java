@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -24,7 +24,7 @@ public class ConexaoLojas extends ConexaoServer {
     private ListenerLoja listenerLoja;
     private int modo = 0;
 
-    public ConexaoLojas(Context ctx, int id, ListenerLoja listenerLoja) throws MalformedURLException {
+    public ConexaoLojas(Activity ctx, int id, ListenerLoja listenerLoja) throws MalformedURLException {
         super(ctx);
         modo = 1;
         method = "GET";
@@ -38,7 +38,7 @@ public class ConexaoLojas extends ConexaoServer {
         url = new URL(UtilSet.getServidorMaster(ctx));
     }
 
-    public ConexaoLojas(Context ctx, FilterTables filterTables, String order, ListenerLoja listenerLoja) throws MalformedURLException {
+    public ConexaoLojas(Activity ctx, FilterTables filterTables, String order, ListenerLoja listenerLoja) throws MalformedURLException {
         super(ctx);
         method = "GET";
         msg = "Consultando Dados da Loja";

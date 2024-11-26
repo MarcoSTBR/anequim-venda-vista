@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.entity.ContaPedidoPagamento;
 import com.anequimplus.entity.FilterTables;
@@ -9,7 +9,7 @@ import com.anequimplus.tipos.TipoConexao;
 
 public class ContaPedidoParamentoCompartilhado {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private ContaPedidoPagamento contaPedidoPagamento ;
     private ListenerContaPedidoPagamento listenerContaPedidoPagamento ;

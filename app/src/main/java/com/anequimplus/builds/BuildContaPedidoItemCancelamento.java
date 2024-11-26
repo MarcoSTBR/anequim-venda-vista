@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoContaPedidoItemCancelamentoCompartinlhado;
 import com.anequimplus.conexoes.ConexaoContaPedidoItemCancelar;
@@ -18,7 +18,7 @@ import java.net.MalformedURLException;
 
 public class BuildContaPedidoItemCancelamento {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ContaPedidoItemCancelamento contaPedidoItemCancelamento = null  ;
     private FilterTables filters ;
     private String order ;
@@ -27,7 +27,7 @@ public class BuildContaPedidoItemCancelamento {
     private ContaPedido conta ;
     private ContaPedidoItem item ;
 
-    public BuildContaPedidoItemCancelamento(Context ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) {
+    public BuildContaPedidoItemCancelamento(Activity ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order;
@@ -36,14 +36,14 @@ public class BuildContaPedidoItemCancelamento {
     }
 
 
-    public BuildContaPedidoItemCancelamento(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ListenerItemCancelamento listenerItemCancelamento) {
+    public BuildContaPedidoItemCancelamento(Activity ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ListenerItemCancelamento listenerItemCancelamento) {
         this.ctx = ctx;
         this.contaPedidoItemCancelamento = contaPedidoItemCancelamento;
         this.listenerItemCancelamento = listenerItemCancelamento ;
         tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildContaPedidoItemCancelamento(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ContaPedido conta, ContaPedidoItem item, ListenerItemCancelamento listenerItemCancelamento) {
+    public BuildContaPedidoItemCancelamento(Activity ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ContaPedido conta, ContaPedidoItem item, ListenerItemCancelamento listenerItemCancelamento) {
         this.ctx = ctx;
         this.contaPedidoItemCancelamento = contaPedidoItemCancelamento;
         this.listenerItemCancelamento = listenerItemCancelamento ;

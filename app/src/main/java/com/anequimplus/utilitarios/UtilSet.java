@@ -146,6 +146,8 @@ public class UtilSet {
         }
         return r ;
     }
+
+
     public static void setImpPadraoContaPedido(Context ctx, String descricao) {
         gravaParamString(ctx, "IMP_CONTA",descricao) ;
     }
@@ -280,7 +282,8 @@ public class UtilSet {
         // String u =  "http://gerezim.com.br/company/rest.php" ;
         // return lerParamString(ctx, "SERVIDOR_MASTER")
         //String u =  "https://viacep.com.br/ws/01001000/json/" ;
-        String u =  "http://201.73.1.230/anequimfood/rest.php" ;
+       // String u =  "http://201.73.1.230/anequimfood/rest.php" ;
+        String u =  lerParamString(ctx, "SERVIDOR_MASTER") ;
         return u ;
 
     }

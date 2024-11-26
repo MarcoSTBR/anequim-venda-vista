@@ -1,7 +1,7 @@
 package com.anequimplus.conexoes;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.utilitarios.TokenSet;
@@ -18,7 +18,7 @@ public abstract class ConexaoLogin extends ConexaoServer {
     private String login ;
     private String password ;
 
-    public ConexaoLogin(Context ctx, String login, String password)  {
+    public ConexaoLogin(Activity ctx, String login, String password)  {
         super(ctx);
         token = "" ;
         this.login = login ;

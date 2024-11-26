@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTable;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public abstract class ConexaoProdutoNfce extends ConexaoServer {
 
-    public ConexaoProdutoNfce(Context ctx, FilterTable filterTable) throws MalformedURLException {
+    public ConexaoProdutoNfce(Activity ctx, FilterTable filterTable) throws MalformedURLException {
         super(ctx);
         msg = "Consulta Produto NFce" ;
         maps.put("class", "AfoodProdutoNfce");

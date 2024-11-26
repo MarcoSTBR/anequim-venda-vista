@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.ContaPedidoView;
@@ -22,7 +22,7 @@ public class ConexaoContaPedidoView extends ConexaoServer{
     private String order ;
     private ListenerContaPedidoView listenerContaPedidoView ;
 
-    public ConexaoContaPedidoView(Context ctx, List<FilterTable> filters, String order, ListenerContaPedidoView listenerContaPedidoView) throws MalformedURLException {
+    public ConexaoContaPedidoView(Activity ctx, List<FilterTable> filters, String order, ListenerContaPedidoView listenerContaPedidoView) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         msg = "Contas Abertas..." ;

@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.ContaPedido;
@@ -27,7 +27,7 @@ public abstract class ConexaoImpressaoContaPedido extends ConexaoServer {
     private Impressora impressora ;
     private ContaPedido contaPedido ;
 
-    public ConexaoImpressaoContaPedido(Context ctx, Impressora impressora, ContaPedido contaPedido) {
+    public ConexaoImpressaoContaPedido(Activity ctx, Impressora impressora, ContaPedido contaPedido) {
         super(ctx);
         //this.listenerImpressao = listenerImpressao ;
         msg = "Impressão Conta Pedido" ;

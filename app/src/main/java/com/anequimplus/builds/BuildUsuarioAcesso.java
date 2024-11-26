@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoUsuarioAcesso;
 import com.anequimplus.entity.FilterTables;
@@ -12,14 +12,14 @@ import java.net.MalformedURLException;
 
 public class BuildUsuarioAcesso {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private UsuarioAcesso usuarioAcesso ;
     private ListenerUsuarioAcesso listenerUsuarioAcesso ;
     private TipoConexao tipoConexao ;
 
-    public BuildUsuarioAcesso(Context ctx, FilterTables filters, String order, ListenerUsuarioAcesso listenerUsuarioAcesso) {
+    public BuildUsuarioAcesso(Activity ctx, FilterTables filters, String order, ListenerUsuarioAcesso listenerUsuarioAcesso) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order;

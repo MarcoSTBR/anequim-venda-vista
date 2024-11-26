@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.ContaPedido;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ConexaoTransferencia {
 
-    private Context ctx ;
+    private Activity ctx ;
     private Transferencia transferencia;
     private FilterTables filterTables;
     private String order ;
@@ -28,7 +28,7 @@ public class ConexaoTransferencia {
     private String pedido ;
 
 
-    public ConexaoTransferencia(Context ctx, FilterTables filterTables, String order, ListenerTransferencia listenerTransferencia) {
+    public ConexaoTransferencia(Activity ctx, FilterTables filterTables, String order, ListenerTransferencia listenerTransferencia) {
         this.ctx = ctx ;
         this.filterTables = filterTables ;
         this.order = order ;
@@ -36,7 +36,7 @@ public class ConexaoTransferencia {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public ConexaoTransferencia(Context ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia)  {
+    public ConexaoTransferencia(Activity ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia)  {
         this.ctx = ctx ;
         this.pedido = pedido ;
         this.transferencia = transferencia ;

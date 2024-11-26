@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.utilitarios.Configuracao;
@@ -12,7 +12,7 @@ import java.net.URL;
 
 public abstract class ConexaoTeste extends ConexaoServer {
 
-    public ConexaoTeste(Context ctx) throws MalformedURLException {
+    public ConexaoTeste(Activity ctx) throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         token = "" ;

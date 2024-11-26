@@ -61,7 +61,7 @@ public class ActivityConfiguracao extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.action_conf_scan) {
             IntentIntegrator integrator = new IntentIntegrator(this) ;
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES) ;
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE) ;
             integrator.setPrompt("Configurações") ;
             integrator.setCameraId(0) ;
             integrator.initiateScan();

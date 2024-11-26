@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.Terminal;
@@ -14,7 +14,7 @@ import java.net.URL;
 
 public abstract class ConexaoConfTerminal extends ConexaoServer {
 
-    public ConexaoConfTerminal(Context ctx, String mac) {
+    public ConexaoConfTerminal(Activity ctx, String mac) {
         super(ctx);
         method = "GET" ;
         try {
@@ -29,7 +29,7 @@ public abstract class ConexaoConfTerminal extends ConexaoServer {
         }
     }
 
-    public ConexaoConfTerminal(Context ctx, Terminal t)  {
+    public ConexaoConfTerminal(Activity ctx, Terminal t)  {
         super(ctx);
         try {
             msg = "Atualizando Terminal..." ;

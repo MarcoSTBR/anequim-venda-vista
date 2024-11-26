@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoSetorImpCompartilhado;
 import com.anequimplus.entity.FilterTables;
@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 public class BuildSetorImp {
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filter ;
     private String order ;
     private SetorImp setorImp = null ;
@@ -23,7 +23,7 @@ public class BuildSetorImp {
     private ListenerSetorImp listenerSetorImp ;
     private TipoConexao tipoConexao ;
 
-    public BuildSetorImp(Context ctx, FilterTables filter, String order, ListenerSetorImp listenerSetorImp) {
+    public BuildSetorImp(Activity ctx, FilterTables filter, String order, ListenerSetorImp listenerSetorImp) {
         this.ctx = ctx;
         this.filter = filter;
         this.order = order;
@@ -31,7 +31,7 @@ public class BuildSetorImp {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildSetorImp(Context ctx, SetorImp setorImp, ListenerSetorImp listenerSetorImp) {
+    public BuildSetorImp(Activity ctx, SetorImp setorImp, ListenerSetorImp listenerSetorImp) {
         this.ctx = ctx;
         this.setorImp = setorImp;
         this.listenerSetorImp = listenerSetorImp;
@@ -40,14 +40,14 @@ public class BuildSetorImp {
         else tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImp(Context ctx, List<SetorImp> setorImps, ListenerSetorImp listenerSetorImp) {
+    public BuildSetorImp(Activity ctx, List<SetorImp> setorImps, ListenerSetorImp listenerSetorImp) {
         this.ctx = ctx;
         this.setorImps = setorImps;
         this.listenerSetorImp = listenerSetorImp;
         tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImp(Context ctx, FilterTables filter, ListenerSetorImp listenerSetorImp) {
+    public BuildSetorImp(Activity ctx, FilterTables filter, ListenerSetorImp listenerSetorImp) {
         this.ctx = ctx;
         this.filter = filter;
         this.listenerSetorImp = listenerSetorImp;

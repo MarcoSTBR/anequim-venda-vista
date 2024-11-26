@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoSetorImpTerminalCompartilhado;
 import com.anequimplus.entity.FilterTables;
@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 public class BuildSetorImpTerminal {
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filter ;
     private String order ;
     private SetorImpTerminal setorImpTerminal = null ;
@@ -23,7 +23,7 @@ public class BuildSetorImpTerminal {
     private ListenerSetorImpTerminal listenerSetorImpTerminal ;
     private TipoConexao tipoConexao ;
 
-    public BuildSetorImpTerminal(Context ctx, FilterTables filter, String order, ListenerSetorImpTerminal listenerSetorImpTerminal) {
+    public BuildSetorImpTerminal(Activity ctx, FilterTables filter, String order, ListenerSetorImpTerminal listenerSetorImpTerminal) {
         this.ctx = ctx;
         this.filter = filter;
         this.order = order;
@@ -31,7 +31,7 @@ public class BuildSetorImpTerminal {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildSetorImpTerminal(Context ctx, SetorImpTerminal setorImpTerminal, ListenerSetorImpTerminal listenerSetorImpTerminal) {
+    public BuildSetorImpTerminal(Activity ctx, SetorImpTerminal setorImpTerminal, ListenerSetorImpTerminal listenerSetorImpTerminal) {
         this.ctx = ctx;
         this.setorImpTerminal = setorImpTerminal;
         this.listenerSetorImpTerminal = listenerSetorImpTerminal;
@@ -40,14 +40,14 @@ public class BuildSetorImpTerminal {
         else tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImpTerminal(Context ctx, List<SetorImpTerminal> listSetorImpTerminals, ListenerSetorImpTerminal listenerSetorImpTerminal) {
+    public BuildSetorImpTerminal(Activity ctx, List<SetorImpTerminal> listSetorImpTerminals, ListenerSetorImpTerminal listenerSetorImpTerminal) {
         this.ctx = ctx;
         this.listSetorImpTerminals = listSetorImpTerminals;
         this.listenerSetorImpTerminal = listenerSetorImpTerminal;
         tipoConexao = TipoConexao.cxIncluir ;
     }
 
-    public BuildSetorImpTerminal(Context ctx, FilterTables filter, ListenerSetorImpTerminal listenerSetorImpTerminal) {
+    public BuildSetorImpTerminal(Activity ctx, FilterTables filter, ListenerSetorImpTerminal listenerSetorImpTerminal) {
         this.ctx = ctx;
         this.filter = filter;
         this.listenerSetorImpTerminal = listenerSetorImpTerminal;

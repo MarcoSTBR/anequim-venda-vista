@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoTransferencia;
 import com.anequimplus.conexoes.ConexaoTransferenciaCompartilhado;
@@ -14,7 +14,7 @@ import java.net.MalformedURLException;
 
 public class BuildContaPedidoTransferencia {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ListenerTransferencia listenerTransferencia ;
     private Transferencia transferencia ;
     private FilterTables filterTables ;
@@ -22,7 +22,7 @@ public class BuildContaPedidoTransferencia {
     private TipoConexao tipoConexao ;
     private String pedido ;
 
-    public BuildContaPedidoTransferencia(Context ctx, FilterTables filterTables , String order, ListenerTransferencia listenerTransferencia) {
+    public BuildContaPedidoTransferencia(Activity ctx, FilterTables filterTables , String order, ListenerTransferencia listenerTransferencia) {
         this.ctx = ctx;
         this.listenerTransferencia = listenerTransferencia;
         this.filterTables = filterTables;
@@ -30,7 +30,7 @@ public class BuildContaPedidoTransferencia {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildContaPedidoTransferencia(Context ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia) {
+    public BuildContaPedidoTransferencia(Activity ctx, String pedido, Transferencia transferencia, ListenerTransferencia listenerTransferencia) {
         this.ctx = ctx;
         this.pedido = pedido ;
         this.listenerTransferencia = listenerTransferencia;

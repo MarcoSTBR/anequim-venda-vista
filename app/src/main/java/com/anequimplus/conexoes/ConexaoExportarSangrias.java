@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.Caixa;
@@ -23,7 +23,7 @@ public abstract class ConexaoExportarSangrias extends ConexaoServer{
     private List<Sangria> listSangriaEnviadas ;
 
 
-    public ConexaoExportarSangrias(Context ctx, List<Sangria> listSangrias, List<Caixa> caixaList) throws MalformedURLException {
+    public ConexaoExportarSangrias(Activity ctx, List<Sangria> listSangrias, List<Caixa> caixaList) throws MalformedURLException {
         super(ctx);
         this.listSangrias = listSangrias ;
         this.caixaList = caixaList ;

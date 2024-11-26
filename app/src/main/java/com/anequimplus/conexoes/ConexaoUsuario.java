@@ -1,11 +1,13 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
+import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Usuario;
 import com.anequimplus.listeners.ListenerUsuario;
 import com.anequimplus.tipos.TipoConexao;
+import com.anequimplus.utilitarios.TokenSet;
 import com.anequimplus.utilitarios.UtilSet;
 
 import org.json.JSONArray;
@@ -21,9 +23,11 @@ public class ConexaoUsuario extends ConexaoServer{
 
     private ListenerUsuario listenerUsuario ;
     private TipoConexao tipoConexao ;
+    private String t ;
 
-    public ConexaoUsuario(Context ctx, FilterTables filters, String order, ListenerUsuario listenerUsuario)  {
+    public ConexaoUsuario(Activity ctx, FilterTables filters, String order, ListenerUsuario listenerUsuario)  {
         super(ctx);
+        t = TokenSet.getToken(ctx) ;
         method = "GET" ;
         msg = "Consultando Usuários" ;
         maps.put("class", "AfoodUsuario") ;
@@ -47,6 +51,8 @@ public class ConexaoUsuario extends ConexaoServer{
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        Log.i("usuario", "tk "+t) ;
+        Log.i("usuario", codInt+" "+s) ;
         try {
             JSONObject j = new JSONObject(s) ;
             if (j.getString("status").equals("success")) {

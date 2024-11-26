@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.utilitarios.UtilSet;
@@ -13,7 +13,7 @@ import java.net.URL;
 
 public abstract class ConexaoCNPJ extends ConexaoServer{
     private String cnpj ;
-    public ConexaoCNPJ(Context ctx, String cnpj) {
+    public ConexaoCNPJ(Activity ctx, String cnpj) {
         super(ctx);
         this.cnpj = cnpj;
         token = "" ;
@@ -21,8 +21,8 @@ public abstract class ConexaoCNPJ extends ConexaoServer{
         maps.put("method", "autenticacao");
         maps.put("cnpj", cnpj);
         try {
-            url =  new URL(UtilSet.getServidorMaster(ctx)) ;
-           // url =  new URL("https://gileade.com.br/anequimfood/rest.php") ;
+           // url =  new URL(UtilSet.getServidorMaster(ctx)) ;
+            url =  new URL("https://gileade.com.br/anequimfood/rest.php") ;
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

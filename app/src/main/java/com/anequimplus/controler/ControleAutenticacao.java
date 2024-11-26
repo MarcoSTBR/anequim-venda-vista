@@ -1,6 +1,6 @@
 package com.anequimplus.controler;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.conexoes.ConexaoRefheshToken;
@@ -12,10 +12,10 @@ import java.util.Date;
 
 public abstract class ControleAutenticacao {
 
-    private Context ctx;
+    private Activity ctx;
     private final String FORM_DATA = "yyyy-MM-dd";
 
-    public ControleAutenticacao(Context ctx) {
+    public ControleAutenticacao(Activity ctx) {
         this.ctx = ctx;
     }
 
@@ -26,7 +26,7 @@ public abstract class ControleAutenticacao {
     }
 
     private void verificarToken() {
-        if (isDate())
+       if (isDate())
             tokenOk() ;
         else
             refreshToken();

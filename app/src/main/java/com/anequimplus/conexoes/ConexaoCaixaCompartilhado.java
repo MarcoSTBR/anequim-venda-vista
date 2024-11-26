@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.Caixa;
@@ -27,7 +27,7 @@ public class ConexaoCaixaCompartilhado extends ConexaoServer {
     private ListenerCaixa listenercaixa ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoCaixaCompartilhado(Context ctx, FilterTables filters, ListenerCaixa listenercaixa)  throws MalformedURLException {
+    public ConexaoCaixaCompartilhado(Activity ctx, FilterTables filters, ListenerCaixa listenercaixa)  throws MalformedURLException {
         super(ctx);
         method = "GET" ;
         msg = "Consultando Caixa..." ;
@@ -38,7 +38,7 @@ public class ConexaoCaixaCompartilhado extends ConexaoServer {
         url =  new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/caixa") ;
     }
 
-    public ConexaoCaixaCompartilhado(Context ctx, Caixa caixa, ListenerCaixa listenercaixa)  throws MalformedURLException {
+    public ConexaoCaixaCompartilhado(Activity ctx, Caixa caixa, ListenerCaixa listenercaixa)  throws MalformedURLException {
         super(ctx);
         method = "POST" ;
         msg = "Caixa..." ;

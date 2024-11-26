@@ -1,6 +1,6 @@
 package com.anequimplus.anequimdroid.fragment_conta_list;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -23,14 +23,14 @@ import com.anequimplus.anequimdroid.R;
 import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildContaPedidoNFCe;
-import com.anequimplus.listeners.ListenerCaixa;
-import com.anequimplus.listeners.ListenerContaPedido;
-import com.anequimplus.listeners.ListenerContaPedidoNfce;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoNFCe;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
+import com.anequimplus.listeners.ListenerCaixa;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerContaPedidoNfce;
 import com.anequimplus.nfce.BuildEmitirNFce;
 import com.anequimplus.nfce.ListenerEmitirNFce;
 import com.anequimplus.utilitarios.Configuracao;
@@ -78,13 +78,13 @@ public class Fragment_conta_fechada extends Fragment {
         FilterTables filter = new FilterTables() ;
         filter.add(new FilterTable("USUARIO_ID", "=", String.valueOf(UtilSet.getUsuarioId(getContext()))));
         filter.add(new FilterTable("STATUS", "=", "1"));
-        new BuildCaixa(getContext(), filter, "", new ListenerCaixa() {
+        new BuildCaixa(getActivity(), filter, "", new ListenerCaixa() {
             @Override
             public void ok(List<Caixa> l) {
                 if (l.size()>0){
                     caixa = l.get(0) ;
                 }
-                carregar(getContext());
+                carregar(getActivity());
             }
 
             @Override
@@ -94,7 +94,7 @@ public class Fragment_conta_fechada extends Fragment {
         }).executar();
     }
 
-    private void carregar(Context ctx){
+    private void carregar(Activity ctx){
         List<FilterTable> filterTables = new ArrayList<FilterTable>() ;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date ini = new Date() ;
@@ -146,7 +146,7 @@ public class Fragment_conta_fechada extends Fragment {
         FilterTables filters = new FilterTables() ;
         filters.add(new FilterTable("CONTA_PEDIDO_ID", "=", String.valueOf(contaPedido.getId())));
         filters.add(new FilterTable("STATUS", "=", "1"));
-        new BuildContaPedidoNFCe(getContext(), filters, "CONTA_PEDIDO_ID", new ListenerContaPedidoNfce() {
+        new BuildContaPedidoNFCe(getActivity(), filters, "CONTA_PEDIDO_ID", new ListenerContaPedidoNfce() {
             @Override
             public void ok(List<ContaPedidoNFCe> l) {
                 if (l.size()>0){
@@ -167,7 +167,7 @@ public class Fragment_conta_fechada extends Fragment {
 
     public void emissaoRecibo() {
         if (contaPedidoNFCe == null) {
-            new BuildEmitirNFce(getContext(), contaPedido, new ListenerEmitirNFce() {
+            new BuildEmitirNFce(getActivity(), contaPedido, new ListenerEmitirNFce() {
                 @Override
                 public void ok(ContaPedidoNFCe it) {
                    // contaPedidoNFCe = it ;
@@ -202,6 +202,6 @@ public class Fragment_conta_fechada extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        carregar(getContext());
+        carregar(getActivity());
     }
 }

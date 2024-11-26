@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -15,7 +15,7 @@ import java.net.URL;
 public abstract class ConexaoGradeVendas extends ConexaoServer {
 
 
-    public ConexaoGradeVendas(Context ctx)  {
+    public ConexaoGradeVendas(Activity ctx)  {
         super(ctx);
         try {
           msg = "Grade de Vendas..." ;
@@ -37,15 +37,15 @@ public abstract class ConexaoGradeVendas extends ConexaoServer {
             JSONObject j = new JSONObject(s) ;
             if (j.getString("status").equals("success")){
                 DaoDbTabela.getGradeVendasADO(ctx).setGradeVendas(j.getJSONArray("data"));
-                progressDialog.dismiss();
+              //  progressDialog.dismiss();
                 oK() ;
             } else {
-                progressDialog.dismiss();
+              //  progressDialog.dismiss();
                 erro(j.getString("data")) ;
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             erro(s);
         }
 

@@ -1,11 +1,9 @@
 package com.anequimplus.relatorios;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildContaPedidoTransferencia;
-import com.anequimplus.listeners.ListenerContaPedido;
-import com.anequimplus.listeners.ListenerTransferencia;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
@@ -13,6 +11,8 @@ import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.entity.Transferencia;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerTransferencia;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.utilitarios.UtilSet;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RelatorioTransferencias  {
 
-    private Context ctx;
+    private Activity ctx;
     private Impressora impressora ;
     private Caixa caixa ;
     private List<RowImpressao> lRow ;
@@ -33,7 +33,7 @@ public class RelatorioTransferencias  {
     private List<Transferencia> trans ;
     private List<ContaPedido> listContaPedidos ;
 
-    public RelatorioTransferencias(Context ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
+    public RelatorioTransferencias(Activity ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
         this.ctx = ctx;
         this.impressora = impressora;
         this.caixa = caixa;

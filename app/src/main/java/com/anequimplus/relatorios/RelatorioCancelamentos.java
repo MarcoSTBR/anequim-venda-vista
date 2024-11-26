@@ -1,13 +1,10 @@
 package com.anequimplus.relatorios;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.builds.BuildContaPedido;
 import com.anequimplus.builds.BuildContaPedidoItem;
 import com.anequimplus.builds.BuildContaPedidoItemCancelamento;
-import com.anequimplus.listeners.ListenerContaPedido;
-import com.anequimplus.listeners.ListenerContaPedidoItem;
-import com.anequimplus.listeners.ListenerItemCancelamento;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
@@ -15,6 +12,9 @@ import com.anequimplus.entity.ContaPedidoItemCancelamento;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
 import com.anequimplus.entity.Impressora;
+import com.anequimplus.listeners.ListenerContaPedido;
+import com.anequimplus.listeners.ListenerContaPedidoItem;
+import com.anequimplus.listeners.ListenerItemCancelamento;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.utilitarios.UtilSet;
@@ -28,7 +28,7 @@ import java.util.List;
 public class RelatorioCancelamentos  {
 
 
-    private Context ctx;
+    private Activity ctx;
     private Impressora impressora ;
     private Caixa caixa ;
     private List<RowImpressao> lRow ;
@@ -37,7 +37,7 @@ public class RelatorioCancelamentos  {
     private List<ContaPedidoItem> listContaPedidoItens ;
     private List<ContaPedido> listContaPedidos ;
 
-    public RelatorioCancelamentos(Context ctx,  Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
+    public RelatorioCancelamentos(Activity ctx,  Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
         this.ctx = ctx;
         this.impressora = impressora;
         this.caixa = caixa;

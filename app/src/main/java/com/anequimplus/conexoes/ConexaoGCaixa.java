@@ -1,5 +1,6 @@
 package com.anequimplus.conexoes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -19,7 +20,7 @@ public abstract class ConexaoGCaixa extends ConexaoServer{
     private TipoConexao tipoConexao ;
     private JSONArray list ;
 
-    public ConexaoGCaixa(Context ctx, JSONArray list) throws MalformedURLException {
+    public ConexaoGCaixa(Activity ctx, JSONArray list) throws MalformedURLException {
         super(ctx);
         msg = "Enviando Caixa..." ;
         method = "POST" ;

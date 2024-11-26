@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.conexoes.ConexaoSangriaCompartilhada;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuildSangria {
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private Sangria sangria ;
     private ListenerSangria listenerSangria ;
     private TipoConexao tipoConexao ;
 
-    public BuildSangria(Context ctx, FilterTables filters, String order, ListenerSangria listenerSangria) {
+    public BuildSangria(Activity ctx, FilterTables filters, String order, ListenerSangria listenerSangria) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order ;
@@ -32,7 +32,7 @@ public class BuildSangria {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildSangria(Context ctx, Sangria sangria, ListenerSangria listenerSangria) {
+    public BuildSangria(Activity ctx, Sangria sangria, ListenerSangria listenerSangria) {
         this.ctx = ctx;
         this.sangria = sangria;
         this.listenerSangria = listenerSangria;

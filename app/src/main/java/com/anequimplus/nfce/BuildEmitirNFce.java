@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.builds.BuildProdutoImposto;
 import com.anequimplus.entity.ContaPedido;
@@ -17,13 +17,13 @@ import java.util.List;
 
 public class BuildEmitirNFce {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ListenerEmitirNFce listenerEmitirNFce;
     private ContaPedido contaPedido ;
     private List<ProdutoImposto> listImpostos ;
     private ContaPedidoDest contaPedidoDest = null;
 
-    public BuildEmitirNFce(Context ctx, ContaPedido contaPedido, ListenerEmitirNFce listenerEmitirNFce) {
+    public BuildEmitirNFce(Activity ctx, ContaPedido contaPedido, ListenerEmitirNFce listenerEmitirNFce) {
         this.ctx = ctx;
         this.listenerEmitirNFce = listenerEmitirNFce;
         this.contaPedido = contaPedido;

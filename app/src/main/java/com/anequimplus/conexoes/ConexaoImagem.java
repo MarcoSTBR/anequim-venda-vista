@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,12 +17,12 @@ import java.net.URL;
 
 public abstract class ConexaoImagem extends AsyncTask<String, Void, Bitmap> {
 
-    private Context ctx ;
+    private Activity ctx ;
     private LinksParaAcesso link ;
     private String msg ;
     private URL url ;
 
-    public ConexaoImagem(Context ctx, LinksParaAcesso link) throws MalformedURLException {
+    public ConexaoImagem(Activity ctx, LinksParaAcesso link) throws MalformedURLException {
         this.ctx = ctx ;
         this.link = link ;
         url = new URL(link.getUrl()) ;

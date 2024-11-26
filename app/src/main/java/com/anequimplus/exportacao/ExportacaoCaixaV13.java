@@ -1,6 +1,6 @@
 package com.anequimplus.exportacao;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.entity.Caixa;
@@ -20,7 +20,7 @@ public class ExportacaoCaixaV13 extends ConexaoExportacao implements ParamExport
     private ListenerExportacao listenerExportacao ;
 
 
-    public ExportacaoCaixaV13(Context ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
+    public ExportacaoCaixaV13(Activity ctx, RegExport regExport, ListenerExportacao listenerExportacao) {
         super(ctx, regExport, listenerExportacao);
         this.listenerExportacao = listenerExportacao ;
     }

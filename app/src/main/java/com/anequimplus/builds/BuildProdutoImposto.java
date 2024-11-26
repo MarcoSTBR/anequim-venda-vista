@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoProdutoImposto;
 import com.anequimplus.entity.FilterTables;
@@ -12,14 +12,14 @@ import java.net.MalformedURLException;
 
 public class BuildProdutoImposto {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private ProdutoImposto produtoImposto;
     private ListenerProdutoImposto listenerProdutoImposto ;
     private TipoConexao tipoConexao ;
 
-    public BuildProdutoImposto(Context ctx, FilterTables filters, String order, ListenerProdutoImposto listenerProdutoImposto) {
+    public BuildProdutoImposto(Activity ctx, FilterTables filters, String order, ListenerProdutoImposto listenerProdutoImposto) {
         this.ctx = ctx;
         this.filters = filters;
         this.order = order ;

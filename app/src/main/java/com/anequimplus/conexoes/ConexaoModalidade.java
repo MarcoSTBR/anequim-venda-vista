@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -14,7 +14,7 @@ import java.net.URL;
 
 public abstract class ConexaoModalidade extends ConexaoServer {
 
-    public ConexaoModalidade(Context ctx) {
+    public ConexaoModalidade(Activity ctx) {
         super(ctx);
         msg = "Modalidades" ;
         try {

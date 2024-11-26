@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 
@@ -21,7 +21,7 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
     private String login;
     private String password;
 
-    public ConexaoAutenticacao(Context ctx, String cnpj, String login, String password) throws MalformedURLException {
+    public ConexaoAutenticacao(Activity ctx, String cnpj, String login, String password) throws MalformedURLException {
         super(ctx);
         //method = "POST" ;
         msg = "Autenticação";
@@ -33,8 +33,10 @@ public abstract class ConexaoAutenticacao extends ConexaoServer {
         maps.put("method", "autenticacao");
         maps.put("cnpj", this.cnpj);
         maps.put("login", this.login);
-        maps.put("password", UtilSet.md5(ctx, this.password));
-        url = new URL(UtilSet.getServidorMaster(ctx)); //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAutenticacao).getUrl();
+        maps.put("password",this.password);
+        url =  new URL("https://gileade.com.br/anequimfood/rest.php") ;
+
+//        url = new URL(UtilSet.getServidorMaster(ctx)); //DaoDbTabela.getLinkAcessoADO(ctx).getLinkAcesso(Link.fAutenticacao).getUrl();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

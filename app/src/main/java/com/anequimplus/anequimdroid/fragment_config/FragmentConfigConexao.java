@@ -71,7 +71,7 @@ public class FragmentConfigConexao extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    new ConexaoTeste(getContext()) {
+                    new ConexaoTeste(getActivity()) {
                         @Override
                         public void retorno(String msg) {
                             Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();

@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.Caixa;
@@ -18,7 +18,7 @@ public abstract class ConexaoExportarCaixa extends ConexaoServer {
 
     private List<Caixa> list ;
 
-    public ConexaoExportarCaixa(Context ctx, List<Caixa> caixas) throws MalformedURLException {
+    public ConexaoExportarCaixa(Activity ctx, List<Caixa> caixas) throws MalformedURLException {
         super(ctx);
         this.list = caixas ;
         msg = "Atualizar Caixa";

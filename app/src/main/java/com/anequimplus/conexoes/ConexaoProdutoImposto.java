@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -26,7 +26,7 @@ public class ConexaoProdutoImposto extends ConexaoServer{
     private ListenerProdutoImposto listenerProdutoImposto ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoProdutoImposto(Context ctx, FilterTables filters, String order, ListenerProdutoImposto listenerProdutoImposto) throws MalformedURLException {
+    public ConexaoProdutoImposto(Activity ctx, FilterTables filters, String order, ListenerProdutoImposto listenerProdutoImposto) throws MalformedURLException {
         super(ctx);
         method = "POST" ;
         this.filters = filters;

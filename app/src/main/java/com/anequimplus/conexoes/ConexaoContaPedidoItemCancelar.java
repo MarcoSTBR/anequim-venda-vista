@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.DaoClass.DaoDbTabela;
@@ -18,14 +18,14 @@ import java.util.List;
 
 public class ConexaoContaPedidoItemCancelar  {
 
-    private Context ctx ;
+    private Activity ctx ;
     private ContaPedidoItemCancelamento contaPedidoItemCancelamento ;
     private FilterTables filters ;
     private String order ;
     private ListenerItemCancelamento listenerItemCancelamento ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoContaPedidoItemCancelar(Context ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) {
+    public ConexaoContaPedidoItemCancelar(Activity ctx, FilterTables filters, String order, ListenerItemCancelamento listenerItemCancelamento) {
         this.ctx = ctx ;
         this.filters = filters ;
         this.order = order ;
@@ -34,7 +34,7 @@ public class ConexaoContaPedidoItemCancelar  {
 
     }
 
-    public ConexaoContaPedidoItemCancelar(Context ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ListenerItemCancelamento listenerItemCancelamento ) throws MalformedURLException, JSONException {
+    public ConexaoContaPedidoItemCancelar(Activity ctx, ContaPedidoItemCancelamento contaPedidoItemCancelamento, ListenerItemCancelamento listenerItemCancelamento ) throws MalformedURLException, JSONException {
         this.ctx = ctx ;
         this.contaPedidoItemCancelamento = contaPedidoItemCancelamento ;
         this.listenerItemCancelamento = listenerItemCancelamento ;

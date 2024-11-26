@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.conexoes.ConexaoServer;
@@ -15,7 +15,7 @@ import java.net.URL;
 public class ConexaoNfCeLocal extends ConexaoServer {
 
     private ListenerNFCeLocal listenerNFCeLocal ;
-    public ConexaoNfCeLocal(Context ctx, JSONObject j, ListenerNFCeLocal listenerNFCeLocal) throws MalformedURLException {
+    public ConexaoNfCeLocal(Activity ctx, JSONObject j, ListenerNFCeLocal listenerNFCeLocal) throws MalformedURLException {
         super(ctx);
         this.listenerNFCeLocal = listenerNFCeLocal ;
         msg = "Emitindo NFce...";

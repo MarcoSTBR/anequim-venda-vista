@@ -60,6 +60,13 @@
         <domain includeSubdomains="true">192.168.18.9</domain>
         <domain includeSubdomains="true">192.168.18.10</domain>
         <domain includeSubdomains="true">192.168.18.66</domain>
+
+        <domain includeSubdomains="true">192.168.160.200</domain>
+        <domain includeSubdomains="true">192.168.160.201</domain>
+        <domain includeSubdomains="true">192.168.160.202</domain>
+        <domain includeSubdomains="true">192.168.160.203</domain>
+        <domain includeSubdomains="true">192.168.160.204</domain>
+
         <domain includeSubdomains="true">10.0.0.1</domain>
         <domain includeSubdomains="true">10.0.0.2</domain>
         <domain includeSubdomains="true">10.0.0.3</domain>
@@ -83,13 +90,11 @@
         <domain includeSubdomains="true">10.1.1.54</domain>
         <domain includeSubdomains="true">10.1.1.55</domain>
         <domain includeSubdomains="true">10.1.1.56</domain>
-
         <domain includeSubdomains="true">10.6.20.19</domain>
         <domain includeSubdomains="true">10.6.20.20</domain>
         <domain includeSubdomains="true">10.6.20.21</domain>
         <domain includeSubdomains="true">10.6.20.22</domain>
         <domain includeSubdomains="true">10.6.20.23</domain>
-
         <domain includeSubdomains="true">201.39.71.94</domain>
         <domain includeSubdomains="true">169.254.33.91</domain>
         <domain includeSubdomains="true">45.232.4.238</domain>
@@ -100,6 +105,8 @@
         <domain includeSubdomains="true">SERVIDOR</domain>
         <domain includeSubdomains="true">marcoultrabook</domain>
         <domain includeSubdomains="true">gileade.com.br</domain>
+        <domain includeSubdomains="true">15.229.23.131</domain>
+
 
     </domain-config>
     <base-config>

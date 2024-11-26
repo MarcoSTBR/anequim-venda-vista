@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -23,7 +23,7 @@ public class ConexaoSetorImpTerminalCompartilhado extends ConexaoServer{
     private ListenerSetorImpTerminal listenerSetorImpTerminal ;
     private TipoConexao tipoConexao ;
 
-    public ConexaoSetorImpTerminalCompartilhado(Context ctx, FilterTables filter, String order, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException {
+    public ConexaoSetorImpTerminalCompartilhado(Activity ctx, FilterTables filter, String order, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException {
         super(ctx);
         msg = "Consultando Setor Terminal...." ;
         method = "GET" ;
@@ -34,7 +34,7 @@ public class ConexaoSetorImpTerminalCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp_terminal") ;
     }
 
-    public ConexaoSetorImpTerminalCompartilhado(Context ctx, List<SetorImpTerminal> listSetorimpTermials, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpTerminalCompartilhado(Activity ctx, List<SetorImpTerminal> listSetorimpTermials, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores Terminais..." ;
         method= "POST" ;
@@ -44,7 +44,7 @@ public class ConexaoSetorImpTerminalCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/setor_imp_terminal") ;
     }
 
-    public ConexaoSetorImpTerminalCompartilhado(Context ctx, SetorImpTerminal setorImpTerminal, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException, JSONException {
+    public ConexaoSetorImpTerminalCompartilhado(Activity ctx, SetorImpTerminal setorImpTerminal, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Gravando Setores Terminais..." ;
         method= "POST" ;
@@ -54,7 +54,7 @@ public class ConexaoSetorImpTerminalCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkComandaRemota(ctx)+"/setor_imp_terminal") ;
     }
 
-    public ConexaoSetorImpTerminalCompartilhado(Context ctx, FilterTables filter, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException {
+    public ConexaoSetorImpTerminalCompartilhado(Activity ctx, FilterTables filter, ListenerSetorImpTerminal listenerSetorImpTerminal) throws MalformedURLException {
         super(ctx);
         msg = "Excluindo Setor Terminais...";
         method = "DELETE" ;

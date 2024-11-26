@@ -17,18 +17,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.adapter.ImpressoraAdapter;
 import com.anequimplus.adapter.ModalidadeSupSanAdapter;
 import com.anequimplus.adapter.SuprimentoAdapter;
-import com.anequimplus.DaoClass.DaoDbTabela;
 import com.anequimplus.anequimdroid.ActivityValor;
 import com.anequimplus.anequimdroid.R;
 import com.anequimplus.builds.BuildCaixa;
 import com.anequimplus.builds.BuildControleAcesso;
 import com.anequimplus.builds.BuildSuprimento;
-import com.anequimplus.listeners.ListenerControleAcesso;
-import com.anequimplus.listeners.ListenerSuprimento;
-import com.anequimplus.listeners.ListenerCaixa;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.FilterTables;
@@ -38,6 +35,9 @@ import com.anequimplus.entity.Suprimento;
 import com.anequimplus.impressao.BuilderControleImp;
 import com.anequimplus.impressao.ControleImpressora;
 import com.anequimplus.impressao.ListenerImpressao;
+import com.anequimplus.listeners.ListenerCaixa;
+import com.anequimplus.listeners.ListenerControleAcesso;
+import com.anequimplus.listeners.ListenerSuprimento;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.utilitarios.DisplaySet;
 import com.anequimplus.utilitarios.RowImpressao;
@@ -107,7 +107,7 @@ public class Fragment_suprimento extends Fragment {
         FilterTables f = new FilterTables() ;
         f.add(new FilterTable("USUARIO_ID", "=", String.valueOf(UtilSet.getUsuarioId(getContext())))) ;
         f.add(new FilterTable("STATUS", "=", "1")) ;
-        new BuildCaixa(getContext(), f, "", new ListenerCaixa() {
+        new BuildCaixa(getActivity(), f, "", new ListenerCaixa() {
             @Override
             public void ok(List<Caixa> l) {
                 if (l.size()>0){
@@ -138,7 +138,7 @@ public class Fragment_suprimento extends Fragment {
         String order = "ID" ;
         Log.i("suprimento", "id caixa "+caixa.getId());
         f.add(new FilterTable("CAIXA_ID", "=", String.valueOf(caixa.getId())));
-        new BuildSuprimento(getContext(), f, order , new ListenerSuprimento() {
+        new BuildSuprimento(getActivity(), f, order , new ListenerSuprimento() {
             @Override
             public void ok(List<Suprimento> l) {
                 StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(DisplaySet.getNumeroDeColunasGrade(getContext()), StaggeredGridLayoutManager.VERTICAL);
@@ -252,7 +252,7 @@ public class Fragment_suprimento extends Fragment {
 
     private void addSuprimento(){
         Suprimento it = new Suprimento(0, edit.getText().toString(), new Date(), caixa.getId(), modalidade.getId(), valor, UtilSet.getUUID(), 1) ;
-        new BuildSuprimento(getContext(), it, new ListenerSuprimento() {
+        new BuildSuprimento(getActivity(), it, new ListenerSuprimento() {
             @Override
             public void ok(List<Suprimento> l) {
                 imprimir(it) ;

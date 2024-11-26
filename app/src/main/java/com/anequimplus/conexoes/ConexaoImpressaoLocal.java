@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.entity.Impressora;
 import com.anequimplus.utilitarios.UtilSet;
@@ -15,7 +15,7 @@ public abstract class
 ConexaoImpressaoLocal extends ConexaoServer {
 
 
-    public ConexaoImpressaoLocal(Context ctx, Impressora impressora, int caixa_id, int opcao_id) throws MalformedURLException {
+    public ConexaoImpressaoLocal(Activity ctx, Impressora impressora, int caixa_id, int opcao_id) throws MalformedURLException {
         super(ctx);
         msg = "Impressão Local" ;
         maps.put("class","AfoodOpcoesFechamento") ;

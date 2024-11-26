@@ -1,12 +1,12 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
-import android.util.Log;
+import android.app.Activity;
 
 import com.anequimplus.entity.Modalidade;
 import com.anequimplus.tipos.PagamentoStatus;
 
 import java.text.DecimalFormat;
+/*
 
 import cielo.orders.domain.CheckoutRequest;
 import cielo.orders.domain.Credentials;
@@ -17,23 +17,24 @@ import cielo.sdk.order.ServiceBindListener;
 import cielo.sdk.order.payment.PaymentCode;
 import cielo.sdk.order.payment.PaymentError;
 import cielo.sdk.order.payment.PaymentListener;
+*/
 
 public abstract class ConexaoPagamentoLio {
 
-    private Context ctx ;
+    private Activity ctx ;
     private Modalidade modalidade ;
     private String codPed ;
-    private Order order;
+  //  private Order order;
     private long valorApagar ;
     private double valor ;
-    private OrderManager orderManager;
-    private InfoManager infoManager;
+ //   private OrderManager orderManager;
+ //   private InfoManager infoManager;
     private boolean orderManagerServiceBinded ;
     private String clientID ;
     private String accessToken ;
 
 
-    public ConexaoPagamentoLio(Context ctx, String codPed, String clientID, String accessToken) {
+    public ConexaoPagamentoLio(Activity ctx, String codPed, String clientID, String accessToken) {
         this.ctx = ctx;
         this.codPed = codPed ;
         this.clientID = clientID ;
@@ -43,6 +44,7 @@ public abstract class ConexaoPagamentoLio {
     private void configSDK(){
         //String clientID = "kfV6NAzc6nPSF9RT30WGLwQCDim6kA7Viapjgk47U7KO50R9n9" ;
         //String accessToken = "Ymk4JyovfZW5XUMrgfcWMtgabiyKH2MdGNP1tO7aR1WY498mCd" ;
+/*
         infoManager = new InfoManager();
         infoManager.getSettings(ctx);
         Credentials credentials = new Credentials( clientID, accessToken);
@@ -55,12 +57,6 @@ public abstract class ConexaoPagamentoLio {
                 String m = "Erro fazendo bind do serviço de ordem -> "+
                 throwable.getMessage() ;
                 returnoPag(modalidade, valor, m, PagamentoStatus.ERRO) ;
-                /*
-                Toast.makeText(ctx,
-                        String.format("Erro fazendo bind do serviço de ordem -> %s",
-                                throwable.getMessage()), Toast.LENGTH_LONG).show();
-
-                 */
             }
 
             @Override
@@ -78,6 +74,7 @@ public abstract class ConexaoPagamentoLio {
 
             }
         });
+*/
 
     }
 
@@ -95,17 +92,18 @@ public abstract class ConexaoPagamentoLio {
 
     private void addItem(){
         //infoManager.getSettings(ctx).getLogicNumber() ;
+/*
         String ec = infoManager.getSettings(ctx).getMerchantCode() ;
         Log.i("EC Lio",ec) ;
         order.addItem(codPed, "Pagamento "+codPed, valorApagar,1 , "EACH") ;
         orderManager.placeOrder(order) ;
         CheckoutRequest.Builder requestBuilder = new CheckoutRequest.Builder()
-                .orderId(order.getId()) /* Obrigatório */
-                .amount(valorApagar) /* Opcional */
-                //.ec(ec) /* Opcional (precisa estar habilitado na LIO) */
-                //.installments(1) /* Opcional */
-                //.email("teste@email.com") /* Opcional */
-                .paymentCode(getPagamentoCode(Integer.valueOf(modalidade.getCod_recebimento()))) ;/* Opcional */
+                .orderId(order.getId()) // Obrigatório
+                .amount(valorApagar) // Opcional
+                //.ec(ec) // Opcional (precisa estar habilitado na LIO)
+                //.installments(1) // Opcional
+                //.email("teste@email.com") // Opcional
+                .paymentCode(getPagamentoCode(Integer.valueOf(modalidade.getCod_recebimento()))) ;// Opcional
 
         CheckoutRequest request = requestBuilder.build() ;
 
@@ -122,14 +120,14 @@ public abstract class ConexaoPagamentoLio {
 
                 order.markAsPaid();
                 orderManager.updateOrder(order);
-/*
-                Payment pgTO = order.getPayments().get(0);
-                bandeira = getBandeira(pgTO.getPaymentFields().get("brand"));
-                transacao = pgTO.getPaymentFields().get("authCode");
 
-                pagamento.setBandeira(bandeira);
-                pagamento.setAutorizacao(transacao);
-*/
+                //Payment pgTO = order.getPayments().get(0);
+                //bandeira = getBandeira(pgTO.getPaymentFields().get("brand"));
+                //transacao = pgTO.getPaymentFields().get("authCode");
+
+                //pagamento.setBandeira(bandeira);
+                //pagamento.setAutorizacao(transacao);
+
                 resetOrderManger() ;
                 returnoPag(modalidade, valor, "OK", PagamentoStatus.SUCESSO) ;
 
@@ -150,17 +148,18 @@ public abstract class ConexaoPagamentoLio {
 
             }
         });
-
+*/
     }
 
     protected abstract void returnoPag(Modalidade modalidade, double valor, String msg, PagamentoStatus status) ;
 
 
     private void resetOrderManger(){
-        orderManager.unbind();
+     //   orderManager.unbind();
     }
 
 
+/*
 
     private PaymentCode getPagamentoCode(int cod_recebimento) {
         switch (cod_recebimento){
@@ -178,5 +177,6 @@ public abstract class ConexaoPagamentoLio {
             default: return PaymentCode.DEBITO_AVISTA ;
         }
     }
+*/
 
 }

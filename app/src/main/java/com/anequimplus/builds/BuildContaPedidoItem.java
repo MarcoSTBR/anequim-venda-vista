@@ -1,6 +1,6 @@
 package com.anequimplus.builds;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoContaPeditoItem;
 import com.anequimplus.conexoes.ConexaoContaPeditoItemCompartilhado;
@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
 
 public class BuildContaPedidoItem {
 
-    private Context ctx ;
+    private Activity ctx ;
     private FilterTables filters ;
     private String order ;
     private ListenerContaPedidoItem listenerContaPedidoItem ;
@@ -25,7 +25,7 @@ public class BuildContaPedidoItem {
     private int id_delecao = 0 ;
 
 
-    public BuildContaPedidoItem(Context ctx, FilterTables filters, String order, ListenerContaPedidoItem listenerContaPedidoItem) {
+    public BuildContaPedidoItem(Activity ctx, FilterTables filters, String order, ListenerContaPedidoItem listenerContaPedidoItem) {
         this.ctx = ctx;
         this.filters = filters;
         this.listenerContaPedidoItem = listenerContaPedidoItem ;
@@ -33,14 +33,14 @@ public class BuildContaPedidoItem {
         tipoConexao = TipoConexao.cxConsultar ;
     }
 
-    public BuildContaPedidoItem(Context ctx, ContaPedidoItem contaPedidoItem, ListenerContaPedidoItem listenerContaPedidoItem) {
+    public BuildContaPedidoItem(Activity ctx, ContaPedidoItem contaPedidoItem, ListenerContaPedidoItem listenerContaPedidoItem) {
         this.ctx = ctx;
         this.contaPedidoItem = contaPedidoItem;
         this.listenerContaPedidoItem = listenerContaPedidoItem ;
         tipoConexao = TipoConexao.cxAlterar ;
     }
 
-    public BuildContaPedidoItem(Context ctx, int id_delecao, ListenerContaPedidoItem listenerContaPedidoItem) {
+    public BuildContaPedidoItem(Activity ctx, int id_delecao, ListenerContaPedidoItem listenerContaPedidoItem) {
         this.ctx = ctx;
         this.contaPedidoItem = contaPedidoItem;
         this.listenerContaPedidoItem = listenerContaPedidoItem ;

@@ -2,8 +2,8 @@ package com.anequimplus.impressao;
 
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.ContaPedidoItem;
-import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.tipos.TipoAlinhamento;
+import com.anequimplus.utilitarios.RowImpressao;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

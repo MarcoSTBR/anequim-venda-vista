@@ -1,6 +1,6 @@
 package com.anequimplus.nfce;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.anequimplus.conexoes.ConexaoServer;
 import com.anequimplus.entity.ContaPedidoNFCe;
@@ -17,7 +17,7 @@ public class ConexaoImprimirNFCeServerLocal extends ConexaoServer {
     private ContaPedidoNFCe contaPedidoNFCe ;
     private ListenerImprimirNFCe listenerImprimirNFCe ;
 
-    public ConexaoImprimirNFCeServerLocal(Context ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe)  throws MalformedURLException , JSONException {
+    public ConexaoImprimirNFCeServerLocal(Activity ctx, ContaPedidoNFCe contaPedidoNFCe, ListenerImprimirNFCe listenerImprimirNFCe)  throws MalformedURLException , JSONException {
         super(ctx);
         this.contaPedidoNFCe = contaPedidoNFCe;
         this.listenerImprimirNFCe = listenerImprimirNFCe;

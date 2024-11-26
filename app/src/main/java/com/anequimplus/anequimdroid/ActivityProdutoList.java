@@ -17,8 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.anequimplus.adapter.ProdutoListAdapter;
 import com.anequimplus.DaoClass.DaoDbTabela;
+import com.anequimplus.adapter.ProdutoListAdapter;
 import com.anequimplus.conexoes.ConexaoAcompanhamento;
 import com.anequimplus.conexoes.ConexaoAcompanhamentoItem;
 import com.anequimplus.conexoes.ConexaoAcompanhamentoProduto;

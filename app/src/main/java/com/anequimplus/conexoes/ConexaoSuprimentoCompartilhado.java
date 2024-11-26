@@ -1,6 +1,6 @@
 package com.anequimplus.conexoes;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.entity.FilterTables;
@@ -25,7 +25,7 @@ public class ConexaoSuprimentoCompartilhado extends ConexaoServer{
     private TipoConexao tipoConexao ;
     private ListenerSuprimento listenerSuprimento ;
 
-    public ConexaoSuprimentoCompartilhado(Context ctx, FilterTables filters, ListenerSuprimento listenerSuprimento) throws MalformedURLException {
+    public ConexaoSuprimentoCompartilhado(Activity ctx, FilterTables filters, ListenerSuprimento listenerSuprimento) throws MalformedURLException {
         super(ctx);
         msg = "Suprimento..." ;
         method = "GET" ;
@@ -36,7 +36,7 @@ public class ConexaoSuprimentoCompartilhado extends ConexaoServer{
         url = new URL(Configuracao.getLinkContaCompartilhada(ctx)+"/suprimento") ;
     }
 
-    public ConexaoSuprimentoCompartilhado(Context ctx, Suprimento suprimento, ListenerSuprimento listenerSuprimento) throws MalformedURLException, JSONException {
+    public ConexaoSuprimentoCompartilhado(Activity ctx, Suprimento suprimento, ListenerSuprimento listenerSuprimento) throws MalformedURLException, JSONException {
         super(ctx);
         msg = "Suprimento..." ;
         method = "POST" ;

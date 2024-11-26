@@ -1,14 +1,14 @@
 package com.anequimplus.relatorios;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.anequimplus.builds.BuildContaPedido;
-import com.anequimplus.listeners.ListenerContaPedido;
 import com.anequimplus.entity.Caixa;
 import com.anequimplus.entity.ContaPedido;
 import com.anequimplus.entity.FilterTable;
 import com.anequimplus.entity.Impressora;
+import com.anequimplus.listeners.ListenerContaPedido;
 import com.anequimplus.tipos.TipoAlinhamento;
 import com.anequimplus.utilitarios.RowImpressao;
 import com.anequimplus.utilitarios.UtilSet;
@@ -21,13 +21,13 @@ import java.util.List;
 
 public class RelatorioContas {
 
-    private Context ctx;
+    private Activity ctx;
     private Impressora impressora ;
     private Caixa caixa ;
     private List<RowImpressao> rel ;
     private ListenerRelatorio listenerRelatorio ;
 
-    public RelatorioContas(Context ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
+    public RelatorioContas(Activity ctx, Caixa caixa, Impressora impressora, ListenerRelatorio listenerRelatorio) {
         this.ctx = ctx;
         this.impressora = impressora;
         this.caixa = caixa;
